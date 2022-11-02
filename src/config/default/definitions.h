@@ -53,7 +53,11 @@
 #include "peripheral/evic/plib_evic.h"
 #include "peripheral/spi/spi_master/plib_spi2_master.h"
 #include "peripheral/spi/spi_master/plib_spi1_master.h"
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+#include "data_storage.h"
+#include "task1_ADC_cmd.h"
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
@@ -113,13 +117,14 @@ extern "C" {
 void SYS_Initialize( void *data );
 
 /* Nullify SYS_Tasks() if only PLIBs are used. */
-#define     SYS_Tasks()
+
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: extern declarations
 // *****************************************************************************
 // *****************************************************************************
+void SYS_Tasks ( void );
 
 
 

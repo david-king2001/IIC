@@ -1,0 +1,15 @@
+format_version: v1.0
+type: UniqueComponent
+attributes: {id: FreeRTOS}
+children:
+- type: Symbols
+  children:
+  - type: String
+    attributes: {id: SET_RTOS}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: FreeRTOS, value: FreeRTOS}
+- type: ElementPosition
+  attributes: {x: '338', y: '93', id: FreeRTOS}
