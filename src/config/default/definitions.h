@@ -53,6 +53,7 @@
 #include "peripheral/evic/plib_evic.h"
 #include "peripheral/spi/spi_master/plib_spi2_master.h"
 #include "peripheral/spi/spi_master/plib_spi1_master.h"
+#include "adc.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility

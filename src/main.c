@@ -38,41 +38,63 @@
 
 typedef enum
 {
-	APP_STATE_INITIALIZE,
-    APP_STATE_TRANSFER_COMPLETE_WAIT,       
-    APP_STATE_SEND_READ_DATA_CMD,
-    APP_STATE_READ_DATA,
-    APP_STATE_VERIFY,
-    APP_STATE_ERROR,
+	STATE_INITIALIZE,
+    ADC_STATE_TRANSFER_COMPLETE_WAIT,       
+    ADC_SEND_CMD,
+    ADC_READ,
+    DAC_STATE_TRANSFER_COMPLETE_WAIT,  
+    DAC_SEND_CMD,
+    DISPLAY_STATE_TRANSFER_COMPLETE_WAIT,
+    DISPLAY_SEND_CMD,
+    USER_INPUT_PERFORM_LOGIC
+} STATES;
 
-} APP_STATES;
 
-#define ADC_Read_Data    0x44
-APP_STATES state = APP_STATE_INITIALIZE;
-APP_STATES nextState;
-volatile bool isTransferDone = false;
 
-void SPIEventHandler(uintptr_t context )
+volatile bool isSPI1Done = false;
+volatile bool isSPI2Done = false;
+
+STATES state = STATE_INITIALIZE;
+STATES nextState = STATE_INITIALIZE;
+
+ADC adc;
+
+
+void SPI1EventHandler(uintptr_t context )
 {    
-    isTransferDone = true;
+    isSPI1Done = true;
+    if (SS_ADC_Get()){
+        SS_ADC_Set();
+    }
+    if (SS_DAC_Get()){
+        SS_DAC_Set();
+    }
+}
+
+
+
+void SPI2EventHandler(uintptr_t context )
+{    
+    isSPI2Done = true;
 
     /* De-assert the CS line */
-    SS_ADC_Set();
+    SS_DISPLAY_Set();
 }
-uint8_t adcDATA[3];
-uint8_t td[1];
-uint8_t a[1];
+
+
+
 
 int main ( void )
 {
     SYS_Initialize ( NULL );
     
-    a[0] = 'A';
     LED_RED_Clear();
     LED_YELLOW_Clear();
     LED_GREEN_Clear();
     
     SS_ADC_Set();
+    SS_DAC_Set();
+    SS_DISPLAY_Set();
     
     while (SW1_Get() == 1);
     LED_YELLOW_Set();
@@ -81,54 +103,68 @@ int main ( void )
     {
         switch (state)
         {
-            case APP_STATE_INITIALIZE:
-                SPI1_CallbackRegister(SPIEventHandler, (uintptr_t) 0); 
-                state = APP_STATE_SEND_READ_DATA_CMD;
+            case STATE_INITIALIZE:
+                SPI1_CallbackRegister(SPI1EventHandler, (uintptr_t) 0); 
+                state = ADC_SEND_CMD;
                 
                 break;          
             
-            case APP_STATE_TRANSFER_COMPLETE_WAIT:
-                if (isTransferDone == true)
-                {
-                    isTransferDone = false;      
-                    /* Wait for the SPI slave to become ready before sending next commands */ 
-                    while (RDY_Get() == 1);
-                    state = nextState;
+            case ADC_STATE_TRANSFER_COMPLETE_WAIT:
+                for(int i=0; i<10000; i++);
+                if (isSPI1Done){
+                    isSPI1Done = false;
+                    //while(RDY_Get());
+                    state = nextState; 
                 }
+                break;
+                
+            case DAC_STATE_TRANSFER_COMPLETE_WAIT:
+                for(int i=0; i<10000; i++);
+                if (isSPI1Done){
+                    isSPI1Done = false;
+                    state = nextState; 
+                }
+                break;
+                
+            case DISPLAY_STATE_TRANSFER_COMPLETE_WAIT:
+                if (isSPI2Done){
+                    isSPI2Done = false;
+                   state = nextState; 
+                }
+                
                 break;
 
-            case APP_STATE_SEND_READ_DATA_CMD: 
-                LED_RED_Clear();
+            case ADC_SEND_CMD: 
+                adc.cmd = 1;
                 SS_ADC_Clear(); 
-                td[0]= ADC_Read_Data;
-                SPI1_WriteRead(td, 1, NULL, 0);
-                state = APP_STATE_TRANSFER_COMPLETE_WAIT;
-                nextState = APP_STATE_READ_DATA;
+                SPI1_Write(&adc.cmd, 1);
+                state = ADC_STATE_TRANSFER_COMPLETE_WAIT;
+                nextState = ADC_READ;
                 break;
                 
-            case APP_STATE_READ_DATA:
+            case ADC_READ:
                 SS_ADC_Clear(); 
-                SPI1_WriteRead(NULL, 0, adcDATA, 1);
-                state = APP_STATE_TRANSFER_COMPLETE_WAIT;
-                nextState = APP_STATE_VERIFY;
+                SPI1_Read(adc.data[0], 3);
+                state = ADC_STATE_TRANSFER_COMPLETE_WAIT;
+                nextState = DAC_SEND_CMD;
                 break;
                 
-            case APP_STATE_VERIFY: 
-                if (memcmp(adcDATA, a, 1) == 0)
-                {
-                    LED_GREEN_Set();    
-                    LED_RED_Clear();
-                    /* Repeat the test */
-                    state = APP_STATE_SEND_READ_DATA_CMD;
-                }else{
-                    LED_RED_Set();
-                    LED_GREEN_Clear();
-                    state = APP_STATE_ERROR;
-                }
-                LED_YELLOW_Clear();
+            case DAC_SEND_CMD: 
+                adc.cmd = 2;
+                SS_DAC_Clear();
+                SPI1_Write(&adc.cmd, 1);
+                state = DAC_STATE_TRANSFER_COMPLETE_WAIT;
+                nextState = USER_INPUT_PERFORM_LOGIC;
                 break;
                 
-            case APP_STATE_ERROR:
+                
+            case USER_INPUT_PERFORM_LOGIC: 
+                state = DISPLAY_SEND_CMD;
+                break;
+                
+            case DISPLAY_SEND_CMD:
+                //state = DISPLAY_STATE_TRANSFER_COMPLETE_WAIT;
+                state = ADC_SEND_CMD;
                 break;
                 
             default:
