@@ -39,137 +39,198 @@
 typedef enum
 {
 	STATE_INITIALIZE,
-    ADC_STATE_TRANSFER_COMPLETE_WAIT,       
     ADC_SEND_CMD,
     ADC_READ,
-    DAC_STATE_TRANSFER_COMPLETE_WAIT,  
-    DAC_SEND_CMD,
-    DISPLAY_STATE_TRANSFER_COMPLETE_WAIT,
+    DAC1_SEND_CMD,
+    DAC2_SEND_CMD,
     DISPLAY_SEND_CMD,
-    USER_INPUT_PERFORM_LOGIC
+    USER_INPUT_PERFORM_LOGIC,
+    INCREMENT_CHANNEL
 } STATES;
-
-
-
-volatile bool isSPI1Done = false;
-volatile bool isSPI2Done = false;
 
 STATES state = STATE_INITIALIZE;
 STATES nextState = STATE_INITIALIZE;
 
-ADC adc;
+// ***********************
+// DATA STORAGE
+// ***********************
+INPUT inputs[4];
+ALARM alarms[32];
+
+
+uint16_t dac_data[2]; //Store data to be written to DACs size 16bits
+uint32_t pastData[4][30]; //Store history of input data
+uint32_t adc_data[4]; //Store data from 4 analog inputs size 24bits
+uint8_t adc_cmd; //8 bit command for adc size 8 bits
+uint8_t alarms = 0; //Store which alarms are active
+uint8_t digital = 0; //Store which 
+
+
+// ***********************
+// FLAGS
+// ***********************
+volatile bool task_FLAG = false;
+
+// ***********************
+// COUNTERS
+// ***********************
+
+uint8_t Input_Channel = 0; 
+uint8_t Output_Channel = 0;
+
+
+
+void pastDataUpdate(uint32_t* data){
+    for (int i=0; i<29; i++){
+        pastData[Input_Channel][i] = pastData[Input_Channel][i+1];
+    }
+    pastData[Input_Channel][29] = *data;
+}
 
 
 void SPI1EventHandler(uintptr_t context )
-{    
-    isSPI1Done = true;
-    if (SS_ADC_Get()){
-        SS_ADC_Set();
+{   
+
+    //If DAC1 turn off DAC
+    if (SS_DAC1_Get()==0){
+        SS_DAC1_Set();
     }
-    if (SS_DAC_Get()){
-        SS_DAC_Set();
+    
+    //If DAC2 turn off DAC
+    if (SS_DAC2_Get()==0){
+        SS_DAC2_Set();
     }
 }
 
 
+//TODO For display SPI
+//void SPI2EventHandler(uintptr_t context )
+//{    
+//
+//}
 
-void SPI2EventHandler(uintptr_t context )
-{    
-    isSPI2Done = true;
-
-    /* De-assert the CS line */
-    SS_DISPLAY_Set();
+void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context){
+    task_FLAG = true;
+    ALARM6_Toggle();
 }
 
-
-
+#define MY_WORD_SWAP(x) ( ((x & 0xff00)>>8) | ((x & 0x00ff)<<8) )
 
 int main ( void )
 {
     SYS_Initialize ( NULL );
     
-    LED_RED_Clear();
-    LED_YELLOW_Clear();
-    LED_GREEN_Clear();
+    SPI1_CallbackRegister(SPI1EventHandler, (uintptr_t) 0); 
+    //SPI2_CallbackRegister(SPI2EventHandler, (uintptr_t) 0); 
+
+    TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t)NULL);
+    TMR2_Start();
     
+    LED_RED_Clear();
+    ALARM6_Clear();
+    ALARM7_Clear();
+    
+    //Set SS pins to High for not in use
     SS_ADC_Set();
-    SS_DAC_Set();
+    SS_DAC1_Set();
+    SS_DAC2_Set();
     SS_DISPLAY_Set();
     
-    while (SW1_Get() == 1);
-    LED_YELLOW_Set();
+    while (BTN0_Get() == 1);
+    LED_RED_Set();
+    
     
     while(1)
     {
-        switch (state)
-        {
-            case STATE_INITIALIZE:
-                SPI1_CallbackRegister(SPI1EventHandler, (uintptr_t) 0); 
-                state = ADC_SEND_CMD;
-                
-                break;          
-            
-            case ADC_STATE_TRANSFER_COMPLETE_WAIT:
-                for(int i=0; i<10000; i++);
-                if (isSPI1Done){
-                    isSPI1Done = false;
-                    //while(RDY_Get());
-                    state = nextState; 
-                }
-                break;
-                
-            case DAC_STATE_TRANSFER_COMPLETE_WAIT:
-                for(int i=0; i<10000; i++);
-                if (isSPI1Done){
-                    isSPI1Done = false;
-                    state = nextState; 
-                }
-                break;
-                
-            case DISPLAY_STATE_TRANSFER_COMPLETE_WAIT:
-                if (isSPI2Done){
-                    isSPI2Done = false;
-                   state = nextState; 
-                }
-                
-                break;
+        if (task_FLAG){
+            switch (state)
+            {
+                case STATE_INITIALIZE:
+                                        
+                    //Send Commands to ADC to set mode to continuous 
+                    ADC_Initialize();
+                    
+                    state = ADC_SEND_CMD;
+                    break;          
 
-            case ADC_SEND_CMD: 
-                adc.cmd = 1;
-                SS_ADC_Clear(); 
-                SPI1_Write(&adc.cmd, 1);
-                state = ADC_STATE_TRANSFER_COMPLETE_WAIT;
-                nextState = ADC_READ;
-                break;
+                case ADC_SEND_CMD: 
+                    ADC_Select_Chnl();
+
+                    state = ADC_READ;
+                    break;
+
+                case ADC_READ:
+                    ADC_Read_Data(inputs[Input_Channel].data);
+                    pastDataUpdate(&adc_data[Input_Channel]);
+                    
+                    //TEST
+                    
+                    adc_data[0]=(uint32_t)0xABCDEF;
+                    adc_data[1]=(uint32_t)0xABCDEF;
+                    dac_data[0] = MY_WORD_SWAP(dac_data[0]);
+                    dac_data[1] = MY_WORD_SWAP(dac_data[1]);
+                    //
+                    state = DAC1_SEND_CMD;
+                    break;
+
+                case DAC1_SEND_CMD: 
+                    while(SPI1_IsBusy());
+                    SS_DAC1_Clear(); 
+                    
+                    SPI1_Write(&dac_data[Output_Channel/4], 2);
+                    while(SPI1_IsBusy());
+                    
+                    state = DAC2_SEND_CMD; 
+                    break;
+                    
+                case DAC2_SEND_CMD: 
+                    while(SPI1_IsBusy());
+                    SS_DAC2_Clear(); 
+
+                    SPI1_Write(&dac_data[Output_Channel/4], 2);
+                    while(SPI1_IsBusy());
+                    
+                    state = USER_INPUT_PERFORM_LOGIC; 
+                    break;
+
+                case USER_INPUT_PERFORM_LOGIC: //TODO
+                    dac_data[0] = adc_data[0]>>8; 
+                    dac_data[1] = adc_data[1]>>8; 
+                    state = DISPLAY_SEND_CMD;
+                    break;
+
+                case DISPLAY_SEND_CMD: //TODO
+                    state = INCREMENT_CHANNEL;
+                    break;
                 
-            case ADC_READ:
-                SS_ADC_Clear(); 
-                SPI1_Read(adc.data[0], 3);
-                state = ADC_STATE_TRANSFER_COMPLETE_WAIT;
-                nextState = DAC_SEND_CMD;
-                break;
-                
-            case DAC_SEND_CMD: 
-                adc.cmd = 2;
-                SS_DAC_Clear();
-                SPI1_Write(&adc.cmd, 1);
-                state = DAC_STATE_TRANSFER_COMPLETE_WAIT;
-                nextState = USER_INPUT_PERFORM_LOGIC;
-                break;
-                
-                
-            case USER_INPUT_PERFORM_LOGIC: 
-                state = DISPLAY_SEND_CMD;
-                break;
-                
-            case DISPLAY_SEND_CMD:
-                //state = DISPLAY_STATE_TRANSFER_COMPLETE_WAIT;
-                state = ADC_SEND_CMD;
-                break;
-                
-            default:
-                break;
+                case INCREMENT_CHANNEL:
+                    
+                    //Reset Input Channel at max
+                    if (Input_Channel==3)
+                        Input_Channel = 0;
+                    else
+                        Input_Channel++;
+                    
+                    //Reset Output Channel at max
+                    if (Output_Channel==7)
+                        Output_Channel = 0;
+                    else
+                        Output_Channel++;
+                    
+                    //Goto first task
+                    state = ADC_SEND_CMD;
+                    break;
+                    
+                    
+                default:
+                    break;
+            }            
+            
+            //Reset timer flag
+            task_FLAG = false;
         }
+
+        			
     }
     
 
