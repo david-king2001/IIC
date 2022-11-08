@@ -60,12 +60,18 @@
 // *****************************************************************************
 
 
+void TIMER_2_InterruptHandler( void );
 void SPI_1_InterruptHandler( void );
 void SPI_2_InterruptHandler( void );
 
 
 
 /* All the handlers are defined here.  Each will call its PLIB-specific function. */
+void __ISR(_TIMER_2_VECTOR, ipl1SOFT) TIMER_2_Handler (void)
+{
+    TIMER_2_InterruptHandler();
+}
+
 void __ISR(_SPI_1_VECTOR, ipl1SOFT) SPI_1_Handler (void)
 {
     SPI_1_InterruptHandler();

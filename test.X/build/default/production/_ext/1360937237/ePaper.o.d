@@ -1,5 +1,4 @@
-build/default/production/_ext/1171490990/initialization.o: \
- ../src/config/default/initialization.c \
+build/default/production/_ext/1360937237/ePaper.o: ../src/ePaper.c \
  ../src/config/default/definitions.h \
  ../src/config/default/peripheral/tmr/plib_tmr2.h \
  ../src/config/default/device.h \
@@ -11,8 +10,7 @@ build/default/production/_ext/1171490990/initialization.o: \
  ../src/config/default/peripheral/spi/spi_master/plib_spi2_master.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi_master_common.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi1_master.h \
- ../src/adc.h ../src/ePaper.h ../src/input.h ../src/output.h \
- ../src/config/default/device.h
+ ../src/adc.h ../src/ePaper.h ../src/input.h ../src/output.h
 
 ../src/config/default/definitions.h:
 
@@ -43,5 +41,3 @@ build/default/production/_ext/1171490990/initialization.o: \
 ../src/input.h:
 
 ../src/output.h:
-
-../src/config/default/device.h:
