@@ -1,9 +1,6 @@
 /*******************************************************************************
   Main Source File
 
-  Company:
-    Microchip Technology Inc.
-
   File Name:
     main.c
 
@@ -41,9 +38,10 @@ typedef enum
 	STATE_INITIALIZE,
     ADC_SEND_CMD,
     ADC_READ,
+    ALARMS,
     DAC1_SEND_CMD,
     DAC2_SEND_CMD,
-    DISPLAY_SEND_CMD,
+    DISPLAY,
     USER_INPUT_PERFORM_LOGIC,
     INCREMENT_CHANNEL
 } STATES;
@@ -54,79 +52,76 @@ STATES nextState = STATE_INITIALIZE;
 // ***********************
 // DATA STORAGE
 // ***********************
-INPUT inputs[4];
-ALARM alarms[32];
 
+INPUT_ANLG inputs[4]; //4 Analog inputs from ADC
+uint8_t digital_inputs; //4 Digital inputs
+ALARM alarms[32]; //32 possible alarms
+double pastData[4][30]; //Store history of input data
+uint16_t dac_data[2]; //2 Analog outputs to DAC 
 
-uint16_t dac_data[2]; //Store data to be written to DACs size 16bits
-uint32_t pastData[4][30]; //Store history of input data
-uint32_t adc_data[4]; //Store data from 4 analog inputs size 24bits
-uint8_t adc_cmd; //8 bit command for adc size 8 bits
-uint8_t alarms = 0; //Store which alarms are active
-uint8_t digital = 0; //Store which 
+//************************
 
 
 // ***********************
 // FLAGS
 // ***********************
+
 volatile bool task_FLAG = false;
+bool thirty_sec_passed = false;
+
+//************************
+
 
 // ***********************
 // COUNTERS
 // ***********************
 
-uint8_t Input_Channel = 0; 
-uint8_t Output_Channel = 0;
+uint8_t input_channel = 0; 
+uint16_t ms_counter = 0;
 
+//************************
 
-
-void pastDataUpdate(uint32_t* data){
+void pastDataUpdate(double* data){
     for (int i=0; i<29; i++){
-        pastData[Input_Channel][i] = pastData[Input_Channel][i+1];
+        pastData[input_channel][i] = pastData[input_channel][i+1];
     }
-    pastData[Input_Channel][29] = *data;
+    pastData[input_channel][29] = *data;
 }
 
 
-void SPI1EventHandler(uintptr_t context )
-{   
-
-    //If DAC1 turn off DAC
-    if (SS_DAC1_Get()==0){
-        SS_DAC1_Set();
-    }
-    
-    //If DAC2 turn off DAC
-    if (SS_DAC2_Get()==0){
-        SS_DAC2_Set();
-    }
-}
 
 
-//TODO For display SPI
-//void SPI2EventHandler(uintptr_t context )
-//{    
-//
-//}
-
+//This callback routine is called every 1ms
 void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context){
+    //Set flag to true to switch to new task
     task_FLAG = true;
-    ALARM6_Toggle();
+    
+    //Check if 30seconds have past
+    if (ms_counter == 30000){
+        ms_counter = 0;
+    }
+    ALARM7_Toggle();
 }
 
 #define MY_WORD_SWAP(x) ( ((x & 0xff00)>>8) | ((x & 0x00ff)<<8) )
+
 
 int main ( void )
 {
     SYS_Initialize ( NULL );
     
-    SPI1_CallbackRegister(SPI1EventHandler, (uintptr_t) 0); 
-    //SPI2_CallbackRegister(SPI2EventHandler, (uintptr_t) 0); 
 
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t)NULL);
     TMR2_Start();
     
+    //Set GPIO pins to low for not in use
     LED_RED_Clear();
+    ALARM0_Clear();
+    ALARM1_Clear();
+    ALARM2_Clear();
+    ALARM3_Clear();
+    ALARM4_Clear();
+    ALARM5_Clear();       
     ALARM6_Clear();
     ALARM7_Clear();
     
@@ -154,68 +149,76 @@ int main ( void )
                     break;          
 
                 case ADC_SEND_CMD: 
-                    ADC_Select_Chnl();
+                    ADC_Select_Chnl(input_channel);
 
                     state = ADC_READ;
                     break;
-
+                    
+                //In this state the ADC is read for the current input channel
                 case ADC_READ:
-                    ADC_Read_Data(inputs[Input_Channel].data);
-                    pastDataUpdate(&adc_data[Input_Channel]);
+                    //Read the data
+                    ADC_Read_Data(&inputs[input_channel].raw_data);
                     
-                    //TEST
+                    //Store the data in past storage if 30 seconds have past
+                    if (thirty_sec_passed){
+                        pastDataUpdate(&inputs[input_channel].scaled_data);
+                        thirty_sec_passed = false;
+                    }
+
+                    //Convert to user scale and save
+                    inputs[input_channel].scaled_data = ( (double)inputs[input_channel].raw_data / (16777215) ) * (inputs[input_channel].max - inputs[input_channel].min) + inputs[input_channel].min;
+                    state = DISPLAY;
+                    break;
                     
-                    adc_data[0]=(uint32_t)0xABCDEF;
-                    adc_data[1]=(uint32_t)0xABCDEF;
-                    dac_data[0] = MY_WORD_SWAP(dac_data[0]);
-                    dac_data[1] = MY_WORD_SWAP(dac_data[1]);
-                    //
-                    state = DAC1_SEND_CMD;
+                case DISPLAY: //TODO
+                    state = USER_INPUT_PERFORM_LOGIC;
+                    break;
+                    
+                case USER_INPUT_PERFORM_LOGIC: 
+
+                    state = ALARMS;
                     break;
 
-                case DAC1_SEND_CMD: 
-                    while(SPI1_IsBusy());
-                    SS_DAC1_Clear(); 
+                //In this state 
+                case ALARMS:
+                    for (uint8_t i=0; i<32; i++){
+                        if (alarms[i].chnl_trig == input_channel+4){
+                            
+                        }
+                    }
+
+
                     
-                    SPI1_Write(&dac_data[Output_Channel/4], 2);
-                    while(SPI1_IsBusy());
+                    state = DAC1_SEND_CMD;
+                    break;
+                    
+                case DAC1_SEND_CMD: 
+
+                    SS_DAC1_Clear(); 
+                    SPI1_Write(&dac_data[input_channel/2], 2);
+                    SS_DAC1_Set();
                     
                     state = DAC2_SEND_CMD; 
                     break;
                     
                 case DAC2_SEND_CMD: 
-                    while(SPI1_IsBusy());
+
                     SS_DAC2_Clear(); 
-
-                    SPI1_Write(&dac_data[Output_Channel/4], 2);
-                    while(SPI1_IsBusy());
+                    SPI1_Write(&dac_data[input_channel/2], 2);
+                    SS_DAC2_Set();
                     
-                    state = USER_INPUT_PERFORM_LOGIC; 
+                    state = INCREMENT_CHANNEL; 
                     break;
 
-                case USER_INPUT_PERFORM_LOGIC: //TODO
-                    dac_data[0] = adc_data[0]>>8; 
-                    dac_data[1] = adc_data[1]>>8; 
-                    state = DISPLAY_SEND_CMD;
-                    break;
-
-                case DISPLAY_SEND_CMD: //TODO
-                    state = INCREMENT_CHANNEL;
-                    break;
                 
                 case INCREMENT_CHANNEL:
                     
                     //Reset Input Channel at max
-                    if (Input_Channel==3)
-                        Input_Channel = 0;
+                    if (input_channel==3)
+                        input_channel = 0;
                     else
-                        Input_Channel++;
-                    
-                    //Reset Output Channel at max
-                    if (Output_Channel==7)
-                        Output_Channel = 0;
-                    else
-                        Output_Channel++;
+                        input_channel++;
+
                     
                     //Goto first task
                     state = ADC_SEND_CMD;
