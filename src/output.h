@@ -34,6 +34,27 @@ extern "C" {
         bool high_low; 
     }ALARM;
 
+    typedef  void (*RELAY_CALLBACK) ();
+    
+    typedef struct{
+        
+        // true-Relay Output, false-DAC Output
+        bool rel_dac;
+        
+        //Counter of alarms triggering this output
+        uint8_t alarm_count;
+        
+        //The data sent out if the output is a DAC
+        uint16_t data;
+        
+        //true-relay on, false: relay off 
+        bool relay;
+        
+        //Alarm functions to turn on and off
+        RELAY_CALLBACK relay_set;
+        RELAY_CALLBACK relay_clear;
+    }OUTPUT;
+    
     
 #ifdef	__cplusplus
 }

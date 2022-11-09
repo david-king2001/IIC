@@ -11,7 +11,8 @@ build/default/production/_ext/1171490990/interrupts.o: \
  ../src/config/default/peripheral/spi/spi_master/plib_spi2_master.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi_master_common.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi1_master.h \
- ../src/adc.h ../src/ePaper.h ../src/input.h ../src/output.h
+ ../src/adc.h ../src/ePaper.h ../src/input.h ../src/output.h \
+ ../src/output.h
 
 ../src/config/default/interrupts.h:
 
@@ -42,5 +43,7 @@ build/default/production/_ext/1171490990/interrupts.o: \
 ../src/ePaper.h:
 
 ../src/input.h:
+
+../src/output.h:
 
 ../src/output.h:

@@ -62,32 +62,32 @@
 // *****************************************************************************
 
 
-/*** Macros for ALARM3 pin ***/
-#define ALARM3_Set()               (LATESET = (1<<5))
-#define ALARM3_Clear()             (LATECLR = (1<<5))
-#define ALARM3_Toggle()            (LATEINV= (1<<5))
-#define ALARM3_OutputEnable()      (TRISECLR = (1<<5))
-#define ALARM3_InputEnable()       (TRISESET = (1<<5))
-#define ALARM3_Get()               ((PORTE >> 5) & 0x1)
-#define ALARM3_PIN                  GPIO_PIN_RE5
+/*** Macros for RELAY3 pin ***/
+#define RELAY3_Set()               (LATESET = (1<<5))
+#define RELAY3_Clear()             (LATECLR = (1<<5))
+#define RELAY3_Toggle()            (LATEINV= (1<<5))
+#define RELAY3_OutputEnable()      (TRISECLR = (1<<5))
+#define RELAY3_InputEnable()       (TRISESET = (1<<5))
+#define RELAY3_Get()               ((PORTE >> 5) & 0x1)
+#define RELAY3_PIN                  GPIO_PIN_RE5
 
-/*** Macros for ALARM6 pin ***/
-#define ALARM6_Set()               (LATESET = (1<<6))
-#define ALARM6_Clear()             (LATECLR = (1<<6))
-#define ALARM6_Toggle()            (LATEINV= (1<<6))
-#define ALARM6_OutputEnable()      (TRISECLR = (1<<6))
-#define ALARM6_InputEnable()       (TRISESET = (1<<6))
-#define ALARM6_Get()               ((PORTE >> 6) & 0x1)
-#define ALARM6_PIN                  GPIO_PIN_RE6
+/*** Macros for RELAY6 pin ***/
+#define RELAY6_Set()               (LATESET = (1<<6))
+#define RELAY6_Clear()             (LATECLR = (1<<6))
+#define RELAY6_Toggle()            (LATEINV= (1<<6))
+#define RELAY6_OutputEnable()      (TRISECLR = (1<<6))
+#define RELAY6_InputEnable()       (TRISESET = (1<<6))
+#define RELAY6_Get()               ((PORTE >> 6) & 0x1)
+#define RELAY6_PIN                  GPIO_PIN_RE6
 
-/*** Macros for ALARM7 pin ***/
-#define ALARM7_Set()               (LATESET = (1<<7))
-#define ALARM7_Clear()             (LATECLR = (1<<7))
-#define ALARM7_Toggle()            (LATEINV= (1<<7))
-#define ALARM7_OutputEnable()      (TRISECLR = (1<<7))
-#define ALARM7_InputEnable()       (TRISESET = (1<<7))
-#define ALARM7_Get()               ((PORTE >> 7) & 0x1)
-#define ALARM7_PIN                  GPIO_PIN_RE7
+/*** Macros for RELAY7 pin ***/
+#define RELAY7_Set()               (LATESET = (1<<7))
+#define RELAY7_Clear()             (LATECLR = (1<<7))
+#define RELAY7_Toggle()            (LATEINV= (1<<7))
+#define RELAY7_OutputEnable()      (TRISECLR = (1<<7))
+#define RELAY7_InputEnable()       (TRISESET = (1<<7))
+#define RELAY7_Get()               ((PORTE >> 7) & 0x1)
+#define RELAY7_PIN                  GPIO_PIN_RE7
 
 /*** Macros for SS_DISPLAY pin ***/
 #define SS_DISPLAY_Set()               (LATGSET = (1<<9))
@@ -107,14 +107,14 @@
 #define SS_DAC1_Get()               ((PORTB >> 4) & 0x1)
 #define SS_DAC1_PIN                  GPIO_PIN_RB4
 
-/*** Macros for ALARM2 pin ***/
-#define ALARM2_Set()               (LATBSET = (1<<9))
-#define ALARM2_Clear()             (LATBCLR = (1<<9))
-#define ALARM2_Toggle()            (LATBINV= (1<<9))
-#define ALARM2_OutputEnable()      (TRISBCLR = (1<<9))
-#define ALARM2_InputEnable()       (TRISBSET = (1<<9))
-#define ALARM2_Get()               ((PORTB >> 9) & 0x1)
-#define ALARM2_PIN                  GPIO_PIN_RB9
+/*** Macros for RELAY2 pin ***/
+#define RELAY2_Set()               (LATBSET = (1<<9))
+#define RELAY2_Clear()             (LATBCLR = (1<<9))
+#define RELAY2_Toggle()            (LATBINV= (1<<9))
+#define RELAY2_OutputEnable()      (TRISBCLR = (1<<9))
+#define RELAY2_InputEnable()       (TRISBSET = (1<<9))
+#define RELAY2_Get()               ((PORTB >> 9) & 0x1)
+#define RELAY2_PIN                  GPIO_PIN_RB9
 
 /*** Macros for DISPLAY_RDY pin ***/
 #define DISPLAY_RDY_Set()               (LATBSET = (1<<11))
@@ -143,32 +143,32 @@
 #define DIGITAL0_Get()               ((PORTB >> 14) & 0x1)
 #define DIGITAL0_PIN                  GPIO_PIN_RB14
 
-/*** Macros for ALARM5 pin ***/
-#define ALARM5_Set()               (LATFSET = (1<<4))
-#define ALARM5_Clear()             (LATFCLR = (1<<4))
-#define ALARM5_Toggle()            (LATFINV= (1<<4))
-#define ALARM5_OutputEnable()      (TRISFCLR = (1<<4))
-#define ALARM5_InputEnable()       (TRISFSET = (1<<4))
-#define ALARM5_Get()               ((PORTF >> 4) & 0x1)
-#define ALARM5_PIN                  GPIO_PIN_RF4
+/*** Macros for RELAY5 pin ***/
+#define RELAY5_Set()               (LATFSET = (1<<4))
+#define RELAY5_Clear()             (LATFCLR = (1<<4))
+#define RELAY5_Toggle()            (LATFINV= (1<<4))
+#define RELAY5_OutputEnable()      (TRISFCLR = (1<<4))
+#define RELAY5_InputEnable()       (TRISFSET = (1<<4))
+#define RELAY5_Get()               ((PORTF >> 4) & 0x1)
+#define RELAY5_PIN                  GPIO_PIN_RF4
 
-/*** Macros for ALARM4 pin ***/
-#define ALARM4_Set()               (LATFSET = (1<<5))
-#define ALARM4_Clear()             (LATFCLR = (1<<5))
-#define ALARM4_Toggle()            (LATFINV= (1<<5))
-#define ALARM4_OutputEnable()      (TRISFCLR = (1<<5))
-#define ALARM4_InputEnable()       (TRISFSET = (1<<5))
-#define ALARM4_Get()               ((PORTF >> 5) & 0x1)
-#define ALARM4_PIN                  GPIO_PIN_RF5
+/*** Macros for RELAY4 pin ***/
+#define RELAY4_Set()               (LATFSET = (1<<5))
+#define RELAY4_Clear()             (LATFCLR = (1<<5))
+#define RELAY4_Toggle()            (LATFINV= (1<<5))
+#define RELAY4_OutputEnable()      (TRISFCLR = (1<<5))
+#define RELAY4_InputEnable()       (TRISFSET = (1<<5))
+#define RELAY4_Get()               ((PORTF >> 5) & 0x1)
+#define RELAY4_PIN                  GPIO_PIN_RF5
 
-/*** Macros for ALARM0 pin ***/
-#define ALARM0_Set()               (LATDSET = (1<<8))
-#define ALARM0_Clear()             (LATDCLR = (1<<8))
-#define ALARM0_Toggle()            (LATDINV= (1<<8))
-#define ALARM0_OutputEnable()      (TRISDCLR = (1<<8))
-#define ALARM0_InputEnable()       (TRISDSET = (1<<8))
-#define ALARM0_Get()               ((PORTD >> 8) & 0x1)
-#define ALARM0_PIN                  GPIO_PIN_RD8
+/*** Macros for RELAY0 pin ***/
+#define RELAY0_Set()               (LATDSET = (1<<8))
+#define RELAY0_Clear()             (LATDCLR = (1<<8))
+#define RELAY0_Toggle()            (LATDINV= (1<<8))
+#define RELAY0_OutputEnable()      (TRISDCLR = (1<<8))
+#define RELAY0_InputEnable()       (TRISDSET = (1<<8))
+#define RELAY0_Get()               ((PORTD >> 8) & 0x1)
+#define RELAY0_PIN                  GPIO_PIN_RD8
 
 /*** Macros for ADC_RDY pin ***/
 #define ADC_RDY_Set()               (LATDSET = (1<<9))
@@ -179,14 +179,14 @@
 #define ADC_RDY_Get()               ((PORTD >> 9) & 0x1)
 #define ADC_RDY_PIN                  GPIO_PIN_RD9
 
-/*** Macros for ALARM1 pin ***/
-#define ALARM1_Set()               (LATDSET = (1<<0))
-#define ALARM1_Clear()             (LATDCLR = (1<<0))
-#define ALARM1_Toggle()            (LATDINV= (1<<0))
-#define ALARM1_OutputEnable()      (TRISDCLR = (1<<0))
-#define ALARM1_InputEnable()       (TRISDSET = (1<<0))
-#define ALARM1_Get()               ((PORTD >> 0) & 0x1)
-#define ALARM1_PIN                  GPIO_PIN_RD0
+/*** Macros for RELAY1 pin ***/
+#define RELAY1_Set()               (LATDSET = (1<<0))
+#define RELAY1_Clear()             (LATDCLR = (1<<0))
+#define RELAY1_Toggle()            (LATDINV= (1<<0))
+#define RELAY1_OutputEnable()      (TRISDCLR = (1<<0))
+#define RELAY1_InputEnable()       (TRISDSET = (1<<0))
+#define RELAY1_Get()               ((PORTD >> 0) & 0x1)
+#define RELAY1_PIN                  GPIO_PIN_RD0
 
 /*** Macros for DIGITAL1 pin ***/
 #define DIGITAL1_Set()               (LATDSET = (1<<1))

@@ -59,7 +59,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM3}
+        attributes: {value: RELAY3}
   - type: String
     attributes: {id: BSP_PIN_1_FUNCTION_TYPE}
     children:
@@ -94,7 +94,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM2}
+        attributes: {value: RELAY2}
   - type: String
     attributes: {id: BSP_PIN_22_FUNCTION_TYPE}
     children:
@@ -206,7 +206,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM6}
+        attributes: {value: RELAY6}
   - type: String
     attributes: {id: BSP_PIN_2_FUNCTION_TYPE}
     children:
@@ -241,7 +241,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM5}
+        attributes: {value: RELAY5}
   - type: String
     attributes: {id: BSP_PIN_31_FUNCTION_TYPE}
     children:
@@ -276,7 +276,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM4}
+        attributes: {value: RELAY4}
   - type: String
     attributes: {id: BSP_PIN_32_FUNCTION_TYPE}
     children:
@@ -332,7 +332,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM7}
+        attributes: {value: RELAY7}
   - type: String
     attributes: {id: BSP_PIN_3_FUNCTION_TYPE}
     children:
@@ -367,7 +367,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM0}
+        attributes: {value: RELAY0}
   - type: String
     attributes: {id: BSP_PIN_42_FUNCTION_TYPE}
     children:
@@ -437,7 +437,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ALARM1}
+        attributes: {value: RELAY1}
   - type: String
     attributes: {id: BSP_PIN_46_FUNCTION_TYPE}
     children:
@@ -1762,12 +1762,6 @@ children:
   - type: Combo
     attributes: {id: SYS_PORT_PPS_INPUT_FUNCTION_2}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: User
@@ -1801,12 +1795,6 @@ children:
   - type: KeyValueSet
     attributes: {id: SYS_PORT_PPS_INPUT_PIN_2}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: User

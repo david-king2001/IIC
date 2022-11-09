@@ -67,4 +67,4 @@ children:
       - type: Dynamic
         attributes: {id: tmr2, value: 'true'}
 - type: ElementPosition
-  attributes: {x: '340', y: '20', id: tmr2}
+  attributes: {x: '340', y: '19', id: tmr2}

@@ -8,6 +8,8 @@
 #ifndef INPUT_H
 #define	INPUT_H
 
+#include "output.h"
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -27,8 +29,24 @@ extern "C" {
         
         //Check if channel is used
         bool set; 
-
-    }INPUT_ANLG;
+        
+    }ANALOG;
+    
+    typedef struct{
+        //true-Analog Input, false-Digital Input
+        bool ang_dig;
+        
+        //true-On, false-Off
+        bool digital;
+        
+        //Pointer to analog input if input is analog type
+        ANALOG* analog_input;
+        
+        //Each input can have 4 alarms
+        ALARM* alrms[4];
+    }INPUT;
+    
+    
     
 
 
