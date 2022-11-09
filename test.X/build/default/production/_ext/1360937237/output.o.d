@@ -1,4 +1,4 @@
-build/default/production/_ext/1360937237/main.o: ../src/main.c \
+build/default/production/_ext/1360937237/output.o: ../src/output.c \
  ../src/config/default/definitions.h \
  ../src/config/default/peripheral/tmr/plib_tmr2.h \
  ../src/config/default/device.h \

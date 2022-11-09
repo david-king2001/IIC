@@ -33,13 +33,12 @@
 // *****************************************************************************
 // *****************************************************************************
 
-typedef enum
-{
-	STATE_INITIALIZE,
+typedef enum {
+    STATE_INITIALIZE,
     ADC_SEND_CMD,
     ADC_READ,
-    CHECK_ALARMS,
-    TRIGGER_ALARMS,
+    ALARMS,
+    DIGITAL_INPUTS_READ,
     DAC1_SEND_CMD,
     DAC2_SEND_CMD,
     DISPLAY,
@@ -55,7 +54,6 @@ STATES nextState = STATE_INITIALIZE;
 // ***********************
 
 INPUT inputs[8]; //4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
-ALARM alarms[32]; //32 possible alarms, 4 for each input
 double pastData[4][30]; //Store history of input data
 OUTPUT outputs[10]; //2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
 
@@ -76,48 +74,46 @@ bool thirty_sec_passed = false;
 // COUNTERS
 // ***********************
 
-uint8_t ADC_channel = 0;//0-3
-uint8_t DAC_channel = 0;//0-1
+uint8_t input_channel = 0; //0-7
+uint8_t DAC_channel = 0; //0-1
+uint8_t RLY_channel = 0; //0-7
 uint16_t ms_counter = 0;
 
 //************************
 
-
-
-
-void pastDataUpdate(double* data){
-    for (int i=0; i<29; i++){
-        pastData[ADC_channel][i] = pastData[ADC_channel][i+1];
+void pastDataUpdate(double* data) {
+    for (int i = 0; i < 29; i++) {
+        pastData[input_channel][i] = pastData[input_channel][i + 1];
     }
-    pastData[ADC_channel][29] = *data;
+    pastData[input_channel][29] = *data;
 }
 
 
 
 
 //This callback routine is called every 1ms
-void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context){
+
+void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     //Set flag to true to switch to new task
     task_FLAG = true;
-    
+
     //Check if 30seconds have past
-    if (ms_counter == 30000){
+    if (ms_counter == 30000) {
         ms_counter = 0;
     }
     RELAY7_Toggle();
 }
 
+
 #define MY_WORD_SWAP(x) ( ((x & 0xff00)>>8) | ((x & 0x00ff)<<8) )
 
+int main(void) {
+    SYS_Initialize(NULL);
 
-int main ( void )
-{
-    SYS_Initialize ( NULL );
-    
 
-    TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t)NULL);
+    TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
     TMR2_Start();
-    
+
     //Set GPIO pins to low for not in use
     LED_RED_Clear();
     RELAY0_Clear();
@@ -125,209 +121,211 @@ int main ( void )
     RELAY2_Clear();
     RELAY3_Clear();
     RELAY4_Clear();
-    RELAY5_Clear();       
+    RELAY5_Clear();
     RELAY6_Clear();
     RELAY7_Clear();
-    
+
     //Set SS pins to High for not in use
     SS_ADC_Set();
     SS_DAC1_Set();
     SS_DAC2_Set();
     SS_DISPLAY_Set();
-    
+
     while (BTN0_Get() == 1);
-    LED_RED_Set();
-    
-    
-    while(1)
-    {
-        if (task_FLAG){
-            switch (state)
-            {
+    IT8951Display1bppExample();
+
+
+    while (1) {
+        if (task_FLAG) {
+            switch (state) {
                 case STATE_INITIALIZE:
-                                        
+
                     //Send Commands to ADC to set mode to continuous 
                     ADC_Initialize();
-                    
-                    //Initialize Analog inputs
-                    for (uint8_t i =0; i<4; i++){ 
-                        inputs[i].analog_input = (ANALOG*)malloc(sizeof(ANALOG));
-                    }
-                    
-                    //Set functions for easier calling
-                    outputs[2].relay_set = (RELAY_CALLBACK)RELAY0_Set();
-                    outputs[2].relay_clear = (RELAY_CALLBACK)RELAY0_Clear();
-                    outputs[3].relay_set = (RELAY_CALLBACK)RELAY1_Set();
-                    outputs[3].relay_clear = (RELAY_CALLBACK)RELAY1_Clear();
-                    outputs[4].relay_set = (RELAY_CALLBACK)RELAY2_Set();
-                    outputs[4].relay_clear = (RELAY_CALLBACK)RELAY2_Clear();                    
-                    outputs[5].relay_set = (RELAY_CALLBACK)RELAY3_Set();
-                    outputs[5].relay_clear = (RELAY_CALLBACK)RELAY3_Clear();
-                    outputs[6].relay_set = (RELAY_CALLBACK)RELAY4_Set();
-                    outputs[6].relay_clear = (RELAY_CALLBACK)RELAY4_Clear();
-                    outputs[7].relay_set = (RELAY_CALLBACK)RELAY5_Set();
-                    outputs[7].relay_clear = (RELAY_CALLBACK)RELAY5_Clear();
-                    outputs[8].relay_set = (RELAY_CALLBACK)RELAY6_Set();
-                    outputs[8].relay_clear = (RELAY_CALLBACK)RELAY6_Clear();
-                    outputs[9].relay_set = (RELAY_CALLBACK)RELAY7_Set();
-                    outputs[9].relay_clear = (RELAY_CALLBACK)RELAY7_Clear();
-                    
-                    state = ADC_SEND_CMD;
-                    break;          
 
-                case ADC_SEND_CMD: 
-                    
-                    ADC_Select_Chnl(ADC_channel/2);
+                    //Initialize Analog inputs
+                    for (uint8_t i = 0; i < 4; i++) {
+                        inputs[i].analog_input = (ANALOG*) malloc(sizeof (ANALOG));
+                    }
+
+
+                    inputs[4].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL0_Get();
+                    inputs[5].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL1_Get();
+                    inputs[6].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL2_Get();
+                    inputs[7].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL3_Get();
+
+
+
+                    //Set functions for easier calling
+                    outputs[2].relay_set = (RELAY_CALLBACK) RELAY0_Set();
+                    outputs[2].relay_clear = (RELAY_CALLBACK) RELAY0_Clear();
+                    outputs[3].relay_set = (RELAY_CALLBACK) RELAY1_Set();
+                    outputs[3].relay_clear = (RELAY_CALLBACK) RELAY1_Clear();
+                    outputs[4].relay_set = (RELAY_CALLBACK) RELAY2_Set();
+                    outputs[4].relay_clear = (RELAY_CALLBACK) RELAY2_Clear();
+                    outputs[5].relay_set = (RELAY_CALLBACK) RELAY3_Set();
+                    outputs[5].relay_clear = (RELAY_CALLBACK) RELAY3_Clear();
+                    outputs[6].relay_set = (RELAY_CALLBACK) RELAY4_Set();
+                    outputs[6].relay_clear = (RELAY_CALLBACK) RELAY4_Clear();
+                    outputs[7].relay_set = (RELAY_CALLBACK) RELAY5_Set();
+                    outputs[7].relay_clear = (RELAY_CALLBACK) RELAY5_Clear();
+                    outputs[8].relay_set = (RELAY_CALLBACK) RELAY6_Set();
+                    outputs[8].relay_clear = (RELAY_CALLBACK) RELAY6_Clear();
+                    outputs[9].relay_set = (RELAY_CALLBACK) RELAY7_Set();
+                    outputs[9].relay_clear = (RELAY_CALLBACK) RELAY7_Clear();
+
+
+                    state = ADC_SEND_CMD;
+                    break;
+
+                case ADC_SEND_CMD:
+
+                    ADC_Select_Chnl(input_channel / 2);
 
                     state = ADC_READ;
                     break;
-                    
-                //In this state the ADC is read for the current input channel
+
+                    //In this state the ADC is read for the current input channel
                 case ADC_READ:
                     //Read the data
-                    ADC_Read_Data(&inputs[ADC_channel].analog_input->raw_data);
-                    
+                    ADC_Read_Data(&inputs[input_channel / 2].analog_input->raw_data);
+
                     //Store the data in past storage if 30 seconds have past
-                    if (thirty_sec_passed){
-                        pastDataUpdate(&inputs[ADC_channel].analog_input->scaled_data);
+                    if (thirty_sec_passed) {
+                        pastDataUpdate(&inputs[input_channel / 2].analog_input->scaled_data);
                         thirty_sec_passed = false;
                     }
-                    ANALOG* input = inputs[ADC_channel].analog_input;
+
+
+                    ANALOG* input = inputs[input_channel / 2].analog_input;
                     //Convert to user scale and save
-                    input->scaled_data = ( (double)input->raw_data / (16777215) ) * (input->max - input->min) + input->min;
+                    input->scaled_data = ((double) input->raw_data / (16777215)) * (input->max - input->min) + input->min;
+                    state = DIGITAL_INPUTS_READ;
+                    break;
+
+                case DIGITAL_INPUTS_READ:
+                    inputs[input_channel % 4].digital = inputs[input_channel % 4].digital_get() == 1;
+
                     state = DISPLAY;
                     break;
-                    
-                case DISPLAY: //TODO
+
+                    //TODO
+                case DISPLAY:
                     state = USER_INPUT_PERFORM_LOGIC;
                     break;
-                    
-                case USER_INPUT_PERFORM_LOGIC: 
 
-                    state = CHECK_ALARMS;
+                    //TODO
+                case USER_INPUT_PERFORM_LOGIC:
+
+                    state = ALARMS;
                     break;
 
-                //In this state the alarms are checked
-                case CHECK_ALARMS:
-                    for (uint8_t i=0; i<4; i++){
-                        if (inputs[ADC_channel].alrms[i] != NULL){
-                            //local pointers 
-                            ALARM* alrm = inputs[ADC_channel].alrms[i];
-                            
-                            //Check if current input is Analog
-                            if (inputs[ADC_channel].ang_dig){
-                                ANALOG* input = inputs[ADC_channel].analog_input;
-                                
-                                //Check if alarm triggers at High or Low point
-                                if (alrm->high_low){
-                                    //Check if alarm should be triggered
-                                    if (input->scaled_data > alrm->trigger){
-                                        outputs[alrm->chnl_out].relay = true;
-                                        outputs[alrm->chnl_out].alarm_count++;
-                                    }else if (input->scaled_data < alrm->reset){
-                                        //Check if other alarms trigger it this output before deactivating
-                                        if (outputs[alrm->chnl_out].alarm_count>0){
-                                            outputs[alrm->chnl_out].alarm_count--;
-                                        }else{
-                                            outputs[alrm->chnl_out].relay = false;
-                                        }
-                                        
+                    //In this state the alarms are checked and triggered
+                case ALARMS:
+                    for (uint8_t i = 0; i < 4; i++) {
+                        if (inputs[input_channel].alrms[i] != NULL && inputs[input_channel].alrms[i]->input_chnl != -1) {
+
+                            INPUT* input = &inputs[input_channel];
+                            OUTPUT* output = input->alrms[i];
+
+                            //Input is analog check if inside max and min
+                            if (input->ang_dig) {
+
+                                //Check if trigger on high or low
+                                if (output->high_low) {
+
+                                    //If data is above trigger point set relay output
+                                    if (input->analog_input->scaled_data > output->trigger) {
+                                        output->relay_set();
+                                        //if data is below reset point clear relay output    
+                                    } else if (input->analog_input->scaled_data < output->reset) {
+                                        output->relay_clear();
                                     }
-                                }else{
-                                    if (input->scaled_data < alrm->trigger){
-                                        outputs[alrm->chnl_out].relay = true;
+                                } else {
+                                    //If data is below trigger point set relay output
+                                    if (input->analog_input->scaled_data < output->trigger) {
+                                        output->relay_set();
+                                        //if data is above reset point clear relay output 
+                                    } else if (input->analog_input->scaled_data > output->reset) {
+                                        output->relay_clear();
                                     }
-                                }                                
-                                
-                            }else{
-                                INPUT* input = &inputs[ADC_channel];
-                                
-                                //Check if digital input is high
-                                if (input->digital){
-                                    outputs[alrm->chnl_out].relay = true;
-                                    outputs[alrm->chnl_out].alarm_count++;
-                                }else{
-                                    //Check if other alarms trigger it this output before deactivating
-                                    if (outputs[alrm->chnl_out].alarm_count>0){
-                                        outputs[alrm->chnl_out].alarm_count--;
-                                    }else{
-                                        outputs[alrm->chnl_out].relay = false;
-                                    }                                    
+                                }
+                                //Input is digital, simply check on and off
+                            } else {
+                                if (input->digital) {
+                                    output->relay_set();
+                                } else {
+                                    output->relay_clear();
                                 }
                             }
-                            
                         }
                     }
 
-                    
-                    state = TRIGGER_ALARMS;
-                    break;
-                    
-                case TRIGGER_ALARMS:
-                    for(uint8_t i=2; i<10; i++) {
-                        if (outputs[i].relay){
-                            outputs[i].relay_set();
-                        }else{
-                            outputs[i].relay_clear();
-                        }
-                    }
-                        
                     state = DAC1_SEND_CMD;
                     break;
-                    
-                case DAC1_SEND_CMD: 
 
-                    SS_DAC1_Clear(); 
-                    SPI1_Write(&outputs[ADC_channel], 2);
+                case DAC1_SEND_CMD:
+
+                    SS_DAC1_Clear();
+                    SPI1_Write(&outputs[DAC_channel], 2);
+                    while (SPI1_IsBusy());
                     SS_DAC1_Set();
-                    
-                    state = DAC2_SEND_CMD; 
-                    break;
-                    
-                case DAC2_SEND_CMD: 
 
-                    SS_DAC2_Clear(); 
-                    SPI1_Write(&outputs[ADC_channel], 2);
+                    state = DAC2_SEND_CMD;
+                    break;
+
+                case DAC2_SEND_CMD:
+
+                    SS_DAC2_Clear();
+                    SPI1_Write(&outputs[DAC_channel], 2);
+                    while (SPI1_IsBusy());
                     SS_DAC2_Set();
-                    
-                    state = INCREMENT_CHANNEL; 
+
+                    state = INCREMENT_CHANNEL;
                     break;
 
-                
-                case INCREMENT_CHANNEL:
-                    
-                    //Reset ADC Channel at max
-                    if (ADC_channel==7)
-                        ADC_channel = 0;
-                    else
-                        ADC_channel++;
 
+                case INCREMENT_CHANNEL:
+
+                    //Reset ADC Channel at max
+                    if (input_channel == 3)
+                        input_channel = 0;
+                    else
+                        input_channel++;
+
+                    //Reset Relay output Channel at max
+                    if (RLY_channel == 7)
+                        RLY_channel = 0;
+                    else
+                        RLY_channel++;
+
+                    //Reset DAC channel 
                     DAC_channel = !DAC_channel;
-                    
+
                     //Goto first task
                     state = ADC_SEND_CMD;
                     break;
-                    
-                    
+
+
                 default:
                     break;
-            }            
-            
+            }
+
             //Reset timer flag
             task_FLAG = false;
         }
 
-        			
+
     }
-    
+
 
     /* Execution should not come here during normal operation */
 
-    return ( EXIT_FAILURE );
+    return ( EXIT_FAILURE);
 }
 
 
 /*******************************************************************************
  End of File
-*/
+ */
 

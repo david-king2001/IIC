@@ -38,6 +38,8 @@
       <itemPath>../src/ePaper.h</itemPath>
       <itemPath>../src/output.h</itemPath>
       <itemPath>../src/input.h</itemPath>
+      <itemPath>../src/EPD_4in2.h</itemPath>
+      <itemPath>../src/input_output.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -84,6 +86,7 @@
       <itemPath>../src/main.c</itemPath>
       <itemPath>../src/ePaper.c</itemPath>
       <itemPath>../src/adc.c</itemPath>
+      <itemPath>../src/output.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -113,9 +116,9 @@
         <targetDevice>PIC32MX470F512H</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>PICkit3PlatformTool</platformTool>
+        <platformTool>PKOBSKDEPlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.20</languageToolchainVersion>
+        <languageToolchainVersion>4.10</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>

@@ -11,8 +11,7 @@ build/default/production/_ext/1171490990/exceptions.o: \
  ../src/config/default/peripheral/spi/spi_master/plib_spi2_master.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi_master_common.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi1_master.h \
- ../src/adc.h ../src/ePaper.h ../src/input.h ../src/output.h \
- ../src/output.h
+ ../src/adc.h ../src/ePaper.h ../src/input_output.h
 
 ../src/config/default/device.h:
 
@@ -42,8 +41,4 @@ build/default/production/_ext/1171490990/exceptions.o: \
 
 ../src/ePaper.h:
 
-../src/input.h:
-
-../src/output.h:
-
-../src/output.h:
+../src/input_output.h:

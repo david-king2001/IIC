@@ -14,36 +14,34 @@
     The GPIO PLIB provides a simple interface to manage peripheral
     input-output controller.
 
-*******************************************************************************/
+ *******************************************************************************/
 
 //DOM-IGNORE-BEGIN
 /*******************************************************************************
-* Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
-*
-* Subject to your compliance with these terms, you may use Microchip software
-* and any derivatives exclusively with Microchip products. It is your
-* responsibility to comply with third party license terms applicable to your
-* use of third party software (including open source software) that may
-* accompany Microchip software.
-*
-* THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
-* EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
-* WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
-* PARTICULAR PURPOSE.
-*
-* IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
-* INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
-* WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
-* BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
-* FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
-* ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
-* THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
-*******************************************************************************/
+ * Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
+ *
+ * Subject to your compliance with these terms, you may use Microchip software
+ * and any derivatives exclusively with Microchip products. It is your
+ * responsibility to comply with third party license terms applicable to your
+ * use of third party software (including open source software) that may
+ * accompany Microchip software.
+ *
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+ * EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
+ * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
+ * PARTICULAR PURPOSE.
+ *
+ * IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+ * INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+ * WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
+ * BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
+ * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
+ * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+ * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+ *******************************************************************************/
 //DOM-IGNORE-END
 
 #include "plib_gpio.h"
-
-
 
 /******************************************************************************
   Function:
@@ -54,9 +52,8 @@
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_Initialize ( void )
-{
+ */
+void GPIO_Initialize(void) {
     /* PORTB Initialization */
     LATB = 0x210; /* Initial Latch Value */
     TRISBCLR = 0x210; /* Direction Control */
@@ -103,6 +100,7 @@ void GPIO_Initialize ( void )
 // *****************************************************************************
 
 // *****************************************************************************
+
 /* Function:
     uint32_t GPIO_PortRead ( GPIO_PORT port )
 
@@ -123,13 +121,13 @@ void GPIO_Initialize ( void )
     If the port has less than 32-bits, unimplemented pins will read as
     low (0).
     Implemented pins are Right aligned in the 32-bit return value.
-*/
-uint32_t GPIO_PortRead(GPIO_PORT port)
-{
+ */
+uint32_t GPIO_PortRead(GPIO_PORT port) {
     return (*(volatile uint32_t *)(&PORTB + (port * 0x40)));
 }
 
 // *****************************************************************************
+
 /* Function:
     void GPIO_PortWrite (GPIO_PORT port, uint32_t mask, uint32_t value);
 
@@ -138,13 +136,13 @@ uint32_t GPIO_PortRead(GPIO_PORT port)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_PortWrite(GPIO_PORT port, uint32_t mask, uint32_t value)
-{
+ */
+void GPIO_PortWrite(GPIO_PORT port, uint32_t mask, uint32_t value) {
     *(volatile uint32_t *)(&LATB + (port * 0x40)) = (*(volatile uint32_t *)(&LATB + (port * 0x40)) & (~mask)) | (mask & value);
 }
 
 // *****************************************************************************
+
 /* Function:
     uint32_t GPIO_PortLatchRead ( GPIO_PORT port )
 
@@ -153,13 +151,13 @@ void GPIO_PortWrite(GPIO_PORT port, uint32_t mask, uint32_t value)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-uint32_t GPIO_PortLatchRead(GPIO_PORT port)
-{
+ */
+uint32_t GPIO_PortLatchRead(GPIO_PORT port) {
     return (*(volatile uint32_t *)(&LATB + (port * 0x40)));
 }
 
 // *****************************************************************************
+
 /* Function:
     void GPIO_PortSet ( GPIO_PORT port, uint32_t mask )
 
@@ -168,13 +166,13 @@ uint32_t GPIO_PortLatchRead(GPIO_PORT port)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_PortSet(GPIO_PORT port, uint32_t mask)
-{
+ */
+void GPIO_PortSet(GPIO_PORT port, uint32_t mask) {
     *(volatile uint32_t *)(&LATBSET + (port * 0x40)) = mask;
 }
 
 // *****************************************************************************
+
 /* Function:
     void GPIO_PortClear ( GPIO_PORT port, uint32_t mask )
 
@@ -183,13 +181,13 @@ void GPIO_PortSet(GPIO_PORT port, uint32_t mask)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_PortClear(GPIO_PORT port, uint32_t mask)
-{
+ */
+void GPIO_PortClear(GPIO_PORT port, uint32_t mask) {
     *(volatile uint32_t *)(&LATBCLR + (port * 0x40)) = mask;
 }
 
 // *****************************************************************************
+
 /* Function:
     void GPIO_PortToggle ( GPIO_PORT port, uint32_t mask )
 
@@ -198,13 +196,13 @@ void GPIO_PortClear(GPIO_PORT port, uint32_t mask)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_PortToggle(GPIO_PORT port, uint32_t mask)
-{
-    *(volatile uint32_t *)(&LATBINV + (port * 0x40))= mask;
+ */
+void GPIO_PortToggle(GPIO_PORT port, uint32_t mask) {
+    *(volatile uint32_t *)(&LATBINV + (port * 0x40)) = mask;
 }
 
 // *****************************************************************************
+
 /* Function:
     void GPIO_PortInputEnable ( GPIO_PORT port, uint32_t mask )
 
@@ -213,13 +211,13 @@ void GPIO_PortToggle(GPIO_PORT port, uint32_t mask)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_PortInputEnable(GPIO_PORT port, uint32_t mask)
-{
+ */
+void GPIO_PortInputEnable(GPIO_PORT port, uint32_t mask) {
     *(volatile uint32_t *)(&TRISBSET + (port * 0x40)) = mask;
 }
 
 // *****************************************************************************
+
 /* Function:
     void GPIO_PortOutputEnable ( GPIO_PORT port, uint32_t mask )
 
@@ -228,9 +226,8 @@ void GPIO_PortInputEnable(GPIO_PORT port, uint32_t mask)
 
   Remarks:
     See plib_gpio.h for more details.
-*/
-void GPIO_PortOutputEnable(GPIO_PORT port, uint32_t mask)
-{
+ */
+void GPIO_PortOutputEnable(GPIO_PORT port, uint32_t mask) {
     *(volatile uint32_t *)(&TRISBCLR + (port * 0x40)) = mask;
 }
 
@@ -239,4 +236,4 @@ void GPIO_PortOutputEnable(GPIO_PORT port, uint32_t mask)
 
 /*******************************************************************************
  End of File
-*/
+ */
