@@ -12,7 +12,7 @@ var searchData=
   ['adc_5frdy_5fset_9',['ADC_RDY_Set',['../plib__gpio_8h.html#aa57c6668de2a09267c58b2f2c490aebf',1,'plib_gpio.h']]],
   ['adc_5frdy_5ftoggle_10',['ADC_RDY_Toggle',['../plib__gpio_8h.html#a91aa74326297d2d10cd092e48e8701d4',1,'plib_gpio.h']]],
   ['adc_5fread_11',['ADC_READ',['../main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a0a4bdfee4ef40777a16ce2cca17c8175',1,'main.c']]],
-  ['adc_5fread_5fdata_12',['ADC_Read_Data',['../adc_8c.html#a2c266ebd3a4e78659f8f6faaa6d27874',1,'ADC_Read_Data(uint8_t *RxData):&#160;adc.c'],['../adc_8h.html#a36b944483beaf54ef0cad60a68f51fc9',1,'ADC_Read_Data():&#160;adc.h']]],
+  ['adc_5fread_5fdata_12',['ADC_Read_Data',['../adc_8c.html#a2c266ebd3a4e78659f8f6faaa6d27874',1,'ADC_Read_Data(uint8_t *RxData):&#160;adc.c'],['../adc_8h.html#a2c266ebd3a4e78659f8f6faaa6d27874',1,'ADC_Read_Data(uint8_t *RxData):&#160;adc.c']]],
   ['adc_5fselect_5fchnl_13',['ADC_Select_Chnl',['../adc_8c.html#a1edc0a6928a61c361a81e53d4621940d',1,'ADC_Select_Chnl(uint8_t chnl):&#160;adc.c'],['../adc_8h.html#a5c573b6ca8ed4d9106420f3878d0afb9',1,'ADC_Select_Chnl(uint8_t):&#160;adc.c']]],
   ['adc_5fsend_5fcmd_14',['ADC_SEND_CMD',['../main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ae5aec538250202b73559f5ab216b0e82',1,'main.c']]],
   ['adc_5fwait_15',['ADC_Wait',['../adc_8c.html#aacdaa39f2218fde6e0ddbbbb4a6e7886',1,'adc.c']]],

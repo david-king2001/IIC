@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: src/adc.c File Reference</title>
+<title>Industrial Instrumentation Controller: src/adc.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,8 +21,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">Industrial Instrumentation Controller
    </div>
+   <div id="projectbrief">ECEN 403-404 Capstone Project</div>
   </td>
  </tr>
  </tbody>
@@ -93,6 +94,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a1edc0a6928a61c361a81e53d4621940d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects Channel.  <a href="adc_8c.html#a1edc0a6928a61c361a81e53d4621940d">More...</a><br /></td></tr>
 <tr class="separator:a1edc0a6928a61c361a81e53d4621940d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c266ebd3a4e78659f8f6faaa6d27874"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adc_8c.html#a2c266ebd3a4e78659f8f6faaa6d27874">ADC_Read_Data</a> (uint8_t *RxData)</td></tr>
+<tr class="memdesc:a2c266ebd3a4e78659f8f6faaa6d27874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads data from ADC.  <a href="adc_8c.html#a2c266ebd3a4e78659f8f6faaa6d27874">More...</a><br /></td></tr>
 <tr class="separator:a2c266ebd3a4e78659f8f6faaa6d27874"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -138,6 +140,15 @@ Send command to ADC MODE Register to select Continuous Conversion mode </p>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Reads data from ADC. </p>
+<p >Send command to ADC Communication Register to select data register<br  />
+Read from ADC data Register into input buffer </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">RxData</td><td>a pointer to start of buffer that stores that channels data </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

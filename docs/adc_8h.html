@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: src/adc.h File Reference</title>
+<title>Industrial Instrumentation Controller: src/adc.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,8 +21,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">Industrial Instrumentation Controller
    </div>
+   <div id="projectbrief">ECEN 403-404 Capstone Project</div>
   </td>
  </tr>
  </tbody>
@@ -108,9 +109,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5c573b6ca8ed4d9106420f3878d0afb9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adc_8h.html#a5c573b6ca8ed4d9106420f3878d0afb9">ADC_Select_Chnl</a> (uint8_t)</td></tr>
 <tr class="memdesc:a5c573b6ca8ed4d9106420f3878d0afb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects Channel.  <a href="adc_8h.html#a5c573b6ca8ed4d9106420f3878d0afb9">More...</a><br /></td></tr>
 <tr class="separator:a5c573b6ca8ed4d9106420f3878d0afb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36b944483beaf54ef0cad60a68f51fc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adc_8h.html#a36b944483beaf54ef0cad60a68f51fc9">ADC_Read_Data</a> ()</td></tr>
-<tr class="memdesc:a36b944483beaf54ef0cad60a68f51fc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads data from ADC.  <a href="adc_8h.html#a36b944483beaf54ef0cad60a68f51fc9">More...</a><br /></td></tr>
-<tr class="separator:a36b944483beaf54ef0cad60a68f51fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c266ebd3a4e78659f8f6faaa6d27874"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adc_8h.html#a2c266ebd3a4e78659f8f6faaa6d27874">ADC_Read_Data</a> (uint8_t *RxData)</td></tr>
+<tr class="memdesc:a2c266ebd3a4e78659f8f6faaa6d27874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads data from ADC.  <a href="adc_8h.html#a2c266ebd3a4e78659f8f6faaa6d27874">More...</a><br /></td></tr>
+<tr class="separator:a2c266ebd3a4e78659f8f6faaa6d27874"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a553a124e1d5855773c74cb5561dec040" name="a553a124e1d5855773c74cb5561dec040"></a>
@@ -215,8 +216,8 @@ Send command to ADC MODE Register to select Continuous Conversion mode </p>
 
 </div>
 </div>
-<a id="a36b944483beaf54ef0cad60a68f51fc9" name="a36b944483beaf54ef0cad60a68f51fc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36b944483beaf54ef0cad60a68f51fc9">&#9670;&#160;</a></span>ADC_Read_Data()</h2>
+<a id="a2c266ebd3a4e78659f8f6faaa6d27874" name="a2c266ebd3a4e78659f8f6faaa6d27874"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c266ebd3a4e78659f8f6faaa6d27874">&#9670;&#160;</a></span>ADC_Read_Data()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -224,7 +225,8 @@ Send command to ADC MODE Register to select Continuous Conversion mode </p>
         <tr>
           <td class="memname">void ADC_Read_Data </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>RxData</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
