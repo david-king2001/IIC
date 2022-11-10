@@ -1,0 +1,11 @@
+<map id="src/config/default/peripheral/tmr/plib_tmr2.h" name="src/config/default/peripheral/tmr/plib_tmr2.h">
+<area shape="rect" id="node1" title=" " alt="" coords="53,5,182,60"/>
+<area shape="rect" id="node2" title=" " alt="" coords="23,181,91,207"/>
+<area shape="rect" id="node3" title=" " alt="" coords="22,108,87,133"/>
+<area shape="rect" id="node4" href="$device_8h.html" title=" " alt="" coords="272,108,341,133"/>
+<area shape="rect" id="node9" href="$plib__tmr__common_8h.html" title=" " alt="" coords="112,108,248,133"/>
+<area shape="rect" id="node5" title=" " alt="" coords="189,181,235,207"/>
+<area shape="rect" id="node6" title=" " alt="" coords="259,181,354,207"/>
+<area shape="rect" id="node7" href="$toolchain__specifics_8h.html" title=" " alt="" coords="378,181,521,207"/>
+<area shape="rect" id="node8" title=" " alt="" coords="404,255,495,280"/>
+</map>

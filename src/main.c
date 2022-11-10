@@ -33,17 +33,45 @@
 // *****************************************************************************
 // *****************************************************************************
 
+/*!
+    \dot
+    digraph state_machine{
+        rankdir=LR
+        node [shape=record, fontname=Helvetica, fontsize=10];
+        STATE_INITIALIZE
+        ADC_SEND_CMD;
+        ADC_READ;
+        ALARMS;
+        DIGITAL_INPUTS_READ;
+        DISPLAY;
+        USER_INPUT_PERFORM_LOGIC;
+        DAC1_SEND_CMD;
+        DAC2_SEND_CMD;
+        INCREMENT_CHANNEL;
+            STATE_INITIALIZE -> ADC_SEND_CMD
+            ADC_SEND_CMD -> ADC_READ;       
+            ADC_READ -> ALARMS;
+            ALARMS -> DIGITAL_INPUTS_READ;
+            DIGITAL_INPUTS_READ -> DISPLAY
+            DISPLAY -> USER_INPUT_PERFORM_LOGIC;
+            USER_INPUT_PERFORM_LOGIC -> DAC1_SEND_CMD;
+            DAC1_SEND_CMD -> DAC2_SEND_CMD ;
+            DAC2_SEND_CMD -> INCREMENT_CHANNEL;
+            INCREMENT_CHANNEL -> ADC_SEND_CMD;
+    }
+   \enddot
+*/
 typedef enum {
-    STATE_INITIALIZE,
-    ADC_SEND_CMD,
-    ADC_READ,
-    ALARMS,
-    DIGITAL_INPUTS_READ,
-    DAC1_SEND_CMD,
-    DAC2_SEND_CMD,
-    DISPLAY,
-    USER_INPUT_PERFORM_LOGIC,
-    INCREMENT_CHANNEL
+    STATE_INITIALIZE, /*!<Initialization state*/
+    ADC_SEND_CMD, /*!<Selects current input channel on ADC*/
+    ADC_READ, /*!<Reads ADC into input buffer*/
+    ALARMS, /*!<Checks and triggers alarms*/
+    DIGITAL_INPUTS_READ, /*!<Reads Digital inputs and saves their state*/
+    DAC1_SEND_CMD, /*!<Sends data to DAC1 from output buffer*/
+    DAC2_SEND_CMD, /*!<Sends data to DAC2 from output buffer*/
+    DISPLAY, /*!<Update display - TODO*/
+    USER_INPUT_PERFORM_LOGIC, /*!<Perform actions dependent on user input - TODO*/
+    INCREMENT_CHANNEL /*!<Increment channel counters*/
 } STATES;
 
 STATES state = STATE_INITIALIZE;
@@ -53,34 +81,28 @@ STATES nextState = STATE_INITIALIZE;
 // DATA STORAGE
 // ***********************
 
-INPUT inputs[8]; //4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
-double pastData[4][30]; //Store history of input data
-OUTPUT outputs[10]; //2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
+INPUT inputs[8]; //!<4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
+double pastData[4][30]; //!<Store history of input data
+OUTPUT outputs[10]; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
 
 //************************
 
 
-// ***********************
-// FLAGS
-// ***********************
-
+//!Flag that used to determine if to start a new task
 volatile bool task_FLAG = false;
+//!Flag that used to determine is 30 seconds have passed
+//!Used for storing input data every 30 seconds
 bool thirty_sec_passed = false;
 
-//************************
 
 
-// ***********************
-// COUNTERS
-// ***********************
 
-uint8_t input_channel = 0; //0-7
-uint8_t DAC_channel = 0; //0-1
-uint8_t RLY_channel = 0; //0-7
-uint16_t ms_counter = 0;
+uint8_t input_channel = 0; //!< 0-7, 0-3 is Analog inputs, 4-7 is Digital Inputs
+uint8_t DAC_channel = 0; //!< 0-1, Either DAC1 or DAC2
+uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
-//************************
 
+//!Update the past data storage
 void pastDataUpdate(double* data) {
     for (int i = 0; i < 29; i++) {
         pastData[input_channel][i] = pastData[input_channel][i + 1];
@@ -91,8 +113,8 @@ void pastDataUpdate(double* data) {
 
 
 
-//This callback routine is called every 1ms
-
+//!This is callback routine is called by TMR interrupt
+//!Triggers every 1ms, sets task_FLAG to true, increments ms counter
 void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     //Set flag to true to switch to new task
     task_FLAG = true;
@@ -105,8 +127,7 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
 }
 
 
-#define MY_WORD_SWAP(x) ( ((x & 0xff00)>>8) | ((x & 0x00ff)<<8) )
-
+//!Main
 int main(void) {
     SYS_Initialize(NULL);
 
@@ -292,12 +313,6 @@ int main(void) {
                         input_channel = 0;
                     else
                         input_channel++;
-
-                    //Reset Relay output Channel at max
-                    if (RLY_channel == 7)
-                        RLY_channel = 0;
-                    else
-                        RLY_channel++;
 
                     //Reset DAC channel 
                     DAC_channel = !DAC_channel;

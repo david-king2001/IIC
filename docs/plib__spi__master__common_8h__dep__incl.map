@@ -1,0 +1,15 @@
+<map id="src/config/default/peripheral/spi/spi_master/plib_spi_master_common.h" name="src/config/default/peripheral/spi/spi_master/plib_spi_master_common.h">
+<area shape="rect" id="node1" title=" " alt="" coords="371,5,535,75"/>
+<area shape="rect" id="node2" href="$plib__spi1__master_8h.html" title=" " alt="" coords="259,123,441,177"/>
+<area shape="rect" id="node12" href="$plib__spi2__master_8h.html" title=" " alt="" coords="465,123,648,177"/>
+<area shape="rect" id="node3" href="$definitions_8h.html" title=" " alt="" coords="394,233,514,273"/>
+<area shape="rect" id="node11" href="$plib__spi1__master_8c.html" title=" " alt="" coords="187,225,369,280"/>
+<area shape="rect" id="node4" href="$adc_8c.html" title=" " alt="" coords="5,335,81,361"/>
+<area shape="rect" id="node5" href="$exceptions_8c.html" title=" " alt="" coords="106,328,226,368"/>
+<area shape="rect" id="node6" href="$initialization_8c.html" title=" " alt="" coords="250,328,370,368"/>
+<area shape="rect" id="node7" href="$interrupts_8c.html" title=" " alt="" coords="394,328,514,368"/>
+<area shape="rect" id="node8" href="$e_paper_8c.html" title=" " alt="" coords="538,335,634,361"/>
+<area shape="rect" id="node9" href="$main_8c.html" title=" " alt="" coords="658,335,741,361"/>
+<area shape="rect" id="node10" href="$output_8c.html" title=" " alt="" coords="765,335,855,361"/>
+<area shape="rect" id="node13" href="$plib__spi2__master_8c.html" title=" " alt="" coords="539,225,721,280"/>
+</map>

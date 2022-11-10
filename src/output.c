@@ -4,6 +4,12 @@
 /*!
  This checks to make sure the desired output is not already configured as well
  as creates the alarm only if spot is open
+ \param output the output that the alarm would be set to
+ \param input the input the would trigger the alarm
+ \param trigger a double that is the point the alarm triggers at
+ \param reset a double this the point the alarm untriggers at
+ \param input_chl an integer that is the channel number for the input
+ \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
  */
 bool CreateAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low) {
     if (output->input_chnl != -1) {

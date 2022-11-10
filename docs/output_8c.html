@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: output.c File Reference</title>
+<title>My Project: src/output.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,6 +67,10 @@ $(function() {
 </div>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
@@ -138,7 +142,17 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates Alarm. </p>
-<p >This checks to make sure the desired output is not already configured as well as creates the alarm only if spot is open </p>
+<p >This checks to make sure the desired output is not already configured as well as creates the alarm only if spot is open </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">output</td><td>the output that the alarm would be set to </td></tr>
+    <tr><td class="paramname">input</td><td>the input the would trigger the alarm </td></tr>
+    <tr><td class="paramname">trigger</td><td>a double that is the point the alarm triggers at </td></tr>
+    <tr><td class="paramname">reset</td><td>a double this the point the alarm untriggers at </td></tr>
+    <tr><td class="paramname">input_chl</td><td>an integer that is the channel number for the input </td></tr>
+    <tr><td class="paramname">high_low</td><td>a bool of wether the alarm is High/Low or Low/High trigger type </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

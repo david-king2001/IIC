@@ -1,0 +1,13 @@
+<map id="src/config/default/peripheral/spi/spi_master/plib_spi2_master.c" name="src/config/default/peripheral/spi/spi_master/plib_spi2_master.c">
+<area shape="rect" id="node1" title=" " alt="" coords="208,5,391,60"/>
+<area shape="rect" id="node2" href="$plib__spi2__master_8h.html" title=" " alt="" coords="234,108,365,133"/>
+<area shape="rect" id="node3" href="$device_8h.html" title=" " alt="" coords="190,181,259,207"/>
+<area shape="rect" id="node8" href="$plib__spi__master__common_8h.html" title=" " alt="" coords="343,181,525,207"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,255,52,280"/>
+<area shape="rect" id="node5" title=" " alt="" coords="76,255,171,280"/>
+<area shape="rect" id="node6" href="$toolchain__specifics_8h.html" title=" " alt="" coords="195,255,337,280"/>
+<area shape="rect" id="node7" title=" " alt="" coords="221,328,311,353"/>
+<area shape="rect" id="node9" title=" " alt="" coords="361,255,427,280"/>
+<area shape="rect" id="node10" title=" " alt="" coords="451,255,519,280"/>
+<area shape="rect" id="node11" title=" " alt="" coords="543,255,618,280"/>
+</map>

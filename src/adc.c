@@ -8,11 +8,7 @@ void ADC_Wait() {
     while (ADC_RDY_Get());
 }
 
-//!Initialize ADC at power on
-/*!
- * Send command to ADC Communication Register to select MODE register\n
- * Send command to ADC MODE Register to select Continuous Conversion mode
- */
+//See adc.h
 void ADC_Initialize() {
     adc_cmd = MODE;
 
@@ -29,12 +25,7 @@ void ADC_Initialize() {
     SS_ADC_Set();
 }
 
-//!Selects Channel
-/*!
- * Send command to ADC Communication Register to select Control register\n
- * Send command to ADC Control Register to select channel
- * \param chnl a integer with the selected input channel
- */
+//See adc.h
 void ADC_Select_Chnl(uint8_t chnl) {
     adc_cmd = CONTROL;
 
@@ -51,12 +42,7 @@ void ADC_Select_Chnl(uint8_t chnl) {
     SS_ADC_Set();
 }
 
-//!Reads data from ADC
-/*!
- * Send command to ADC Communication Register to select data register\n
- * Read from ADC data Register into input buffer
- * \param RxData a pointer to start of buffer that stores that channels data
- */
+//See adc.h
 void ADC_Read_Data(uint8_t* RxData) {
     adc_cmd = DATA;
 
