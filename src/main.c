@@ -41,7 +41,8 @@
         STATE_INITIALIZE
         ADC_SEND_CMD;
         ADC_READ;
-        ALARMS;
+        CHECK_ALARMS;
+        TRIGGER_ALARMS;
         DIGITAL_INPUTS_READ;
         DISPLAY;
         USER_INPUT_PERFORM_LOGIC;
@@ -50,9 +51,10 @@
         INCREMENT_CHANNEL;
             STATE_INITIALIZE -> ADC_SEND_CMD
             ADC_SEND_CMD -> ADC_READ;       
-            ADC_READ -> ALARMS;
-            ALARMS -> DIGITAL_INPUTS_READ;
-            DIGITAL_INPUTS_READ -> DISPLAY
+            ADC_READ -> CHECK_ALARMS;
+            CHECK_ALARMS -> TRIGGER_ALARMS;
+            TRIGGER_ALARMS ->DIGITAL_INPUTS_READ;
+            DIGITAL_INPUTS_READ -> DISPLAY;
             DISPLAY -> USER_INPUT_PERFORM_LOGIC;
             USER_INPUT_PERFORM_LOGIC -> DAC1_SEND_CMD;
             DAC1_SEND_CMD -> DAC2_SEND_CMD ;
@@ -65,7 +67,8 @@ typedef enum {
     STATE_INITIALIZE, /*!<Initialization state*/
     ADC_SEND_CMD, /*!<Selects current input channel on ADC*/
     ADC_READ, /*!<Reads ADC into input buffer*/
-    ALARMS, /*!<Checks and triggers alarms*/
+    CHECK_ALARMS, /*!<Checks and triggers alarms*/
+    TRIGGER_ALARMS, /*!<Triggers or Untiggers alarms*/
     DIGITAL_INPUTS_READ, /*!<Reads Digital inputs and saves their state*/
     DAC1_SEND_CMD, /*!<Sends data to DAC1 from output buffer*/
     DAC2_SEND_CMD, /*!<Sends data to DAC2 from output buffer*/
@@ -122,16 +125,41 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     //Check if 30seconds have past
     if (ms_counter == 30000) {
         ms_counter = 0;
+        RELAY7_Toggle();
     }
-    RELAY7_Toggle();
+    
 }
+
+GPIO_PIN button_pressed = GPIO_PIN_NONE; //!< Used to store last button pressed
+
+//!Callback for user buttons interrupt
+/*!
+ * Whenever a button is released, check to make sure last button pressed was handled i.e pin = GPIO_PIN_NONE, 
+ * then set button_pressed to pin for button that was pressed
+ */
+void InputBtn(GPIO_PIN pin, uintptr_t context){
+    if (BTN0_Get()==1 && button_pressed == GPIO_PIN_NONE){
+        button_pressed = pin;
+    }
+}
+
 
 
 //!Main
 int main(void) {
     SYS_Initialize(NULL);
 
-
+    GPIO_PinInterruptCallbackRegister(BTN0_PIN, InputBtn, (uintptr_t)NULL);
+    GPIO_PinInterruptCallbackRegister(BTN1_PIN, InputBtn, (uintptr_t)NULL);
+    GPIO_PinInterruptCallbackRegister(BTN2_PIN, InputBtn, (uintptr_t)NULL);
+    GPIO_PinInterruptCallbackRegister(BTN3_PIN, InputBtn, (uintptr_t)NULL);
+    GPIO_PinInterruptCallbackRegister(BTN4_PIN, InputBtn, (uintptr_t)NULL);
+    GPIO_PinInterruptEnable(BTN0_PIN);
+    GPIO_PinInterruptEnable(BTN1_PIN);
+    GPIO_PinInterruptEnable(BTN2_PIN);
+    GPIO_PinInterruptEnable(BTN3_PIN);
+    GPIO_PinInterruptEnable(BTN4_PIN);
+    
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
     TMR2_Start();
 
@@ -153,7 +181,6 @@ int main(void) {
     SS_DISPLAY_Set();
 
     while (BTN0_Get() == 1);
-    IT8951Display1bppExample();
 
 
     while (1) {
@@ -169,31 +196,6 @@ int main(void) {
                         inputs[i].analog_input = (ANALOG*) malloc(sizeof (ANALOG));
                     }
 
-
-                    inputs[4].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL0_Get();
-                    inputs[5].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL1_Get();
-                    inputs[6].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL2_Get();
-                    inputs[7].digital_get = (DIGITAL_INPUT_CALLBACK) DIGITAL3_Get();
-
-
-
-                    //Set functions for easier calling
-                    outputs[2].relay_set = (RELAY_CALLBACK) RELAY0_Set();
-                    outputs[2].relay_clear = (RELAY_CALLBACK) RELAY0_Clear();
-                    outputs[3].relay_set = (RELAY_CALLBACK) RELAY1_Set();
-                    outputs[3].relay_clear = (RELAY_CALLBACK) RELAY1_Clear();
-                    outputs[4].relay_set = (RELAY_CALLBACK) RELAY2_Set();
-                    outputs[4].relay_clear = (RELAY_CALLBACK) RELAY2_Clear();
-                    outputs[5].relay_set = (RELAY_CALLBACK) RELAY3_Set();
-                    outputs[5].relay_clear = (RELAY_CALLBACK) RELAY3_Clear();
-                    outputs[6].relay_set = (RELAY_CALLBACK) RELAY4_Set();
-                    outputs[6].relay_clear = (RELAY_CALLBACK) RELAY4_Clear();
-                    outputs[7].relay_set = (RELAY_CALLBACK) RELAY5_Set();
-                    outputs[7].relay_clear = (RELAY_CALLBACK) RELAY5_Clear();
-                    outputs[8].relay_set = (RELAY_CALLBACK) RELAY6_Set();
-                    outputs[8].relay_clear = (RELAY_CALLBACK) RELAY6_Clear();
-                    outputs[9].relay_set = (RELAY_CALLBACK) RELAY7_Set();
-                    outputs[9].relay_clear = (RELAY_CALLBACK) RELAY7_Clear();
 
 
                     state = ADC_SEND_CMD;
@@ -224,9 +226,27 @@ int main(void) {
                     state = DIGITAL_INPUTS_READ;
                     break;
 
-                case DIGITAL_INPUTS_READ:
-                    inputs[input_channel % 4].digital = inputs[input_channel % 4].digital_get() == 1;
-
+                case DIGITAL_INPUTS_READ:;
+                    
+                    uint8_t digital_channel = 4+(input_channel % 4);
+                    switch(digital_channel){
+                        case 0:
+                            inputs[digital_channel].digital = DIGITAL0_Get();
+                            break;
+                        case 1:
+                            inputs[digital_channel].digital = DIGITAL1_Get();
+                            break;
+                        case 2:
+                            inputs[digital_channel].digital = DIGITAL2_Get();
+                            break;
+                        case 3:
+                            inputs[digital_channel].digital = DIGITAL3_Get();
+                            break;
+                        default:
+                            break;
+                            
+                    }
+                    LED_RED_Set();
                     state = DISPLAY;
                     break;
 
@@ -237,12 +257,15 @@ int main(void) {
 
                     //TODO
                 case USER_INPUT_PERFORM_LOGIC:
-
-                    state = ALARMS;
+                    if (button_pressed == BTN0_PIN){
+                        RELAY6_Toggle();
+                        button_pressed = GPIO_PIN_NONE;
+                    }
+                    state = CHECK_ALARMS;
                     break;
 
                     //In this state the alarms are checked and triggered
-                case ALARMS:
+                case CHECK_ALARMS:
                     for (uint8_t i = 0; i < 4; i++) {
                         if (inputs[input_channel].alrms[i] != NULL && inputs[input_channel].alrms[i]->input_chnl != -1) {
 
@@ -257,34 +280,68 @@ int main(void) {
 
                                     //If data is above trigger point set relay output
                                     if (input->analog_input->scaled_data > output->trigger) {
-                                        output->relay_set();
+                                        output->relay = true;
                                         //if data is below reset point clear relay output    
                                     } else if (input->analog_input->scaled_data < output->reset) {
-                                        output->relay_clear();
+                                        output->relay = false;
                                     }
                                 } else {
                                     //If data is below trigger point set relay output
                                     if (input->analog_input->scaled_data < output->trigger) {
-                                        output->relay_set();
+                                        output->relay = true;
                                         //if data is above reset point clear relay output 
                                     } else if (input->analog_input->scaled_data > output->reset) {
-                                        output->relay_clear();
+                                        output->relay = false;
                                     }
                                 }
                                 //Input is digital, simply check on and off
                             } else {
                                 if (input->digital) {
-                                    output->relay_set();
+                                    output->relay = true;
                                 } else {
-                                    output->relay_clear();
+                                    output->relay = false;
                                 }
                             }
                         }
                     }
 
+                    state = TRIGGER_ALARMS;
+                    break;
+                    
+                case TRIGGER_ALARMS:
+                    for (uint8_t i=2; i<10; i++){
+                        bool set_alarm = outputs[i].relay;
+                            switch(i-2){
+                                case 0:
+                                    set_alarm ? RELAY0_Set() : RELAY0_Clear();
+                                    break;
+                                case 1:
+                                    set_alarm ? RELAY1_Set() : RELAY1_Clear();
+                                    break;
+                                case 2:
+                                    set_alarm ? RELAY2_Set() : RELAY2_Clear();
+                                    break;
+                                case 3:
+                                    set_alarm ? RELAY3_Set() : RELAY3_Clear();
+                                    break;
+                                case 4:
+                                    set_alarm ? RELAY4_Set() : RELAY4_Clear();
+                                    break;
+                                case 5:
+                                    set_alarm ? RELAY5_Set() : RELAY5_Clear();
+                                    break;
+//                                case 6:
+//                                    set_alarm ? RELAY6_Set() : RELAY6_Clear();
+//                                    break;
+                                case 7:
+                                    set_alarm ? RELAY7_Set() : RELAY7_Clear();
+                                    break;
+                                                                                                                                                                    
+                            }
+                    }
+                    
                     state = DAC1_SEND_CMD;
                     break;
-
                 case DAC1_SEND_CMD:
 
                     SS_DAC1_Clear();
@@ -309,7 +366,7 @@ int main(void) {
                 case INCREMENT_CHANNEL:
 
                     //Reset ADC Channel at max
-                    if (input_channel == 3)
+                    if (input_channel == 7)
                         input_channel = 0;
                     else
                         input_channel++;

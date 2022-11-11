@@ -29,12 +29,24 @@ bool CreateAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, sho
     }
     return false;
 };
-
+//! Delete Alarm
+/*!
+ This deletes an alarm by setting the input_chnl to -1;
+ \param output the output that the alarm would be set to
+ */
 void DeleteAlarm(OUTPUT* output) {
     output->input_chnl = -1;
 }
-
-void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low, RELAY_CALLBACK relay_set, RELAY_CALLBACK relay_clear) {
+//! Edit existing Alarm
+/*!
+ This edits the parameter on the given output
+ \param output the output that the alarm would be set to
+ \param trigger a double that is the point the alarm triggers at
+ \param reset a double this the point the alarm untriggers at
+ \param input_chl an integer that is the channel number for the input
+ \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
+ */
+void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low) {
     output->input_chnl = input_chnl;
     output->trigger = trigger;
     output->reset = reset;

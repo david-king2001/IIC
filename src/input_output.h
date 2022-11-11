@@ -27,11 +27,6 @@ extern "C" {
 
         //ALARM **********
 
-        //!Alarm functions to turn on and off relay
-        RELAY_CALLBACK relay_set;
-        //!Alarm functions to turn on and off relay
-        RELAY_CALLBACK relay_clear;
-
         //!Point that triggers the alarm
         double trigger;
 
@@ -51,6 +46,8 @@ extern "C" {
     
     typedef uint8_t(*DIGITAL_INPUT_CALLBACK) ();
 
+    //!Used to store data relevant to analog inputs
+    //!Reference via pointer in INPUT struct
     typedef struct {
         //!The value corresponding to 20mA
         double max;
@@ -66,15 +63,16 @@ extern "C" {
 
     } ANALOG;
 
+    /*!Stores data relevant to inputs. 
+     * Includes pointers to ANALOG Struct is input is analog type
+     * Includes list of 4 pointers to OUTPUTs used for alarms
+     */
     typedef struct {
         //!true-Analog Input, false-Digital Input
         bool ang_dig;
 
         //!true-On, false-Off
         bool digital;
-
-        //!Callback to function to get state of GPIO pin
-        DIGITAL_INPUT_CALLBACK digital_get;
 
         //!Pointer to analog input if input is analog type
         ANALOG* analog_input;
@@ -87,7 +85,7 @@ extern "C" {
     
     void DeleteAlarm(OUTPUT* output);
     
-    void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low, RELAY_CALLBACK relay_set, RELAY_CALLBACK relay_clear);
+    void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low);
 #ifdef	__cplusplus
 }
 #endif

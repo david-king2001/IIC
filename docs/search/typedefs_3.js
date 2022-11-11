@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['spi_5fcallback_0',['SPI_CALLBACK',['../plib__spi__master__common_8h.html#ae09d5880ae883eee1b2ef101e157e996',1,'plib_spi_master_common.h']]]
+  ['relay_5fcallback_0',['RELAY_CALLBACK',['../input__output_8h.html#a75b499afe129a7e5dd22755e96e81ee1',1,'input_output.h']]]
 ];

@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['input_5fchannel_0',['input_channel',['../main_8c.html#a6c315e1c71654bc3fc29de6e01c4235c',1,'main.c']]],
-  ['input_5fchnl_1',['input_chnl',['../struct_o_u_t_p_u_t.html#ab5289ee12e18b0005a769d272439b464',1,'OUTPUT']]],
-  ['inputs_2',['inputs',['../main_8c.html#a140fd96cc1c3737b861b180505721c78',1,'main.c']]]
+  ['high_5flow_0',['high_low',['../struct_o_u_t_p_u_t.html#af1811243abf77efffb8beaad59c8094d',1,'OUTPUT']]]
 ];

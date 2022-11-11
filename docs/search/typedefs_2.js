@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['relay_5fcallback_0',['RELAY_CALLBACK',['../input__output_8h.html#a75b499afe129a7e5dd22755e96e81ee1',1,'input_output.h']]]
+  ['it8951areaimginfo_0',['IT8951AreaImgInfo',['../e_paper_8h.html#a1bc63e0e13791ace9af34568b65a3583',1,'ePaper.h']]],
+  ['it8951ldimginfo_1',['IT8951LdImgInfo',['../e_paper_8h.html#a8225b6dbada7701d7c6187e2ef8e32fb',1,'ePaper.h']]]
 ];

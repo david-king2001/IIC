@@ -45,7 +45,7 @@ extern "C" {
      * Read from ADC data Register into input buffer
      * \param RxData a pointer to start of buffer that stores that channels data
      */
-    void ADC_Read_Data(uint8_t* RxData);
+    void ADC_Read_Data(uint32_t* RxData);
 
 #ifdef	__cplusplus
 }

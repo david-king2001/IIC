@@ -21,8 +21,9 @@ var searchData=
   ['toolchain_5fspecifics_2eh_18',['toolchain_specifics.h',['../toolchain__specifics_8h.html',1,'']]],
   ['transferisbusy_19',['transferIsBusy',['../struct_s_p_i___o_b_j_e_c_t.html#a2dd222063ed85b26f3bee50b653bdea2',1,'SPI_OBJECT']]],
   ['trigger_20',['trigger',['../struct_o_u_t_p_u_t.html#af73374686ed4e02709b132d49a5a3e34',1,'OUTPUT']]],
-  ['tword_21',['TWord',['../e_paper_8h.html#a438b9d4f0da7894a37a904a3ebaac635',1,'ePaper.h']]],
-  ['txbuffer_22',['txBuffer',['../struct_s_p_i___o_b_j_e_c_t.html#a10308de7aa4420b45413eb72318d9c6b',1,'SPI_OBJECT']]],
-  ['txcount_23',['txCount',['../struct_s_p_i___o_b_j_e_c_t.html#a8bb89024b184660fbfc966523ea95e82',1,'SPI_OBJECT']]],
-  ['txsize_24',['txSize',['../struct_s_p_i___o_b_j_e_c_t.html#a5a1941b6a9c9ad4604f75317b82787fc',1,'SPI_OBJECT']]]
+  ['trigger_5falarms_21',['TRIGGER_ALARMS',['../main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a189a1734fcdac0abd16dc86628d909c9',1,'main.c']]],
+  ['tword_22',['TWord',['../e_paper_8h.html#a438b9d4f0da7894a37a904a3ebaac635',1,'ePaper.h']]],
+  ['txbuffer_23',['txBuffer',['../struct_s_p_i___o_b_j_e_c_t.html#a10308de7aa4420b45413eb72318d9c6b',1,'SPI_OBJECT']]],
+  ['txcount_24',['txCount',['../struct_s_p_i___o_b_j_e_c_t.html#a8bb89024b184660fbfc966523ea95e82',1,'SPI_OBJECT']]],
+  ['txsize_25',['txSize',['../struct_s_p_i___o_b_j_e_c_t.html#a5a1941b6a9c9ad4604f75317b82787fc',1,'SPI_OBJECT']]]
 ];

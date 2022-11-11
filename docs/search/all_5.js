@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['editalarm_0',['EditAlarm',['../input__output_8h.html#a7672f73f2398343994225f0e37eaab0c',1,'EditAlarm(OUTPUT *output, double trigger, double reset, short int input_chnl, bool high_low, RELAY_CALLBACK relay_set, RELAY_CALLBACK relay_clear):&#160;output.c'],['../output_8c.html#a7672f73f2398343994225f0e37eaab0c',1,'EditAlarm(OUTPUT *output, double trigger, double reset, short int input_chnl, bool high_low, RELAY_CALLBACK relay_set, RELAY_CALLBACK relay_clear):&#160;output.c']]],
+  ['editalarm_0',['EditAlarm',['../input__output_8h.html#ac7b0861022a7d0d8637a91046d75de43',1,'EditAlarm(OUTPUT *output, double trigger, double reset, short int input_chnl, bool high_low):&#160;output.c'],['../output_8c.html#ac7b0861022a7d0d8637a91046d75de43',1,'EditAlarm(OUTPUT *output, double trigger, double reset, short int input_chnl, bool high_low):&#160;output.c']]],
   ['epaper_2ec_1',['ePaper.c',['../e_paper_8c.html',1,'']]],
   ['epaper_2eh_2',['ePaper.h',['../e_paper_8h.html',1,'']]],
   ['evic_5finitialize_3',['EVIC_Initialize',['../plib__evic_8c.html#ac1263eba476d45430b32c59ff3512b44',1,'EVIC_Initialize(void):&#160;plib_evic.c'],['../plib__evic_8h.html#ac1263eba476d45430b32c59ff3512b44',1,'EVIC_Initialize(void):&#160;plib_evic.c']]],

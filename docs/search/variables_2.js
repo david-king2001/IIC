@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['dac_5fchannel_0',['DAC_channel',['../main_8c.html#a9a42a0a372c350add8a9ef0b50a8bb7b',1,'main.c']]],
-  ['data_1',['data',['../struct_o_u_t_p_u_t.html#aa6e451eccf9519b0809baad41f5ab241',1,'OUTPUT']]],
-  ['databits_2',['dataBits',['../struct_s_p_i___t_r_a_n_s_f_e_r___s_e_t_u_p.html#a61358360a114db42544587290a58ec93',1,'SPI_TRANSFER_SETUP']]],
-  ['digital_3',['digital',['../struct_i_n_p_u_t.html#ae8ea4caf93a2868c78df3c0e32908017',1,'INPUT']]],
-  ['digital_5fget_4',['digital_get',['../struct_i_n_p_u_t.html#a79269d691eaced3005964a5268dae027',1,'INPUT']]],
-  ['dummysize_5',['dummySize',['../struct_s_p_i___o_b_j_e_c_t.html#a920f06e79b11a32c25bde6c359ea1b68',1,'SPI_OBJECT']]]
+  ['callback_0',['callback',['../struct_g_p_i_o___p_i_n___c_a_l_l_b_a_c_k___o_b_j.html#ade719efb7ed62f5bac6f073226f1e1fe',1,'GPIO_PIN_CALLBACK_OBJ::callback()'],['../struct_s_p_i___o_b_j_e_c_t.html#a8807b08220e4b3e4ecf4523f11f133a7',1,'SPI_OBJECT::callback()']]],
+  ['callback_5ffn_1',['callback_fn',['../struct_t_m_r___t_i_m_e_r___o_b_j_e_c_t.html#aea161b77f99b1b2d80c013317f6dc1a7',1,'TMR_TIMER_OBJECT']]],
+  ['clockfrequency_2',['clockFrequency',['../struct_s_p_i___t_r_a_n_s_f_e_r___s_e_t_u_p.html#a13a57d4f9f72129d847edfebbdc7e71f',1,'SPI_TRANSFER_SETUP']]],
+  ['clockphase_3',['clockPhase',['../struct_s_p_i___t_r_a_n_s_f_e_r___s_e_t_u_p.html#a1babbde781da3e40f2da32ef06faedde',1,'SPI_TRANSFER_SETUP']]],
+  ['clockpolarity_4',['clockPolarity',['../struct_s_p_i___t_r_a_n_s_f_e_r___s_e_t_u_p.html#a39c28f6753b48f7ded7e5d5cf114c82c',1,'SPI_TRANSFER_SETUP']]],
+  ['context_5',['context',['../struct_g_p_i_o___p_i_n___c_a_l_l_b_a_c_k___o_b_j.html#afb301b46bf1bb94237366e0db5c62810',1,'GPIO_PIN_CALLBACK_OBJ::context()'],['../struct_s_p_i___o_b_j_e_c_t.html#afb301b46bf1bb94237366e0db5c62810',1,'SPI_OBJECT::context()'],['../struct_t_m_r___t_i_m_e_r___o_b_j_e_c_t.html#afb301b46bf1bb94237366e0db5c62810',1,'TMR_TIMER_OBJECT::context()']]]
 ];

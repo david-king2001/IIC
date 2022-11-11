@@ -93,14 +93,15 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a9dd967e57d1973a572c97ac10d9ca4d0">STATE_INITIALIZE</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ae5aec538250202b73559f5ab216b0e82">ADC_SEND_CMD</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a0a4bdfee4ef40777a16ce2cca17c8175">ADC_READ</a>
-, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a3cde28cc19ee7812c63de1ce06912443">ALARMS</a>
+, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ad5eaebf23ebd1517086e3a5c513af6cc">CHECK_ALARMS</a>
 , <br />
-&#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955">DIGITAL_INPUTS_READ</a>
+&#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a189a1734fcdac0abd16dc86628d909c9">TRIGGER_ALARMS</a>
+, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955">DIGITAL_INPUTS_READ</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9aac444d7b423e1a22f6917803c5ba13b2">DAC1_SEND_CMD</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a9609d987fd8fb1b396bc9c699b0010be">DAC2_SEND_CMD</a>
-, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ab853c1004c3396eaa2a89d575d12fa79">DISPLAY</a>
 , <br />
-&#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a290eb1660dc96ca97916d4fc6a124e8d">USER_INPUT_PERFORM_LOGIC</a>
+&#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ab853c1004c3396eaa2a89d575d12fa79">DISPLAY</a>
+, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a290eb1660dc96ca97916d4fc6a124e8d">USER_INPUT_PERFORM_LOGIC</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a2225478f4a2002ffdb5ea5306ce1b8dd">INCREMENT_CHANNEL</a>
 <br />
  }</td></tr>
@@ -113,6 +114,9 @@ Functions</h2></td></tr>
 <tr class="separator:a992c22fc0acea6d50f00ec75e50edccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab31a94c8b2a4db28694c629a95bbd33f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#ab31a94c8b2a4db28694c629a95bbd33f">TIMER2_InterruptSvcRoutine</a> (uint32_t status, uintptr_t context)</td></tr>
 <tr class="separator:ab31a94c8b2a4db28694c629a95bbd33f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a656a938e48e0114f1359e0f059c597aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a656a938e48e0114f1359e0f059c597aa">InputBtn</a> (<a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0">GPIO_PIN</a> pin, uintptr_t context)</td></tr>
+<tr class="memdesc:a656a938e48e0114f1359e0f059c597aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for user buttons interrupt.  <a href="main_8c.html#a656a938e48e0114f1359e0f059c597aa">More...</a><br /></td></tr>
+<tr class="separator:a656a938e48e0114f1359e0f059c597aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a840291bc02cba5474a4cb46a9b9566fe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a840291bc02cba5474a4cb46a9b9566fe">main</a> (void)</td></tr>
 <tr class="memdesc:a840291bc02cba5474a4cb46a9b9566fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main.  <a href="main_8c.html#a840291bc02cba5474a4cb46a9b9566fe">More...</a><br /></td></tr>
 <tr class="separator:a840291bc02cba5474a4cb46a9b9566fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,6 +150,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a401512779abafd8a7469b4f7beff0873"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a401512779abafd8a7469b4f7beff0873">ms_counter</a> = 0</td></tr>
 <tr class="memdesc:a401512779abafd8a7469b4f7beff0873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counter of ms that passed resets at 30000ms.  <a href="main_8c.html#a401512779abafd8a7469b4f7beff0873">More...</a><br /></td></tr>
 <tr class="separator:a401512779abafd8a7469b4f7beff0873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad450f684f48549c59ab90ee916c15df1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0">GPIO_PIN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#ad450f684f48549c59ab90ee916c15df1">button_pressed</a> = <a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0a6580501ca07374232210e4b2b64d6ce8">GPIO_PIN_NONE</a></td></tr>
+<tr class="memdesc:ad450f684f48549c59ab90ee916c15df1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to store last button pressed.  <a href="main_8c.html#ad450f684f48549c59ab90ee916c15df1">More...</a><br /></td></tr>
+<tr class="separator:ad450f684f48549c59ab90ee916c15df1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a94b1da2e055fff4d143aa6aa891f79a9" name="a94b1da2e055fff4d143aa6aa891f79a9"></a>
@@ -169,7 +176,9 @@ Variables</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9a0a4bdfee4ef40777a16ce2cca17c8175" name="a94b1da2e055fff4d143aa6aa891f79a9a0a4bdfee4ef40777a16ce2cca17c8175"></a>ADC_READ&#160;</td><td class="fielddoc"><p >Reads ADC into input buffer </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9a3cde28cc19ee7812c63de1ce06912443" name="a94b1da2e055fff4d143aa6aa891f79a9a3cde28cc19ee7812c63de1ce06912443"></a>ALARMS&#160;</td><td class="fielddoc"><p >Checks and triggers alarms </p>
+<tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9ad5eaebf23ebd1517086e3a5c513af6cc" name="a94b1da2e055fff4d143aa6aa891f79a9ad5eaebf23ebd1517086e3a5c513af6cc"></a>CHECK_ALARMS&#160;</td><td class="fielddoc"><p >Checks and triggers alarms </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9a189a1734fcdac0abd16dc86628d909c9" name="a94b1da2e055fff4d143aa6aa891f79a9a189a1734fcdac0abd16dc86628d909c9"></a>TRIGGER_ALARMS&#160;</td><td class="fielddoc"><p >Triggers or Untiggers alarms </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955" name="a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955"></a>DIGITAL_INPUTS_READ&#160;</td><td class="fielddoc"><p >Reads Digital inputs and saves their state </p>
 </td></tr>
@@ -188,6 +197,37 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a656a938e48e0114f1359e0f059c597aa" name="a656a938e48e0114f1359e0f059c597aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a656a938e48e0114f1359e0f059c597aa">&#9670;&#160;</a></span>InputBtn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InputBtn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0">GPIO_PIN</a>&#160;</td>
+          <td class="paramname"><em>pin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uintptr_t&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Callback for user buttons interrupt. </p>
+<p >Whenever a button is released, check to make sure last button pressed was handled i.e pin = GPIO_PIN_NONE, then set button_pressed to pin for button that was pressed </p>
+
+</div>
+</div>
 <a id="a840291bc02cba5474a4cb46a9b9566fe" name="a840291bc02cba5474a4cb46a9b9566fe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a840291bc02cba5474a4cb46a9b9566fe">&#9670;&#160;</a></span>main()</h2>
 
@@ -258,6 +298,22 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="ad450f684f48549c59ab90ee916c15df1" name="ad450f684f48549c59ab90ee916c15df1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad450f684f48549c59ab90ee916c15df1">&#9670;&#160;</a></span>button_pressed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0">GPIO_PIN</a> button_pressed = <a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0a6580501ca07374232210e4b2b64d6ce8">GPIO_PIN_NONE</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Used to store last button pressed. </p>
+
+</div>
+</div>
 <a id="a9a42a0a372c350add8a9ef0b50a8bb7b" name="a9a42a0a372c350add8a9ef0b50a8bb7b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a42a0a372c350add8a9ef0b50a8bb7b">&#9670;&#160;</a></span>DAC_channel</h2>
 

@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['i80it8951devinfo_0',['I80IT8951DevInfo',['../struct_i80_i_t8951_dev_info.html',1,'']]],
-  ['input_1',['INPUT',['../struct_i_n_p_u_t.html',1,'']]],
-  ['it8951areaimginfo_2',['IT8951AreaImgInfo',['../struct_i_t8951_area_img_info.html',1,'']]],
-  ['it8951ldimginfo_3',['IT8951LdImgInfo',['../struct_i_t8951_ld_img_info.html',1,'']]]
+  ['gpio_5fpin_5fcallback_5fobj_0',['GPIO_PIN_CALLBACK_OBJ',['../struct_g_p_i_o___p_i_n___c_a_l_l_b_a_c_k___o_b_j.html',1,'']]]
 ];
