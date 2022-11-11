@@ -46,8 +46,7 @@
         DIGITAL_INPUTS_READ;
         DISPLAY;
         USER_INPUT_PERFORM_LOGIC;
-        DAC1_SEND_CMD;
-        DAC2_SEND_CMD;
+        DAC_SEND_DATA;
         INCREMENT_CHANNEL;
             STATE_INITIALIZE -> ADC_SEND_CMD
             ADC_SEND_CMD -> ADC_READ;       
@@ -56,9 +55,8 @@
             TRIGGER_ALARMS ->DIGITAL_INPUTS_READ;
             DIGITAL_INPUTS_READ -> DISPLAY;
             DISPLAY -> USER_INPUT_PERFORM_LOGIC;
-            USER_INPUT_PERFORM_LOGIC -> DAC1_SEND_CMD;
-            DAC1_SEND_CMD -> DAC2_SEND_CMD ;
-            DAC2_SEND_CMD -> INCREMENT_CHANNEL;
+            USER_INPUT_PERFORM_LOGIC -> DAC_SEND_DATA;
+            DAC_SEND_DATA -> INCREMENT_CHANNEL;
             INCREMENT_CHANNEL -> ADC_SEND_CMD;
     }
    \enddot
@@ -70,8 +68,7 @@ typedef enum {
     CHECK_ALARMS, /*!<Checks and triggers alarms*/
     TRIGGER_ALARMS, /*!<Triggers or Untiggers alarms*/
     DIGITAL_INPUTS_READ, /*!<Reads Digital inputs and saves their state*/
-    DAC1_SEND_CMD, /*!<Sends data to DAC1 from output buffer*/
-    DAC2_SEND_CMD, /*!<Sends data to DAC2 from output buffer*/
+    DAC_SEND_DATA, /*!<Sends data to DAC1 from output buffer*/
     DISPLAY, /*!<Update display - TODO*/
     USER_INPUT_PERFORM_LOGIC, /*!<Perform actions dependent on user input - TODO*/
     INCREMENT_CHANNEL /*!<Increment channel counters*/
@@ -126,9 +123,14 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     if (ms_counter == 30000) {
         ms_counter = 0;
         RELAY7_Toggle();
+    }else{
+        ms_counter++;
     }
     
 }
+
+int test = 0;
+
 
 GPIO_PIN button_pressed = GPIO_PIN_NONE; //!< Used to store last button pressed
 
@@ -194,9 +196,25 @@ int main(void) {
                     //Initialize Analog inputs
                     for (uint8_t i = 0; i < 4; i++) {
                         inputs[i].analog_input = (ANALOG*) malloc(sizeof (ANALOG));
+                        inputs[i].ang_dig = true;
                     }
-
-
+                    for (uint8_t i=0; i<10; i++){
+                        outputs[i].input_chnl = -1;
+                    }
+                    
+                    inputs[0].ang_dig = true;
+                    CreateAlarm(&outputs[8], &inputs[0], 10, 5, 0, true);
+                    
+                    inputs[5].ang_dig = false;
+                    CreateAlarm(&outputs[2], &inputs[5], 0, 0, 5, false);
+                    inputs[6].ang_dig = false;
+                    CreateAlarm(&outputs[3], &inputs[6], 0, 0, 6, false);
+                    inputs[7].ang_dig = false;
+                    CreateAlarm(&outputs[4], &inputs[7], 0, 0, 7, false);
+                    
+                    ConfigureAnalogOutput(&outputs[0], 0, 0.25);
+                    
+                        
 
                     state = ADC_SEND_CMD;
                     break;
@@ -230,23 +248,22 @@ int main(void) {
                     
                     uint8_t digital_channel = 4+(input_channel % 4);
                     switch(digital_channel){
-                        case 0:
-                            inputs[digital_channel].digital = DIGITAL0_Get();
+                        case 4:
+                            inputs[digital_channel].digital = DIGITAL0_Get()==1;
                             break;
-                        case 1:
-                            inputs[digital_channel].digital = DIGITAL1_Get();
+                        case 5:
+                            inputs[digital_channel].digital = DIGITAL1_Get()==1;
                             break;
-                        case 2:
-                            inputs[digital_channel].digital = DIGITAL2_Get();
+                        case 6:
+                            inputs[digital_channel].digital = DIGITAL2_Get()==1;
                             break;
-                        case 3:
-                            inputs[digital_channel].digital = DIGITAL3_Get();
+                        case 7:
+                            inputs[digital_channel].digital = DIGITAL3_Get()==1;
                             break;
                         default:
                             break;
                             
                     }
-                    LED_RED_Set();
                     state = DISPLAY;
                     break;
 
@@ -258,9 +275,15 @@ int main(void) {
                     //TODO
                 case USER_INPUT_PERFORM_LOGIC:
                     if (button_pressed == BTN0_PIN){
-                        RELAY6_Toggle();
+                        if (test==15){
+                            test = 0;
+                            RELAY7_Toggle();
+                        }else{
+                            test++;
+                        }
                         button_pressed = GPIO_PIN_NONE;
                     }
+                    inputs[0].analog_input->scaled_data = test;
                     state = CHECK_ALARMS;
                     break;
 
@@ -268,7 +291,6 @@ int main(void) {
                 case CHECK_ALARMS:
                     for (uint8_t i = 0; i < 4; i++) {
                         if (inputs[input_channel].alrms[i] != NULL && inputs[input_channel].alrms[i]->input_chnl != -1) {
-
                             INPUT* input = &inputs[input_channel];
                             OUTPUT* output = input->alrms[i];
 
@@ -296,6 +318,7 @@ int main(void) {
                                 }
                                 //Input is digital, simply check on and off
                             } else {
+                                
                                 if (input->digital) {
                                     output->relay = true;
                                 } else {
@@ -330,9 +353,9 @@ int main(void) {
                                 case 5:
                                     set_alarm ? RELAY5_Set() : RELAY5_Clear();
                                     break;
-//                                case 6:
-//                                    set_alarm ? RELAY6_Set() : RELAY6_Clear();
-//                                    break;
+                                case 6:
+                                    set_alarm ? RELAY6_Set() : RELAY6_Clear();
+                                    break;
                                 case 7:
                                     set_alarm ? RELAY7_Set() : RELAY7_Clear();
                                     break;
@@ -340,24 +363,34 @@ int main(void) {
                             }
                     }
                     
-                    state = DAC1_SEND_CMD;
+                    state = DAC_SEND_DATA;
                     break;
-                case DAC1_SEND_CMD:
+                case DAC_SEND_DATA:;
+                    
+                    //Get the channel that is set to provide input to the data
+                    short int input_chnl = outputs[DAC_channel].input_chnl;
+   
+                    if (input_chnl != -1){
+                        if (DAC_channel == 0)
+                            SS_DAC1_Clear();
+                        else if (DAC_channel == 1)
+                            SS_DAC2_Clear();                        
+                        
+                        INPUT* dac1_input = &inputs[input_chnl];
 
-                    SS_DAC1_Clear();
-                    SPI1_Write(&outputs[DAC_channel], 2);
-                    while (SPI1_IsBusy());
-                    SS_DAC1_Set();
+                        //Scale 24bit data down to 16 bits and then scale according to set scale factor
+                        outputs[DAC_channel].data = (uint16_t)(dac1_input->analog_input->raw_data >> 4) * outputs[DAC_channel].scale_factor;
+                        
+                        SPI1_Write(&outputs[DAC_channel].data, 2);
+                        while (SPI1_IsBusy());
 
-                    state = DAC2_SEND_CMD;
-                    break;
+                        if (DAC_channel == 0)
+                            SS_DAC1_Set();
+                        else if (DAC_channel == 1)
+                            SS_DAC2_Set();    
 
-                case DAC2_SEND_CMD:
+                    }
 
-                    SS_DAC2_Clear();
-                    SPI1_Write(&outputs[DAC_channel], 2);
-                    while (SPI1_IsBusy());
-                    SS_DAC2_Set();
 
                     state = INCREMENT_CHANNEL;
                     break;

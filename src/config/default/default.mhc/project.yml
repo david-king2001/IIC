@@ -41,13 +41,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 130AF75EB355B6BCFF86FDD8477B14C1
-- generatedChecksum: FB15E4C85976A38CEC394C27E6C674D1
+- generatedChecksum: 7B5EF543BCB6BC0BE643BD5427B2CBDB
   logicalPath: config/default/peripheral/gpio
   name: plib_gpio.c
   physicalPath: peripheral/gpio
   security: NON_SECURE
   type: SOURCE
-  userChecksum: FB15E4C85976A38CEC394C27E6C674D1
+  userChecksum: 7B5EF543BCB6BC0BE643BD5427B2CBDB
 - generatedChecksum: 872F7DE1FE3DB39D93BFC166AB841163
   logicalPath: config/default/peripheral/spi/spi_master
   name: plib_spi1_master.c

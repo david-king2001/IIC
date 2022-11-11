@@ -194,6 +194,13 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
+    attributes: {id: BSP_PIN_29_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'True'}
+  - type: String
     attributes: {id: BSP_PIN_2_CN}
     children:
     - type: Values
@@ -488,6 +495,13 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
+    attributes: {id: BSP_PIN_49_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'True'}
+  - type: String
     attributes: {id: BSP_PIN_4_FUNCTION_NAME}
     children:
     - type: Values
@@ -670,6 +684,13 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
+    attributes: {id: BSP_PIN_58_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'True'}
+  - type: String
     attributes: {id: BSP_PIN_59_FUNCTION_NAME}
     children:
     - type: Values
@@ -690,6 +711,13 @@ children:
       children:
       - type: User
         attributes: {value: DIGITAL}
+  - type: String
+    attributes: {id: BSP_PIN_59_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'True'}
   - type: String
     attributes: {id: BSP_PIN_5_FUNCTION_NAME}
     children:
@@ -1608,6 +1636,13 @@ children:
       - type: Dynamic
         attributes: {id: core, value: '528'}
   - type: Hex
+    attributes: {id: SYS_PORT_B_ODC}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '16384'}
+  - type: Hex
     attributes: {id: SYS_PORT_B_TRIS}
     children:
     - type: Values
@@ -1649,6 +1684,13 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: '273'}
+  - type: Hex
+    attributes: {id: SYS_PORT_D_ODC}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '2'}
   - type: Hex
     attributes: {id: SYS_PORT_D_TRIS}
     children:
@@ -1698,6 +1740,13 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: '48'}
+  - type: Hex
+    attributes: {id: SYS_PORT_F_ODC}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '3'}
   - type: Hex
     attributes: {id: SYS_PORT_F_TRIS}
     children:

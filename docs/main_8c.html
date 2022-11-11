@@ -97,11 +97,10 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a189a1734fcdac0abd16dc86628d909c9">TRIGGER_ALARMS</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955">DIGITAL_INPUTS_READ</a>
-, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9aac444d7b423e1a22f6917803c5ba13b2">DAC1_SEND_CMD</a>
-, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a9609d987fd8fb1b396bc9c699b0010be">DAC2_SEND_CMD</a>
+, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ae00ed31e793c5cdd32f4e836b0ad7df9">DAC_SEND_DATA</a>
+, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ab853c1004c3396eaa2a89d575d12fa79">DISPLAY</a>
 , <br />
-&#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9ab853c1004c3396eaa2a89d575d12fa79">DISPLAY</a>
-, <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a290eb1660dc96ca97916d4fc6a124e8d">USER_INPUT_PERFORM_LOGIC</a>
+&#160;&#160;<a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a290eb1660dc96ca97916d4fc6a124e8d">USER_INPUT_PERFORM_LOGIC</a>
 , <a class="el" href="main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a2225478f4a2002ffdb5ea5306ce1b8dd">INCREMENT_CHANNEL</a>
 <br />
  }</td></tr>
@@ -150,6 +149,8 @@ Variables</h2></td></tr>
 <tr class="memitem:a401512779abafd8a7469b4f7beff0873"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a401512779abafd8a7469b4f7beff0873">ms_counter</a> = 0</td></tr>
 <tr class="memdesc:a401512779abafd8a7469b4f7beff0873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counter of ms that passed resets at 30000ms.  <a href="main_8c.html#a401512779abafd8a7469b4f7beff0873">More...</a><br /></td></tr>
 <tr class="separator:a401512779abafd8a7469b4f7beff0873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bd3f5fbccb1628eb13dda4cd02633a4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a1bd3f5fbccb1628eb13dda4cd02633a4">test</a> = 0</td></tr>
+<tr class="separator:a1bd3f5fbccb1628eb13dda4cd02633a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad450f684f48549c59ab90ee916c15df1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0">GPIO_PIN</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#ad450f684f48549c59ab90ee916c15df1">button_pressed</a> = <a class="el" href="plib__gpio_8h.html#aa996b1dc8b3c8150f9319cf7d33336b0a6580501ca07374232210e4b2b64d6ce8">GPIO_PIN_NONE</a></td></tr>
 <tr class="memdesc:ad450f684f48549c59ab90ee916c15df1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to store last button pressed.  <a href="main_8c.html#ad450f684f48549c59ab90ee916c15df1">More...</a><br /></td></tr>
 <tr class="separator:ad450f684f48549c59ab90ee916c15df1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -182,9 +183,7 @@ Variables</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955" name="a94b1da2e055fff4d143aa6aa891f79a9a139b38be08d290fea2d8e069485b4955"></a>DIGITAL_INPUTS_READ&#160;</td><td class="fielddoc"><p >Reads Digital inputs and saves their state </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9aac444d7b423e1a22f6917803c5ba13b2" name="a94b1da2e055fff4d143aa6aa891f79a9aac444d7b423e1a22f6917803c5ba13b2"></a>DAC1_SEND_CMD&#160;</td><td class="fielddoc"><p >Sends data to DAC1 from output buffer </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9a9609d987fd8fb1b396bc9c699b0010be" name="a94b1da2e055fff4d143aa6aa891f79a9a9609d987fd8fb1b396bc9c699b0010be"></a>DAC2_SEND_CMD&#160;</td><td class="fielddoc"><p >Sends data to DAC2 from output buffer </p>
+<tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9ae00ed31e793c5cdd32f4e836b0ad7df9" name="a94b1da2e055fff4d143aa6aa891f79a9ae00ed31e793c5cdd32f4e836b0ad7df9"></a>DAC_SEND_DATA&#160;</td><td class="fielddoc"><p >Sends data to DAC1 from output buffer </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a94b1da2e055fff4d143aa6aa891f79a9ab853c1004c3396eaa2a89d575d12fa79" name="a94b1da2e055fff4d143aa6aa891f79a9ab853c1004c3396eaa2a89d575d12fa79"></a>DISPLAY&#160;</td><td class="fielddoc"><p >Update display - TODO </p>
 </td></tr>
@@ -451,6 +450,20 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Flag that used to determine if to start a new task. </p>
+
+</div>
+</div>
+<a id="a1bd3f5fbccb1628eb13dda4cd02633a4" name="a1bd3f5fbccb1628eb13dda4cd02633a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bd3f5fbccb1628eb13dda4cd02633a4">&#9670;&#160;</a></span>test</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int test = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
