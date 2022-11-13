@@ -22,8 +22,6 @@ extern "C" {
         //!The data sent out if the output is a DAC
         uint16_t data;
         
-        //!Scale factor for dac output
-        float scale_factor;
 
         //!true-relay on, false: relay off 
         bool relay;
@@ -90,7 +88,7 @@ extern "C" {
     
     void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low);
     
-    bool ConfigureAnalogOutput(OUTPUT* output, short int input_chnl, float scale_factor);
+    bool ConfigureAnalogOutput(OUTPUT* output, short int input_chnl, double max, double min );
     
     
 #ifdef	__cplusplus

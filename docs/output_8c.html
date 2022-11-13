@@ -92,13 +92,13 @@ Functions</h2></td></tr>
 <tr class="memitem:ac7b0861022a7d0d8637a91046d75de43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="output_8c.html#ac7b0861022a7d0d8637a91046d75de43">EditAlarm</a> (<a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *output, double trigger, double reset, short int input_chnl, bool high_low)</td></tr>
 <tr class="memdesc:ac7b0861022a7d0d8637a91046d75de43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Edit existing Alarm.  <a href="output_8c.html#ac7b0861022a7d0d8637a91046d75de43">More...</a><br /></td></tr>
 <tr class="separator:ac7b0861022a7d0d8637a91046d75de43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d1145c420ebe34fc10de701a5e60f58"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="output_8c.html#a1d1145c420ebe34fc10de701a5e60f58">ConfigureAnalogOutput</a> (<a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *output, short int input_chnl, float scale_factor)</td></tr>
-<tr class="memdesc:a1d1145c420ebe34fc10de701a5e60f58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the analog outputs.  <a href="output_8c.html#a1d1145c420ebe34fc10de701a5e60f58">More...</a><br /></td></tr>
-<tr class="separator:a1d1145c420ebe34fc10de701a5e60f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bccb40db55df9f393519a1ccb5cbc87"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="output_8c.html#a4bccb40db55df9f393519a1ccb5cbc87">ConfigureAnalogOutput</a> (<a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *output, short int input_chnl, double max, double min)</td></tr>
+<tr class="memdesc:a4bccb40db55df9f393519a1ccb5cbc87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the analog outputs.  <a href="output_8c.html#a4bccb40db55df9f393519a1ccb5cbc87">More...</a><br /></td></tr>
+<tr class="separator:a4bccb40db55df9f393519a1ccb5cbc87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a1d1145c420ebe34fc10de701a5e60f58" name="a1d1145c420ebe34fc10de701a5e60f58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d1145c420ebe34fc10de701a5e60f58">&#9670;&#160;</a></span>ConfigureAnalogOutput()</h2>
+<a id="a4bccb40db55df9f393519a1ccb5cbc87" name="a4bccb40db55df9f393519a1ccb5cbc87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bccb40db55df9f393519a1ccb5cbc87">&#9670;&#160;</a></span>ConfigureAnalogOutput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -118,8 +118,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>scale_factor</em>&#160;</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>min</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -133,8 +139,7 @@ Functions</h2></td></tr>
 <p >This configures which input to use for the analog outputs as well as the scale for the data </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">output</td><td>the output that is getting configured </td></tr>
-    <tr><td class="paramname">input_chnl</td><td>the input channel driving this output, 0-3 for the 4 analog inputs </td></tr>
-    <tr><td class="paramname">scale_factor</td><td>float, the scale at which to modify the input </td></tr>
+    <tr><td class="paramname">input_chnl</td><td>the input channel driving this output, 0-3 for the 4 analog inputs \max double, max value of input to trigger 20mA \min double, min value of input to trigger 4mA </td></tr>
   </table>
   </dd>
 </dl>

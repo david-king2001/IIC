@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['scale_5ffactor_0',['scale_factor',['../struct_o_u_t_p_u_t.html#a0e2670c8711a75dd29c3e07307270535',1,'OUTPUT']]],
+  ['scale_0',['SCALE',['../main_8c.html#a2c271df0d61fde355f760076cece3245',1,'main.c']]],
   ['scaled_5fdata_1',['scaled_data',['../struct_a_n_a_l_o_g.html#a700728a6b687aba2c80a481699d72248',1,'ANALOG']]],
   ['section_2',['SECTION',['../toolchain__specifics_8h.html#ae8ca0534520a46af46ec830d5fccab63',1,'toolchain_specifics.h']]],
   ['spi1_5fcallbackregister_3',['SPI1_CallbackRegister',['../plib__spi1__master_8h.html#a6b10327f8fc8b00db0553e5d62b696e6',1,'SPI1_CallbackRegister(SPI_CALLBACK callback, uintptr_t context):&#160;plib_spi1_master.c'],['../plib__spi1__master_8c.html#a6b10327f8fc8b00db0553e5d62b696e6',1,'SPI1_CallbackRegister(SPI_CALLBACK callback, uintptr_t context):&#160;plib_spi1_master.c']]],

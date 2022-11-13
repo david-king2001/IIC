@@ -102,6 +102,8 @@ uint8_t DAC_channel = 0; //!< 0-1, Either DAC1 or DAC2
 uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
 
+#define SCALE(input, old_max, old_min, new_max, new_min) ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)
+
 //!Update the past data storage
 void pastDataUpdate(double* data) {
     for (int i = 0; i < 29; i++) {
@@ -212,7 +214,6 @@ int main(void) {
                     inputs[7].ang_dig = false;
                     CreateAlarm(&outputs[4], &inputs[7], 0, 0, 7, false);
                     
-                    ConfigureAnalogOutput(&outputs[0], 0, 0.25);
                     
                         
 
@@ -240,7 +241,7 @@ int main(void) {
 
                     ANALOG* input = inputs[input_channel / 2].analog_input;
                     //Convert to user scale and save
-                    input->scaled_data = ((double) input->raw_data / (16777215)) * (input->max - input->min) + input->min;
+                    input->scaled_data = SCALE((double) input->raw_data, 16777215, 0, input->max, input->min);
                     state = DIGITAL_INPUTS_READ;
                     break;
 
@@ -370,7 +371,7 @@ int main(void) {
                     //Get the channel that is set to provide input to the data
                     short int input_chnl = outputs[DAC_channel].input_chnl;
    
-                    if (input_chnl != -1){
+                    if (input_chnl != -1 ){
                         if (DAC_channel == 0)
                             SS_DAC1_Clear();
                         else if (DAC_channel == 1)
@@ -379,7 +380,7 @@ int main(void) {
                         INPUT* dac1_input = &inputs[input_chnl];
 
                         //Scale 24bit data down to 16 bits and then scale according to set scale factor
-                        outputs[DAC_channel].data = (uint16_t)(dac1_input->analog_input->raw_data >> 4) * outputs[DAC_channel].scale_factor;
+                        outputs[DAC_channel].data = (uint16_t)SCALE((dac1_input->analog_input->raw_data >> 4), outputs[DAC_channel].trigger, outputs[DAC_channel].reset, 65535, 0);
                         
                         SPI1_Write(&outputs[DAC_channel].data, 2);
                         while (SPI1_IsBusy());

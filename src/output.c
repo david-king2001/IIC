@@ -61,13 +61,15 @@ void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chn
  * This configures which input to use for the analog outputs as well as the scale for the data
  * \param output the output that is getting configured
  * \param input_chnl the input channel driving this output, 0-3 for the 4 analog inputs
- * \param scale_factor float, the scale at which to modify the input
+ * \max double, max value of input to trigger 20mA
+ * \min double, min value of input to trigger 4mA
  * \returns true on success, false on failure. Return false if input_chnl not in range
  */
-bool ConfigureAnalogOutput(OUTPUT* output, short int input_chnl, float scale_factor){
+bool ConfigureAnalogOutput(OUTPUT* output, short int input_chnl, double max, double min ){
     //Check valid input channel was sent
     if (input_chnl>3 && input_chnl<0) return false;
     output->input_chnl = input_chnl;
-    output->scale_factor = scale_factor;
+    output->trigger = max;
+    output->reset = min;
     return true;
 }
