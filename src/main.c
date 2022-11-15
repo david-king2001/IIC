@@ -103,6 +103,8 @@ uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
 
 #define SCALE(input, old_max, old_min, new_max, new_min) ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)
+#define DEFAULT_ANALOG ({0,0,0,0})
+#define DEFAULT_INPUT ({false, false, NULL, NULL})
 
 //!Update the past data storage
 void pastDataUpdate(double* data) {
@@ -124,7 +126,6 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     //Check if 30seconds have past
     if (ms_counter == 30000) {
         ms_counter = 0;
-        RELAY7_Toggle();
     }else{
         ms_counter++;
     }
@@ -195,25 +196,29 @@ int main(void) {
                     //Send Commands to ADC to set mode to continuous 
                     ADC_Initialize();
 
-                    //Initialize Analog inputs
+
+                        //Initialize Analog inputs
                     for (uint8_t i = 0; i < 4; i++) {
-                        inputs[i].analog_input = (ANALOG*) malloc(sizeof (ANALOG));
-                        inputs[i].ang_dig = true;
+                        ANALOG analog_int = {0,0,0,0};
+                        INPUT input_int = {true, false, &analog_int, {NULL}, false};                        
+                        inputs[i] = input_int;
+                    }
+                    for (uint8_t i = 4; i < 8; i++) {
+                        INPUT input_int = {false, false, NULL, {NULL}, false};
+                        inputs[i] = input_int;
                     }
                     for (uint8_t i=0; i<10; i++){
-                        outputs[i].input_chnl = -1;
+                        OUTPUT output_int = {false, 0, false, 0,0,-1,false};                    
+                        outputs[i] = output_int;
                     }
                     
-                    inputs[0].ang_dig = true;
-                    CreateAlarm(&outputs[8], &inputs[0], 10, 5, 0, true);
                     
-                    inputs[5].ang_dig = false;
-                    CreateAlarm(&outputs[2], &inputs[5], 0, 0, 5, false);
-                    inputs[6].ang_dig = false;
-                    CreateAlarm(&outputs[3], &inputs[6], 0, 0, 6, false);
-                    inputs[7].ang_dig = false;
-                    CreateAlarm(&outputs[4], &inputs[7], 0, 0, 7, false);
+                    inputs[0].is_set = true;
+                    inputs[0].analog_input->max = 16777215;
+                    inputs[0].analog_input->min = 0;
                     
+                    CreateAlarm(&outputs[8], &inputs[0], 10000000, 9000000, 0, true);
+                    ConfigureAnalogOutput(&outputs[0], 0, 1677721,0);
                     
                         
 
@@ -221,27 +226,36 @@ int main(void) {
                     break;
 
                 case ADC_SEND_CMD:
-
-                    ADC_Select_Chnl(input_channel / 2);
-
+                    if (inputs[input_channel / 2].is_set){
+                        ADC_Select_Chnl(input_channel / 2);
+                    }
                     state = ADC_READ;
                     break;
 
                     //In this state the ADC is read for the current input channel
                 case ADC_READ:
                     //Read the data
-                    ADC_Read_Data(&inputs[input_channel / 2].analog_input->raw_data);
+                    if (inputs[input_channel / 2].is_set){
+                        ADC_Read_Data((uint8_t*)&(inputs[input_channel / 2].analog_input->raw_data));
 
-                    //Store the data in past storage if 30 seconds have past
-                    if (thirty_sec_passed) {
-                        pastDataUpdate(&inputs[input_channel / 2].analog_input->scaled_data);
-                        thirty_sec_passed = false;
+                        //Store the data in past storage if 30 seconds have past
+                        if (thirty_sec_passed) {
+                            pastDataUpdate(&inputs[input_channel / 2].analog_input->scaled_data);
+                            thirty_sec_passed = false;
+                        }
+
+
+                        ANALOG* input = inputs[input_channel / 2].analog_input;
+                        //Convert to user scale and save
+                        input->scaled_data = SCALE((double) input->raw_data, 16777215, 0, input->max, input->min);
+                        if (input->raw_data > 10000000){
+                            LED_RED_Set();
+                        }
+                        if (input->raw_data < 9000000){
+                            LED_RED_Clear();
+                        }                        
                     }
 
-
-                    ANALOG* input = inputs[input_channel / 2].analog_input;
-                    //Convert to user scale and save
-                    input->scaled_data = SCALE((double) input->raw_data, 16777215, 0, input->max, input->min);
                     state = DIGITAL_INPUTS_READ;
                     break;
 
@@ -275,16 +289,7 @@ int main(void) {
 
                     //TODO
                 case USER_INPUT_PERFORM_LOGIC:
-                    if (button_pressed == BTN0_PIN){
-                        if (test==15){
-                            test = 0;
-                            RELAY7_Toggle();
-                        }else{
-                            test++;
-                        }
-                        button_pressed = GPIO_PIN_NONE;
-                    }
-                    inputs[0].analog_input->scaled_data = test;
+
                     state = CHECK_ALARMS;
                     break;
 
@@ -380,9 +385,9 @@ int main(void) {
                         INPUT* dac1_input = &inputs[input_chnl];
 
                         //Scale 24bit data down to 16 bits and then scale according to set scale factor
-                        outputs[DAC_channel].data = (uint16_t)SCALE((dac1_input->analog_input->raw_data >> 4), outputs[DAC_channel].trigger, outputs[DAC_channel].reset, 65535, 0);
+                        outputs[DAC_channel].data = (uint16_t)SCALE(dac1_input->analog_input->scaled_data, outputs[DAC_channel].trigger, outputs[DAC_channel].reset, 65535, 0);
                         
-                        SPI1_Write(&outputs[DAC_channel].data, 2);
+                        SPI1_Write((uint8_t*)&outputs[DAC_channel].data, 2);
                         while (SPI1_IsBusy());
 
                         if (DAC_channel == 0)

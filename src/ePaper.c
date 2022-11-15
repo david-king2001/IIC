@@ -724,7 +724,6 @@ void IT8951Display1bppExample() {
     memset(gpFrameBuf, 0x00, (gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH) / 8); //Host Frame Buffer(Source)
     //Check TCon is free ? Wait TCon Ready (optional)
     IT8951WaitForDisplayReady();
-    LED_RED_Set();
     //Load Image and Display
     //Set Load Area
     stAreaImgInfo.usX = 0;

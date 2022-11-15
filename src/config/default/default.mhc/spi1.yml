@@ -53,4 +53,4 @@ children:
       - type: User
         attributes: {value: '1'}
 - type: ElementPosition
-  attributes: {x: '156', y: '98', id: spi1}
+  attributes: {x: '155', y: '98', id: spi1}

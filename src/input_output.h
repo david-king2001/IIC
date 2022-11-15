@@ -80,8 +80,12 @@ extern "C" {
 
         //!Each input can have 4 alarms
         OUTPUT* alrms[4];
+        
+        //!Determines if input has been configured, false means input is ignored as it has not be configured
+        bool is_set;
     } INPUT;
-
+    
+    
     bool CreateAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low);
     
     void DeleteAlarm(OUTPUT* output);

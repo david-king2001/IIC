@@ -45,7 +45,7 @@ void ADC_Select_Chnl(uint8_t chnl) {
 }
 
 //See adc.h
-void ADC_Read_Data(uint32_t* RxData) {
+void ADC_Read_Data(uint8_t* RxData) {
     adc_cmd = DATA;
 
     SS_ADC_Clear();
