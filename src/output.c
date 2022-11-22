@@ -1,6 +1,6 @@
 #include "definitions.h"
 
-//! Creates Alarm
+//! Creates Alarm from Analog source
 /*!
  This checks to make sure the desired output is not already configured as well
  as creates the alarm only if spot is open
@@ -12,8 +12,8 @@
  \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
  \return true on success, false on falure. Returns false if output already configured or input channel already has 4 alarms
  */
-bool CreateAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low) {
-    if (output->input_chnl != -1) {
+bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low) {
+    if (output->input_chnl != -1 || !input->is_set) {
         return false;
     } else {
         for (uint8_t i = 0; i < 4; i++) {
@@ -32,6 +32,34 @@ bool CreateAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, sho
     
     return false;
 };
+
+//! Creates Alarm from digital source
+/*!
+ This checks to make sure the desired output is not already configured as well
+ as creates the alarm only if spot is open
+ \param output the output that the alarm would be set to
+ \param input the input the would trigger the alarm
+ \param input_chl an integer that is the channel number for the input
+ \return true on success, false on falure. Returns false if output already configured or input channel already has 4 alarms
+ */
+bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, short int input_chnl){
+    if (output->input_chnl != -1 || !input->is_set) {
+        return false;
+    }else{
+        for (uint8_t i = 0; i < 4; i++) {
+            //Check if alarm exist in list before adding
+            if (input->alrms[i] == NULL) {
+                output->input_chnl = input_chnl;
+                input->alrms[i] = output;
+                return true; //Exit loop returning success
+            }
+
+        }
+    }
+    return false;
+}
+
+
 //! Delete Alarm
 /*!
  This deletes an alarm by setting the input_chnl to -1;

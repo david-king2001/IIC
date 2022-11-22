@@ -85,8 +85,11 @@ extern "C" {
         bool is_set;
     } INPUT;
     
+    void ConfigureInput(INPUT* input, bool ang_dig, double max, double min);
     
-    bool CreateAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low);
+    bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low);
+    
+    bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, short int input_chnl);
     
     void DeleteAlarm(OUTPUT* output);
     

@@ -82,6 +82,7 @@ STATES nextState = STATE_INITIALIZE;
 // ***********************
 
 INPUT inputs[8]; //!<4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
+ANALOG analogs[4];
 double pastData[4][30]; //!<Store history of input data
 OUTPUT outputs[10]; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
 
@@ -103,8 +104,6 @@ uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
 
 #define SCALE(input, old_max, old_min, new_max, new_min) ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)
-#define DEFAULT_ANALOG ({0,0,0,0})
-#define DEFAULT_INPUT ({false, false, NULL, NULL})
 
 //!Update the past data storage
 void pastDataUpdate(double* data) {
@@ -122,7 +121,6 @@ void pastDataUpdate(double* data) {
 void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     //Set flag to true to switch to new task
     task_FLAG = true;
-
     //Check if 30seconds have past
     if (ms_counter == 30000) {
         ms_counter = 0;
@@ -200,9 +198,13 @@ int main(void) {
                         //Initialize Analog inputs
                     for (uint8_t i = 0; i < 4; i++) {
                         ANALOG analog_int = {0,0,0,0};
-                        INPUT input_int = {true, false, &analog_int, {NULL}, false};                        
+                        INPUT input_int = {true, false, NULL, {NULL}, false};
+                        analogs[i] = analog_int;
                         inputs[i] = input_int;
+                        inputs[i].analog_input = &analogs[i];
                     }
+                    if (inputs[0].analog_input == NULL) LED_RED_Set();
+                    //
                     for (uint8_t i = 4; i < 8; i++) {
                         INPUT input_int = {false, false, NULL, {NULL}, false};
                         inputs[i] = input_int;
@@ -213,12 +215,23 @@ int main(void) {
                     }
                     
                     
-                    inputs[0].is_set = true;
-                    inputs[0].analog_input->max = 16777215;
-                    inputs[0].analog_input->min = 0;
                     
-                    CreateAlarm(&outputs[8], &inputs[0], 10000000, 9000000, 0, true);
-                    ConfigureAnalogOutput(&outputs[0], 0, 1677721,0);
+                    
+                    ConfigureInput(&inputs[0], true, 16777215, 0);
+                    
+                    ConfigureInput(&inputs[4], false, 0, 0);
+                    ConfigureInput(&inputs[5], false, 0, 0);
+                    ConfigureInput(&inputs[6], false, 0, 0);
+                    ConfigureInput(&inputs[7], false, 0, 0);
+                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
+                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
+                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
+                    CreateDigitalAlarm(&outputs[5], &inputs[7], 7);
+                    
+                    
+                    CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
+                    CreateAnalogAlarm(&outputs[7], &inputs[0], 300, 350, 0, false);
+                    ConfigureAnalogOutput(&outputs[0], 0, (int)16777215/128,0);
                     
                         
 
@@ -260,7 +273,7 @@ int main(void) {
                     break;
 
                 case DIGITAL_INPUTS_READ:;
-                    
+                
                     uint8_t digital_channel = 4+(input_channel % 4);
                     switch(digital_channel){
                         case 4:

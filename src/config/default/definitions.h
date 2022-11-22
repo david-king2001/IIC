@@ -55,7 +55,6 @@
 #include "peripheral/spi/spi_master/plib_spi2_master.h"
 #include "peripheral/spi/spi_master/plib_spi1_master.h"
 #include "adc.h"
-#include "ePaper.h"
 #include "input_output.h"
 
 // DOM-IGNORE-BEGIN

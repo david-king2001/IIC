@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nextstate_0',['nextState',['../main_8c.html#af38b8059ea4d4c7f079756007cba7dac',1,'main.c']]]
+  ['outputs_0',['outputs',['../main_8c.html#adacf107a56ad5140cb7ec8730282d162',1,'main.c']]]
 ];

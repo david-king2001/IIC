@@ -35,10 +35,6 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>../src/adc.h</itemPath>
-      <itemPath>../src/ePaper.h</itemPath>
-      <itemPath>../src/output.h</itemPath>
-      <itemPath>../src/input.h</itemPath>
-      <itemPath>../src/EPD_4in2.h</itemPath>
       <itemPath>../src/input_output.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -84,9 +80,9 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>../src/main.c</itemPath>
-      <itemPath>../src/ePaper.c</itemPath>
       <itemPath>../src/adc.c</itemPath>
       <itemPath>../src/output.c</itemPath>
+      <itemPath>../src/input.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

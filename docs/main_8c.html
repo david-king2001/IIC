@@ -92,10 +92,6 @@ $(function() {
 Macros</h2></td></tr>
 <tr class="memitem:a2c271df0d61fde355f760076cece3245"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a2c271df0d61fde355f760076cece3245">SCALE</a>(input,  old_max,  old_min,  new_max,  new_min)&#160;&#160;&#160;((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)</td></tr>
 <tr class="separator:a2c271df0d61fde355f760076cece3245"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4d21dafec5a29b88eb1a23a0dd0b5b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#af4d21dafec5a29b88eb1a23a0dd0b5b0">DEFAULT_ANALOG</a>&#160;&#160;&#160;({0,0,0,0})</td></tr>
-<tr class="separator:af4d21dafec5a29b88eb1a23a0dd0b5b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c56e6e8a8fe4911c4290ffba7d1f30d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a5c56e6e8a8fe4911c4290ffba7d1f30d">DEFAULT_INPUT</a>&#160;&#160;&#160;({false, false, NULL, NULL})</td></tr>
-<tr class="separator:a5c56e6e8a8fe4911c4290ffba7d1f30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -139,6 +135,8 @@ Variables</h2></td></tr>
 <tr class="memitem:a140fd96cc1c3737b861b180505721c78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_i_n_p_u_t.html">INPUT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a140fd96cc1c3737b861b180505721c78">inputs</a> [8]</td></tr>
 <tr class="memdesc:a140fd96cc1c3737b861b180505721c78"><td class="mdescLeft">&#160;</td><td class="mdescRight">4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])  <a href="main_8c.html#a140fd96cc1c3737b861b180505721c78">More...</a><br /></td></tr>
 <tr class="separator:a140fd96cc1c3737b861b180505721c78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba35d8dd3600e94d691d19db44e9c258"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_a_n_a_l_o_g.html">ANALOG</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#aba35d8dd3600e94d691d19db44e9c258">analogs</a> [4]</td></tr>
+<tr class="separator:aba35d8dd3600e94d691d19db44e9c258"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99de297f3fbb83c4c92b6831662e06cc"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8c.html#a99de297f3fbb83c4c92b6831662e06cc">pastData</a> [4][30]</td></tr>
 <tr class="memdesc:a99de297f3fbb83c4c92b6831662e06cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store history of input data.  <a href="main_8c.html#a99de297f3fbb83c4c92b6831662e06cc">More...</a><br /></td></tr>
 <tr class="separator:a99de297f3fbb83c4c92b6831662e06cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,34 +164,6 @@ Variables</h2></td></tr>
 <tr class="separator:ad450f684f48549c59ab90ee916c15df1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="af4d21dafec5a29b88eb1a23a0dd0b5b0" name="af4d21dafec5a29b88eb1a23a0dd0b5b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4d21dafec5a29b88eb1a23a0dd0b5b0">&#9670;&#160;</a></span>DEFAULT_ANALOG</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_ANALOG&#160;&#160;&#160;({0,0,0,0})</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5c56e6e8a8fe4911c4290ffba7d1f30d" name="a5c56e6e8a8fe4911c4290ffba7d1f30d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c56e6e8a8fe4911c4290ffba7d1f30d">&#9670;&#160;</a></span>DEFAULT_INPUT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_INPUT&#160;&#160;&#160;({false, false, NULL, NULL})</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a2c271df0d61fde355f760076cece3245" name="a2c271df0d61fde355f760076cece3245"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2c271df0d61fde355f760076cece3245">&#9670;&#160;</a></span>SCALE</h2>
 
@@ -382,6 +352,20 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="aba35d8dd3600e94d691d19db44e9c258" name="aba35d8dd3600e94d691d19db44e9c258"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba35d8dd3600e94d691d19db44e9c258">&#9670;&#160;</a></span>analogs</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_a_n_a_l_o_g.html">ANALOG</a> analogs[4]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad450f684f48549c59ab90ee916c15df1" name="ad450f684f48549c59ab90ee916c15df1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad450f684f48549c59ab90ee916c15df1">&#9670;&#160;</a></span>button_pressed</h2>
 

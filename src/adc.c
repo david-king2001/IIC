@@ -6,7 +6,6 @@ uint8_t adc_cmd;
 //!Blocking until ADC busy signal is low
 void ADC_Wait() {
     while (ADC_RDY_Get());
-    for (int i=0; i<1000; i++);
 }
 
 //See adc.h

@@ -11,8 +11,7 @@ build/default/production/_ext/1171490990/initialization.o: \
  ../src/config/default/peripheral/spi/spi_master/plib_spi2_master.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi_master_common.h \
  ../src/config/default/peripheral/spi/spi_master/plib_spi1_master.h \
- ../src/adc.h ../src/ePaper.h ../src/input_output.h \
- ../src/config/default/device.h
+ ../src/adc.h ../src/input_output.h ../src/config/default/device.h
 
 ../src/config/default/definitions.h:
 
@@ -37,8 +36,6 @@ build/default/production/_ext/1171490990/initialization.o: \
 ../src/config/default/peripheral/spi/spi_master/plib_spi1_master.h:
 
 ../src/adc.h:
-
-../src/ePaper.h:
 
 ../src/input_output.h:
 

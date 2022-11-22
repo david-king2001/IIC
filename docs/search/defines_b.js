@@ -46,6 +46,5 @@ var searchData=
   ['ss_5fdisplay_5fpin_43',['SS_DISPLAY_PIN',['../plib__gpio_8h.html#a81f8d368e89be64cb9746d7321b279c8',1,'plib_gpio.h']]],
   ['ss_5fdisplay_5fset_44',['SS_DISPLAY_Set',['../plib__gpio_8h.html#afb1ba8e7e12fbebe5fd5b66ab21039be',1,'plib_gpio.h']]],
   ['ss_5fdisplay_5ftoggle_45',['SS_DISPLAY_Toggle',['../plib__gpio_8h.html#a5ab9e3f9b05f4fdfec7b8d917e069dc2',1,'plib_gpio.h']]],
-  ['sys_5freg_5fbase_46',['SYS_REG_BASE',['../e_paper_8h.html#a257a836eb232183e80efb04272f30d84',1,'ePaper.h']]],
-  ['sys_5ftasks_47',['SYS_Tasks',['../definitions_8h.html#ad3cd9206c135e9895bed5a5b3a2fe9af',1,'definitions.h']]]
+  ['sys_5ftasks_46',['SYS_Tasks',['../definitions_8h.html#ad3cd9206c135e9895bed5a5b3a2fe9af',1,'definitions.h']]]
 ];

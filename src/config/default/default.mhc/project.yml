@@ -62,13 +62,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 8CC08532C75EDB8B6107106FDA48857A
-- generatedChecksum: 696E004F09D6BB19D4585FFE07099948
+- generatedChecksum: A936FEBA77B27FF10663A2675270B1A1
   logicalPath: config/default/peripheral/tmr
   name: plib_tmr2.c
   physicalPath: peripheral/tmr
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 696E004F09D6BB19D4585FFE07099948
+  userChecksum: A936FEBA77B27FF10663A2675270B1A1
 - generatedChecksum: 71352EF41F6688AD8408E42970B50B66
   logicalPath: config/default/stdio
   name: xc32_monitor.c
