@@ -226,12 +226,13 @@ int main(void) {
                     CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
                     CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
                     CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
-                    CreateDigitalAlarm(&outputs[5], &inputs[7], 7);
+                    CreateDigitalAlarm(&outputs[5], &inputs[6], 7);
                     
                     
                     CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
                     CreateAnalogAlarm(&outputs[7], &inputs[0], 300, 350, 0, false);
-                    ConfigureAnalogOutput(&outputs[0], 0, (int)16777215/128,0);
+                    if(ConfigureAnalogOutput(&outputs[0], &inputs[0], 0, 800,200))
+                        LED_RED_Set();
                     
                         
 
@@ -261,12 +262,7 @@ int main(void) {
                         ANALOG* input = inputs[input_channel / 2].analog_input;
                         //Convert to user scale and save
                         input->scaled_data = SCALE((double) input->raw_data, 16777215, 0, input->max, input->min);
-                        if (input->raw_data > 10000000){
-                            LED_RED_Set();
-                        }
-                        if (input->raw_data < 9000000){
-                            LED_RED_Clear();
-                        }                        
+                    
                     }
 
                     state = DIGITAL_INPUTS_READ;
@@ -397,9 +393,16 @@ int main(void) {
                         
                         INPUT* dac1_input = &inputs[input_chnl];
 
-                        //Scale 24bit data down to 16 bits and then scale according to set scale factor
-                        outputs[DAC_channel].data = (uint16_t)SCALE(dac1_input->analog_input->scaled_data, outputs[DAC_channel].trigger, outputs[DAC_channel].reset, 65535, 0);
                         
+                        double output_trig = outputs[DAC_channel].trigger;
+                        double output_reset = outputs[DAC_channel].reset;
+                        if (dac1_input->analog_input->scaled_data > output_trig)
+                            outputs[DAC_channel].data = 65534;
+                        else if (dac1_input->analog_input->scaled_data - output_reset > 0)
+                            outputs[DAC_channel].data = SCALE(dac1_input->analog_input->scaled_data, output_trig, output_reset, 65535, 0);
+                        else
+                            outputs[DAC_channel].data = 0;
+
                         SPI1_Write((uint8_t*)&outputs[DAC_channel].data, 2);
                         while (SPI1_IsBusy());
 

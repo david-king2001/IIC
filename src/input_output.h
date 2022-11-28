@@ -95,7 +95,7 @@ extern "C" {
     
     void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low);
     
-    bool ConfigureAnalogOutput(OUTPUT* output, short int input_chnl, double max, double min );
+    bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, double max, double min );
     
     
 #ifdef	__cplusplus

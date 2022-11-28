@@ -87,15 +87,24 @@ void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chn
 //! Configure the analog outputs
 /*!
  * This configures which input to use for the analog outputs as well as the scale for the data
- * \param output the output that is getting configured
+ * \param output, the output that is getting configured
+ * \param input, the input driving the output, used to get the min/max of the input to ensure selected range in in bounds
  * \param input_chnl the input channel driving this output, 0-3 for the 4 analog inputs
- * \max double, max value of input to trigger 20mA
- * \min double, min value of input to trigger 4mA
- * \returns true on success, false on failure. Return false if input_chnl not in range
+ * \param max double, max value of input to trigger 20mA
+ * \param min double, min value of input to trigger 4mA
+ * \returns true on success, false on failure. Return false if: input_chnl not in range (0-3), input is not analog type, or select range of min-max is out of input range bounds 
  */
-bool ConfigureAnalogOutput(OUTPUT* output, short int input_chnl, double max, double min ){
+bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, double max, double min ){
     //Check valid input channel was sent
     if (input_chnl>3 && input_chnl<0) return false;
+    
+    //Input is not analog return false
+    if (!input->ang_dig) return false;
+    
+    //request bound are outside selected input bounds, return false
+    if (input->analog_input->max < max || input->analog_input->min > min) return false;
+    
+    //set values
     output->input_chnl = input_chnl;
     output->trigger = max;
     output->reset = min;

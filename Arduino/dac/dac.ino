@@ -2,16 +2,14 @@
 
 volatile byte command = 0;
 byte data[2] = {0};
-int data_i = 0;
+bool data_i = 0;
 unsigned int val;
 
 ISR (SPI_STC_vect)        //Inerrrput routine function 
 {
   byte c = SPDR;
   data[data_i]=c;
-  data_i++;
-  if (data_i == 2)
-    data_i = 0;
+  data_i = !data_i;
   SPDR=0;
 }
 
@@ -27,6 +25,6 @@ void setup()
 void loop()
 {
 
-    Serial.println((int)(data[0])+(int)(data[1]<<8));
+    Serial.println((unsigned int)(data[0])+(unsigned int)(data[1]<<8));
     
 }

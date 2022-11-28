@@ -95,13 +95,13 @@ Functions</h2></td></tr>
 <tr class="memitem:ac7b0861022a7d0d8637a91046d75de43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="output_8c.html#ac7b0861022a7d0d8637a91046d75de43">EditAlarm</a> (<a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *output, double trigger, double reset, short int input_chnl, bool high_low)</td></tr>
 <tr class="memdesc:ac7b0861022a7d0d8637a91046d75de43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Edit existing Alarm.  <a href="output_8c.html#ac7b0861022a7d0d8637a91046d75de43">More...</a><br /></td></tr>
 <tr class="separator:ac7b0861022a7d0d8637a91046d75de43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4bccb40db55df9f393519a1ccb5cbc87"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="output_8c.html#a4bccb40db55df9f393519a1ccb5cbc87">ConfigureAnalogOutput</a> (<a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *output, short int input_chnl, double max, double min)</td></tr>
-<tr class="memdesc:a4bccb40db55df9f393519a1ccb5cbc87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the analog outputs.  <a href="output_8c.html#a4bccb40db55df9f393519a1ccb5cbc87">More...</a><br /></td></tr>
-<tr class="separator:a4bccb40db55df9f393519a1ccb5cbc87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68717a47680dc881ffc2ce49e7276cf0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="output_8c.html#a68717a47680dc881ffc2ce49e7276cf0">ConfigureAnalogOutput</a> (<a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *output, <a class="el" href="struct_i_n_p_u_t.html">INPUT</a> *input, short int input_chnl, double max, double min)</td></tr>
+<tr class="memdesc:a68717a47680dc881ffc2ce49e7276cf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the analog outputs.  <a href="output_8c.html#a68717a47680dc881ffc2ce49e7276cf0">More...</a><br /></td></tr>
+<tr class="separator:a68717a47680dc881ffc2ce49e7276cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a4bccb40db55df9f393519a1ccb5cbc87" name="a4bccb40db55df9f393519a1ccb5cbc87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4bccb40db55df9f393519a1ccb5cbc87">&#9670;&#160;</a></span>ConfigureAnalogOutput()</h2>
+<a id="a68717a47680dc881ffc2ce49e7276cf0" name="a68717a47680dc881ffc2ce49e7276cf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68717a47680dc881ffc2ce49e7276cf0">&#9670;&#160;</a></span>ConfigureAnalogOutput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -111,6 +111,12 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="struct_o_u_t_p_u_t.html">OUTPUT</a> *&#160;</td>
           <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_i_n_p_u_t.html">INPUT</a> *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -141,12 +147,15 @@ Functions</h2></td></tr>
 <p>Configure the analog outputs. </p>
 <p >This configures which input to use for the analog outputs as well as the scale for the data </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">output</td><td>the output that is getting configured </td></tr>
-    <tr><td class="paramname">input_chnl</td><td>the input channel driving this output, 0-3 for the 4 analog inputs \max double, max value of input to trigger 20mA \min double, min value of input to trigger 4mA </td></tr>
+    <tr><td class="paramname">output,the</td><td>output that is getting configured </td></tr>
+    <tr><td class="paramname">input,the</td><td>input driving the output, used to get the min/max of the input to ensure selected range in in bounds </td></tr>
+    <tr><td class="paramname">input_chnl</td><td>the input channel driving this output, 0-3 for the 4 analog inputs </td></tr>
+    <tr><td class="paramname">max</td><td>double, max value of input to trigger 20mA </td></tr>
+    <tr><td class="paramname">min</td><td>double, min value of input to trigger 4mA </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>true on success, false on failure. Return false if input_chnl not in range </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on failure. Return false if: input_chnl not in range (0-3), input is not analog type, or select range of min-max is out of input range bounds </dd></dl>
 
 </div>
 </div>
