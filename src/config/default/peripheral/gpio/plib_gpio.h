@@ -89,15 +89,6 @@
 #define RELAY7_Get()               ((PORTE >> 7) & 0x1)
 #define RELAY7_PIN                  GPIO_PIN_RE7
 
-/*** Macros for SS_DISPLAY pin ***/
-#define SS_DISPLAY_Set()               (LATGSET = (1<<9))
-#define SS_DISPLAY_Clear()             (LATGCLR = (1<<9))
-#define SS_DISPLAY_Toggle()            (LATGINV= (1<<9))
-#define SS_DISPLAY_OutputEnable()      (TRISGCLR = (1<<9))
-#define SS_DISPLAY_InputEnable()       (TRISGSET = (1<<9))
-#define SS_DISPLAY_Get()               ((PORTG >> 9) & 0x1)
-#define SS_DISPLAY_PIN                  GPIO_PIN_RG9
-
 /*** Macros for SS_DAC1 pin ***/
 #define SS_DAC1_Set()               (LATBSET = (1<<4))
 #define SS_DAC1_Clear()             (LATBCLR = (1<<4))

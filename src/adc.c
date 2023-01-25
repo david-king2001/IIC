@@ -10,18 +10,18 @@ void ADC_Wait() {
 
 //See adc.h
 void ADC_Initialize() {
-    adc_cmd = MODE;
+    adc_cmd = 0b00000001;
+            //MODE;
 
     SS_ADC_Clear();
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
-    ADC_Wait();
 
-    adc_cmd = MODE_Continuous;
+    adc_cmd = 0b00000011;
+            //MODE_Continuous;
 
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
-    ADC_Wait();
     SS_ADC_Set();
 }
 
@@ -33,13 +33,11 @@ void ADC_Select_Chnl(uint8_t chnl) {
     
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
-    ADC_Wait();
 
     adc_cmd = (chnl << 4) + 0b1000 + Input_Range;
 
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
-    ADC_Wait();
     SS_ADC_Set();
 }
 
@@ -50,10 +48,10 @@ void ADC_Read_Data(uint8_t* RxData) {
     SS_ADC_Clear();
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
+    
     ADC_Wait();
     SPI1_Read(RxData, 3);
     while (SPI1_IsBusy());
-    ADC_Wait();
     SS_ADC_Set();
 }
 

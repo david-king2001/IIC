@@ -130,6 +130,29 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     
 }
 
+
+bool errorStatus = false;
+bool writeStatus = false;
+bool readStatus = false;
+
+void APP_WriteCallback(uintptr_t context)
+{
+    writeStatus = true;
+}
+
+void APP_ReadCallback(uintptr_t context)
+{
+    if(UART1_ErrorGet() != UART_ERROR_NONE)
+    {
+        /* ErrorGet clears errors, set error flag to notify console */
+        errorStatus = true;
+    }
+    else
+    {
+        readStatus = true;
+    }
+}
+//TESTING VAR
 int test = 0;
 
 
@@ -165,7 +188,12 @@ int main(void) {
     
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
     TMR2_Start();
-
+    
+    UART1_WriteCallbackRegister(APP_WriteCallback, 0);
+    UART1_ReadCallbackRegister(APP_ReadCallback, 0);
+    char mes[] = "Testing";
+    UART1_Write(&mes, sizeof(mes));
+    
     //Set GPIO pins to low for not in use
     LED_RED_Clear();
     RELAY0_Clear();
@@ -181,18 +209,37 @@ int main(void) {
     SS_ADC_Set();
     SS_DAC1_Set();
     SS_DAC2_Set();
-    SS_DISPLAY_Set();
 
     while (BTN0_Get() == 1);
 
 
     while (1) {
+        UART1_Write(&mes, sizeof(mes));
         if (task_FLAG) {
             switch (state) {
-                case STATE_INITIALIZE:
-
+                case STATE_INITIALIZE:;
+                    
+                    uint8_t temp = 0;
+                    uint8_t test_cmd = 0b01000001;
                     //Send Commands to ADC to set mode to continuous 
-                    ADC_Initialize();
+                    for (int i=0; i<5 && test!=3; i++){
+                        ADC_Initialize();
+                        temp = 0;
+                        
+                        SS_ADC_Clear();
+                        SPI1_Write(&test_cmd, 1);
+                        while(SPI1_IsBusy());
+                        
+                        SPI1_Read(&temp, 1);
+                        while(SPI1_IsBusy());
+                        
+                        SS_ADC_Set();
+                        
+                    }
+                    
+                    if (test!=3){
+                        LED_RED_Set();
+                    }
 
 
                         //Initialize Analog inputs
@@ -203,7 +250,7 @@ int main(void) {
                         inputs[i] = input_int;
                         inputs[i].analog_input = &analogs[i];
                     }
-                    if (inputs[0].analog_input == NULL) LED_RED_Set();
+                    if (inputs[0].analog_input == NULL)
                     //
                     for (uint8_t i = 4; i < 8; i++) {
                         INPUT input_int = {false, false, NULL, {NULL}, false};
@@ -217,22 +264,21 @@ int main(void) {
                     
                     
                     
-                    ConfigureInput(&inputs[0], true, 16777215, 0);
-                    
-                    ConfigureInput(&inputs[4], false, 0, 0);
-                    ConfigureInput(&inputs[5], false, 0, 0);
-                    ConfigureInput(&inputs[6], false, 0, 0);
-                    ConfigureInput(&inputs[7], false, 0, 0);
-                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
-                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
-                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
-                    CreateDigitalAlarm(&outputs[5], &inputs[6], 7);
-                    
-                    
-                    CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
-                    CreateAnalogAlarm(&outputs[7], &inputs[0], 300, 350, 0, false);
-                    if(ConfigureAnalogOutput(&outputs[0], &inputs[0], 0, 800,200))
-                        LED_RED_Set();
+//                    ConfigureInput(&inputs[0], true, 16777215, 0);
+//                    
+//                    ConfigureInput(&inputs[4], false, 0, 0);
+//                    ConfigureInput(&inputs[5], false, 0, 0);
+//                    ConfigureInput(&inputs[6], false, 0, 0);
+//                    ConfigureInput(&inputs[7], false, 0, 0);
+//                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
+//                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
+//                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
+//                    CreateDigitalAlarm(&outputs[5], &inputs[6], 7);
+//                    
+//                    
+//                    CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
+//                    CreateAnalogAlarm(&outputs[7], &inputs[0], 300, 350, 0, false);
+//                    ConfigureAnalogOutput(&outputs[0], &inputs[0], 0, 800,200));
                     
                         
 

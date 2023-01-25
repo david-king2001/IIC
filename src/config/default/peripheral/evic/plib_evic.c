@@ -57,8 +57,8 @@ void EVIC_Initialize( void )
     /* Set up priority and subpriority of enabled interrupts */
     IPC2SET = 0x4 | 0x0;  /* TIMER_2:  Priority 1 / Subpriority 0 */
     IPC7SET = 0x40000 | 0x0;  /* SPI_1:  Priority 1 / Subpriority 0 */
+    IPC7SET = 0x4000000 | 0x0;  /* UART_1:  Priority 1 / Subpriority 0 */
     IPC8SET = 0x400 | 0x0;  /* CHANGE_NOTICE:  Priority 1 / Subpriority 0 */
-    IPC8SET = 0x4000000 | 0x0;  /* SPI_2:  Priority 1 / Subpriority 0 */
 
 
 }

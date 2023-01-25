@@ -99,19 +99,17 @@ void GPIO_Initialize ( void )
     TRISFCLR = 0x30; /* Direction Control */
 
     /* PORTG Initialization */
-    LATG = 0x200; /* Initial Latch Value */
-    TRISGCLR = 0x200; /* Direction Control */
-    ANSELGCLR = 0x3c0; /* Digital Mode Enable */
+    ANSELGCLR = 0x180; /* Digital Mode Enable */
 
 
 
     /* PPS Input Remapping */
     SDI1R = 0;
-    SDI2R = 1;
+    U1RXR = 1;
 
     /* PPS Output Remapping */
     RPD5R = 8;
-    RPG8R = 6;
+    RPG7R = 3;
 
 
     uint32_t i;

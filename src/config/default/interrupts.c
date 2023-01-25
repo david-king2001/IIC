@@ -62,8 +62,8 @@
 
 void TIMER_2_InterruptHandler( void );
 void SPI_1_InterruptHandler( void );
+void UART_1_InterruptHandler( void );
 void CHANGE_NOTICE_InterruptHandler( void );
-void SPI_2_InterruptHandler( void );
 
 
 
@@ -78,14 +78,14 @@ void __ISR(_SPI_1_VECTOR, ipl1SOFT) SPI_1_Handler (void)
     SPI_1_InterruptHandler();
 }
 
+void __ISR(_UART_1_VECTOR, ipl1SOFT) UART_1_Handler (void)
+{
+    UART_1_InterruptHandler();
+}
+
 void __ISR(_CHANGE_NOTICE_VECTOR, ipl1SOFT) CHANGE_NOTICE_Handler (void)
 {
     CHANGE_NOTICE_InterruptHandler();
-}
-
-void __ISR(_SPI_2_VECTOR, ipl1SOFT) SPI_2_Handler (void)
-{
-    SPI_2_InterruptHandler();
 }
 
 

@@ -4,13 +4,13 @@
 
 
 project: IIC
-creation_date: 2022-11-21T19:15:07.815-06:00[America/Chicago]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2023-01-25T14:15:19.933-06:00[America/Chicago]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 10
 mhc_mode: IDE            # [IDE|Standalone|Headless]
 mhc_version: v3.8.5
-mplabx_version: v6.00        # if MPLAB X plugin only
-plugin_version: v3.6.4        # if MPLAB X plugin only
-compiler: XC32 (4.10)
+mplabx_version: v6.05        # if MPLAB X plugin only
+plugin_version: v3.6.3        # if MPLAB X plugin only
+compiler: XC32 (4.20)
 
 modules:
     - {name: "csp", version: "v3.14.0"}
