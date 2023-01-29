@@ -117,27 +117,6 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
-    attributes: {id: BSP_PIN_24_FUNCTION_NAME}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: DISPLAY_RDY}
-  - type: String
-    attributes: {id: BSP_PIN_24_FUNCTION_TYPE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: GPIO}
-  - type: String
-    attributes: {id: BSP_PIN_24_MODE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: DIGITAL}
-  - type: String
     attributes: {id: BSP_PIN_28_CN}
     children:
     - type: Values
@@ -195,6 +174,13 @@ children:
         attributes: {value: DIGITAL}
   - type: String
     attributes: {id: BSP_PIN_29_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_29_PD}
     children:
     - type: Values
       children:
@@ -500,6 +486,13 @@ children:
     - type: Values
       children:
       - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_49_PD}
+    children:
+    - type: Values
+      children:
+      - type: User
         attributes: {value: 'True'}
   - type: String
     attributes: {id: BSP_PIN_50_FUNCTION_NAME}
@@ -544,6 +537,20 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
+    attributes: {id: BSP_PIN_51_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_51_PD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'True'}
+  - type: String
     attributes: {id: BSP_PIN_52_DIR}
     children:
     - type: Values
@@ -570,7 +577,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: High}
+        attributes: {value: ''}
   - type: String
     attributes: {id: BSP_PIN_52_MODE}
     children:
@@ -578,6 +585,20 @@ children:
       children:
       - type: User
         attributes: {value: DIGITAL}
+  - type: String
+    attributes: {id: BSP_PIN_52_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_52_PU}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'True'}
   - type: String
     attributes: {id: BSP_PIN_53_FUNCTION_NAME}
     children:
@@ -599,6 +620,20 @@ children:
       children:
       - type: User
         attributes: {value: DIGITAL}
+  - type: String
+    attributes: {id: BSP_PIN_53_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_53_PD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: ''}
   - type: String
     attributes: {id: BSP_PIN_54_CN}
     children:
@@ -668,6 +703,13 @@ children:
     - type: Values
       children:
       - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_58_PD}
+    children:
+    - type: Values
+      children:
+      - type: User
         attributes: {value: 'True'}
   - type: String
     attributes: {id: BSP_PIN_59_FUNCTION_NAME}
@@ -692,6 +734,13 @@ children:
         attributes: {value: DIGITAL}
   - type: String
     attributes: {id: BSP_PIN_59_OD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: ''}
+  - type: String
+    attributes: {id: BSP_PIN_59_PD}
     children:
     - type: Values
       children:
@@ -1508,7 +1557,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '27152'}
+        attributes: {id: core, value: '25104'}
   - type: Hex
     attributes: {id: SYS_PORT_B_CNEN}
     children:
@@ -1516,6 +1565,13 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: '8192'}
+  - type: Hex
+    attributes: {id: SYS_PORT_B_CNPD}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '16384'}
   - type: Boolean
     attributes: {id: SYS_PORT_B_CN_USED}
     children:
@@ -1536,7 +1592,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '16384'}
+        attributes: {id: core, value: '0'}
   - type: Hex
     attributes: {id: SYS_PORT_B_TRIS}
     children:
@@ -1559,12 +1615,19 @@ children:
       - type: Dynamic
         attributes: {id: core, value: '64'}
   - type: Hex
+    attributes: {id: SYS_PORT_D_CNPD}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '10'}
+  - type: Hex
     attributes: {id: SYS_PORT_D_CNPU}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '0'}
+        attributes: {id: core, value: '16'}
   - type: Boolean
     attributes: {id: SYS_PORT_D_CN_USED}
     children:
@@ -1578,14 +1641,14 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '273'}
+        attributes: {id: core, value: '257'}
   - type: Hex
     attributes: {id: SYS_PORT_D_ODC}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '2'}
+        attributes: {id: core, value: '0'}
   - type: Hex
     attributes: {id: SYS_PORT_D_TRIS}
     children:
@@ -1629,6 +1692,13 @@ children:
       - type: Dynamic
         attributes: {id: core, value: '248'}
   - type: Hex
+    attributes: {id: SYS_PORT_F_CNPD}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '3'}
+  - type: Hex
     attributes: {id: SYS_PORT_F_LAT}
     children:
     - type: Values
@@ -1641,7 +1711,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '3'}
+        attributes: {id: core, value: '0'}
   - type: Hex
     attributes: {id: SYS_PORT_F_TRIS}
     children:
@@ -1713,12 +1783,6 @@ children:
   - type: Combo
     attributes: {id: SYS_PORT_PPS_INPUT_FUNCTION_2}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: User
@@ -1752,12 +1816,6 @@ children:
   - type: KeyValueSet
     attributes: {id: SYS_PORT_PPS_INPUT_PIN_2}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: User
@@ -1778,12 +1836,6 @@ children:
   - type: KeyValueSet
     attributes: {id: SYS_PORT_PPS_OUTPUT_FUNCTION_1}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: User
@@ -1824,12 +1876,6 @@ children:
   - type: Combo
     attributes: {id: SYS_PORT_PPS_OUTPUT_PIN_1}
     children:
-    - type: Attributes
-      children:
-      - type: Boolean
-        attributes: {id: visible}
-        children:
-        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: User

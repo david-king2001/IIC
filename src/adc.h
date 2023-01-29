@@ -16,13 +16,18 @@ extern "C" {
     #define Input_Range 0b111 
 
     //!Command for Continuous mode
-    #define MODE_Continuous 0b00100011
+    #define MODE_Continuous 0b00000011
+    #define MODE_Single 0b00000010
 
     //Register Selections
     #define DATA 0b0100 //!< Select Data Register cmd
     #define MODE 0b0001 //!< Select Mode Register cmd
     #define CONTROL 0b0010 //!< Select Control Register cmd
-
+    #define STATUS 0b0000
+    #define ID 0b1111
+    
+    #define READ 0b01000000
+    #define WRITE 0b00000000
     
     //!Initialize ADC at power on
     /*!
@@ -46,6 +51,8 @@ extern "C" {
      * \param RxData a pointer to start of buffer that stores that channels data
      */
     void ADC_Read_Data(uint8_t* RxData);
+    
+    void SPI_delay();
 
 #ifdef	__cplusplus
 }

@@ -63,10 +63,10 @@ uint8_t portNumCb[6 + 1] = { 0, 1, 1, 2, 5, 5, 5, };
 void GPIO_Initialize ( void )
 {
     /* PORTB Initialization */
-    ODCBSET = 0x4000; /* Open Drain Enable */
     LATB = 0x210; /* Initial Latch Value */
     TRISBCLR = 0x210; /* Direction Control */
-    ANSELBCLR = 0x6a10; /* Digital Mode Enable */
+    ANSELBCLR = 0x6210; /* Digital Mode Enable */
+    CNPDBSET = 0x4000; /* Pull-Down Enable */
     /* Change Notice Enable */
     CNCONBSET = _CNCONB_ON_MASK;
     PORTB;
@@ -75,10 +75,11 @@ void GPIO_Initialize ( void )
     /* PORTC Initialization */
 
     /* PORTD Initialization */
-    ODCDSET = 0x2; /* Open Drain Enable */
-    LATD = 0x111; /* Initial Latch Value */
+    LATD = 0x101; /* Initial Latch Value */
     TRISDCLR = 0x111; /* Direction Control */
     ANSELDCLR = 0xe; /* Digital Mode Enable */
+    CNPUDSET = 0x10; /* Pull-Up Enable */
+    CNPDDSET = 0xa; /* Pull-Down Enable */
     /* Change Notice Enable */
     CNCONDSET = _CNCOND_ON_MASK;
     PORTD;
@@ -94,9 +95,9 @@ void GPIO_Initialize ( void )
     IEC1SET = _IEC1_CNEIE_MASK;
 
     /* PORTF Initialization */
-    ODCFSET = 0x3; /* Open Drain Enable */
     LATF = 0x30; /* Initial Latch Value */
     TRISFCLR = 0x30; /* Direction Control */
+    CNPDFSET = 0x3; /* Pull-Down Enable */
 
     /* PORTG Initialization */
     ANSELGCLR = 0x180; /* Digital Mode Enable */

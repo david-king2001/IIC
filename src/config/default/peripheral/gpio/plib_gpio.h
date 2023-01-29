@@ -107,15 +107,6 @@
 #define RELAY2_Get()               ((PORTB >> 9) & 0x1)
 #define RELAY2_PIN                  GPIO_PIN_RB9
 
-/*** Macros for DISPLAY_RDY pin ***/
-#define DISPLAY_RDY_Set()               (LATBSET = (1<<11))
-#define DISPLAY_RDY_Clear()             (LATBCLR = (1<<11))
-#define DISPLAY_RDY_Toggle()            (LATBINV= (1<<11))
-#define DISPLAY_RDY_OutputEnable()      (TRISBCLR = (1<<11))
-#define DISPLAY_RDY_InputEnable()       (TRISBSET = (1<<11))
-#define DISPLAY_RDY_Get()               ((PORTB >> 11) & 0x1)
-#define DISPLAY_RDY_PIN                  GPIO_PIN_RB11
-
 /*** Macros for BTN1 pin ***/
 #define BTN1_Set()               (LATBSET = (1<<13))
 #define BTN1_Clear()             (LATBCLR = (1<<13))
