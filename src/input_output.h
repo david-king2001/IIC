@@ -13,8 +13,6 @@ extern "C" {
 #endif
     
 
-    typedef void (*RELAY_CALLBACK) ();
-
     typedef struct {
         //! true-Relay Output, false-DAC Output
         bool rel_dac;
@@ -41,11 +39,11 @@ extern "C" {
         //!false: Low-High Alarm; set when value drops to trigger and raise above reset
         bool high_low;
 
+        
+        
         //*****************
     } OUTPUT;
 
-    
-    typedef uint8_t(*DIGITAL_INPUT_CALLBACK) ();
 
     //!Used to store data relevant to analog inputs
     //!Reference via pointer in INPUT struct
@@ -75,8 +73,16 @@ extern "C" {
         //!true-On, false-Off
         bool digital;
 
-        //!Pointer to analog input if input is analog type
-        ANALOG* analog_input;
+                //!The value corresponding to 20mA
+        double max;
+        //!The value corresponding to 4mA
+        double min;
+
+        //!The raw data received from ADC
+        uint32_t raw_data;
+
+        //!The data converted using max and min
+        double scaled_data;
 
         //!Each input can have 4 alarms
         OUTPUT* alrms[4];
@@ -84,6 +90,9 @@ extern "C" {
         //!Determines if input has been configured, false means input is ignored as it has not be configured
         bool is_set;
     } INPUT;
+    
+    
+    
     
     void ConfigureInput(INPUT* input, bool ang_dig, double max, double min);
     

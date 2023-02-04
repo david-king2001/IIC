@@ -1,5 +1,8 @@
-#include "definitions.h"
-
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include "input_output.h"
 //! Creates Alarm from Analog source
 /*!
  This checks to make sure the desired output is not already configured as well

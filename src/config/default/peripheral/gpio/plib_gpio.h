@@ -107,17 +107,6 @@
 #define RELAY2_Get()               ((PORTB >> 9) & 0x1)
 #define RELAY2_PIN                  GPIO_PIN_RB9
 
-/*** Macros for BTN1 pin ***/
-#define BTN1_Set()               (LATBSET = (1<<13))
-#define BTN1_Clear()             (LATBCLR = (1<<13))
-#define BTN1_Toggle()            (LATBINV= (1<<13))
-#define BTN1_OutputEnable()      (TRISBCLR = (1<<13))
-#define BTN1_InputEnable()       (TRISBSET = (1<<13))
-#define BTN1_Get()               ((PORTB >> 13) & 0x1)
-#define BTN1_PIN                  GPIO_PIN_RB13
-#define BTN1_InterruptEnable()   (CNENBSET = (1<<13))
-#define BTN1_InterruptDisable()  (CNENBCLR = (1<<13))
-
 /*** Macros for DIGITAL0 pin ***/
 #define DIGITAL0_Set()               (LATBSET = (1<<14))
 #define DIGITAL0_Clear()             (LATBCLR = (1<<14))
@@ -198,8 +187,6 @@
 #define BTN0_InputEnable()       (TRISDSET = (1<<6))
 #define BTN0_Get()               ((PORTD >> 6) & 0x1)
 #define BTN0_PIN                  GPIO_PIN_RD6
-#define BTN0_InterruptEnable()   (CNENDSET = (1<<6))
-#define BTN0_InterruptDisable()  (CNENDCLR = (1<<6))
 
 /*** Macros for DIGITAL3 pin ***/
 #define DIGITAL3_Set()               (LATFSET = (1<<0))
@@ -218,39 +205,6 @@
 #define DIGITAL2_InputEnable()       (TRISFSET = (1<<1))
 #define DIGITAL2_Get()               ((PORTF >> 1) & 0x1)
 #define DIGITAL2_PIN                  GPIO_PIN_RF1
-
-/*** Macros for BTN4 pin ***/
-#define BTN4_Set()               (LATESET = (1<<0))
-#define BTN4_Clear()             (LATECLR = (1<<0))
-#define BTN4_Toggle()            (LATEINV= (1<<0))
-#define BTN4_OutputEnable()      (TRISECLR = (1<<0))
-#define BTN4_InputEnable()       (TRISESET = (1<<0))
-#define BTN4_Get()               ((PORTE >> 0) & 0x1)
-#define BTN4_PIN                  GPIO_PIN_RE0
-#define BTN4_InterruptEnable()   (CNENESET = (1<<0))
-#define BTN4_InterruptDisable()  (CNENECLR = (1<<0))
-
-/*** Macros for BTN3 pin ***/
-#define BTN3_Set()               (LATESET = (1<<1))
-#define BTN3_Clear()             (LATECLR = (1<<1))
-#define BTN3_Toggle()            (LATEINV= (1<<1))
-#define BTN3_OutputEnable()      (TRISECLR = (1<<1))
-#define BTN3_InputEnable()       (TRISESET = (1<<1))
-#define BTN3_Get()               ((PORTE >> 1) & 0x1)
-#define BTN3_PIN                  GPIO_PIN_RE1
-#define BTN3_InterruptEnable()   (CNENESET = (1<<1))
-#define BTN3_InterruptDisable()  (CNENECLR = (1<<1))
-
-/*** Macros for BTN2 pin ***/
-#define BTN2_Set()               (LATESET = (1<<2))
-#define BTN2_Clear()             (LATECLR = (1<<2))
-#define BTN2_Toggle()            (LATEINV= (1<<2))
-#define BTN2_OutputEnable()      (TRISECLR = (1<<2))
-#define BTN2_InputEnable()       (TRISESET = (1<<2))
-#define BTN2_Get()               ((PORTE >> 2) & 0x1)
-#define BTN2_PIN                  GPIO_PIN_RE2
-#define BTN2_InterruptEnable()   (CNENESET = (1<<2))
-#define BTN2_InterruptDisable()  (CNENECLR = (1<<2))
 
 /*** Macros for SS_DAC2 pin ***/
 #define SS_DAC2_Set()               (LATESET = (1<<3))
@@ -373,7 +327,6 @@ typedef enum
 
 } GPIO_PIN;
 
-typedef  void (*GPIO_PIN_CALLBACK) ( GPIO_PIN pin, uintptr_t context);
 
 void GPIO_Initialize(void);
 
@@ -398,29 +351,6 @@ void GPIO_PortToggle(GPIO_PORT port, uint32_t mask);
 void GPIO_PortInputEnable(GPIO_PORT port, uint32_t mask);
 
 void GPIO_PortOutputEnable(GPIO_PORT port, uint32_t mask);
-
-void GPIO_PortInterruptEnable(GPIO_PORT port, uint32_t mask);
-
-void GPIO_PortInterruptDisable(GPIO_PORT port, uint32_t mask);
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Local Data types and Prototypes
-// *****************************************************************************
-// *****************************************************************************
-
-typedef struct {
-
-    /* target pin */
-    GPIO_PIN                 pin;
-
-    /* Callback for event on target pin*/
-    GPIO_PIN_CALLBACK        callback;
-
-    /* Callback Context */
-    uintptr_t               context;
-
-} GPIO_PIN_CALLBACK_OBJ;
 
 // *****************************************************************************
 // *****************************************************************************
@@ -468,21 +398,6 @@ static inline void GPIO_PinOutputEnable(GPIO_PIN pin)
     GPIO_PortOutputEnable((GPIO_PORT)(pin>>4), 0x1 << (pin & 0xF));
 }
 
-static inline void GPIO_PinInterruptEnable(GPIO_PIN pin)
-{
-    GPIO_PortInterruptEnable((GPIO_PORT)(pin>>4), 0x1 << (pin & 0xF));
-}
-
-static inline void GPIO_PinInterruptDisable(GPIO_PIN pin)
-{
-    GPIO_PortInterruptDisable((GPIO_PORT)(pin>>4), 0x1 << (pin & 0xF));
-}
-
-bool GPIO_PinInterruptCallbackRegister(
-    GPIO_PIN pin,
-    const   GPIO_PIN_CALLBACK callBack,
-    uintptr_t context
-);
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility

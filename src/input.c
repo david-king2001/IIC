@@ -1,4 +1,8 @@
 #include "definitions.h"
+#include "input_output.h"
+
+
+
 void ConfigureInput(INPUT* input, bool ang_dig, double max, double min){
     
     input->ang_dig = ang_dig;

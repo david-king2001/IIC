@@ -24,9 +24,9 @@
 #include <stdlib.h>                     // Defines EXIT_FAILURE
 #include "definitions.h"                // SYS function prototypes
 #include <string.h>
-#include <stdio.h>
-
-
+#include "adc.h"
+#include "input_output.h"
+#include "terminal_input_output.h"
 // *****************************************************************************
 // *****************************************************************************
 // Section: Main Entry Point
@@ -96,8 +96,6 @@ volatile bool task_FLAG = false;
 bool thirty_sec_passed = false;
 
 
-
-
 uint8_t input_channel = 0; //!< 0-7, 0-3 is Analog inputs, 4-7 is Digital Inputs
 uint8_t DAC_channel = 0; //!< 0-1, Either DAC1 or DAC2
 uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
@@ -130,68 +128,29 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     
 }
 
-
-bool errorStatus = false;
-bool writeStatus = false;
-bool readStatus = false;
-
 void APP_WriteCallback(uintptr_t context)
 {
-    
     writeStatus = true;
+    
 }
 
 void APP_ReadCallback(uintptr_t context)
 {
-    if(UART1_ErrorGet() != UART_ERROR_NONE)
-    {
-        /* ErrorGet clears errors, set error flag to notify console */
-        errorStatus = true;
+    
+    if (rec_char == '\r' || receive_buff_size > 127){
+        receive_buff_size = 0;
+        
+    }else{
+        receive_buffer[receive_buff_size] = rec_char;
     }
-    else
-    {
-        readStatus = true;
-    }
-}
-//TESTING VAR
-int test = 0;
-
-
-GPIO_PIN button_pressed = GPIO_PIN_NONE; //!< Used to store last button pressed
-
-//!Callback for user buttons interrupt
-/*!
- * Whenever a button is released, check to make sure last button pressed was handled i.e pin = GPIO_PIN_NONE, 
- * then set button_pressed to pin for button that was pressed
- */
-void InputBtn(GPIO_PIN pin, uintptr_t context){
-    if (BTN0_Get()==1 && button_pressed == GPIO_PIN_NONE){
-        button_pressed = pin;
-    }
+    receive_buff_size++;
 }
 
-//Terminal out with UART
-char buffer[512] = {};
-char receiveBuffer[128] = {};
-int receiveBuff_size = 0;
-int nbytes = 0;
-uint8_t reg_data = 0;
-uint8_t test_cmd = 0;
+
 //!Main
 int main(void) {
     SYS_Initialize(NULL);
 
-    GPIO_PinInterruptCallbackRegister(BTN0_PIN, InputBtn, (uintptr_t)NULL);
-    GPIO_PinInterruptCallbackRegister(BTN1_PIN, InputBtn, (uintptr_t)NULL);
-    GPIO_PinInterruptCallbackRegister(BTN2_PIN, InputBtn, (uintptr_t)NULL);
-    GPIO_PinInterruptCallbackRegister(BTN3_PIN, InputBtn, (uintptr_t)NULL);
-    GPIO_PinInterruptCallbackRegister(BTN4_PIN, InputBtn, (uintptr_t)NULL);
-    GPIO_PinInterruptEnable(BTN0_PIN);
-    GPIO_PinInterruptEnable(BTN1_PIN);
-    GPIO_PinInterruptEnable(BTN2_PIN);
-    GPIO_PinInterruptEnable(BTN3_PIN);
-    GPIO_PinInterruptEnable(BTN4_PIN);
-    
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
     TMR2_Start();
     
@@ -215,52 +174,25 @@ int main(void) {
     SS_DAC2_Set();
 
     while (BTN0_Get() == 1);
-
+ 
 
     while (1) {
         
         if (task_FLAG) {
             switch (state) {
                 case STATE_INITIALIZE:;
+                
+                
+                    Terminal_Initialize();
+                    
                     
                     UART1_Write(&"\033[2J", sizeof("\033[2J"));
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&"\033[0;0H", sizeof("\033[0;0H"));
                     while (UART1_WriteIsBusy());
                     
-                    uint8_t reg_data = 0;
-                    uint8_t test_cmd = 0b01000000;
-
-                        
-                        //Send Commands to ADC to set mode to continuous 
-//                    for (int i=0; i<5 && temp!=3; i++){
-//                            test_cmd = 0b00000001;
-//                                    //MODE;
-//
-//                            SS_ADC_Clear();
-//                            for (int i=0; i<100; i++);
-//                            SPI1_Write(&test_cmd, 1);
-//                            while (SPI1_IsBusy());
-//
-//                            test_cmd = 0b00000011;
-//                                    //MODE_Continuous;
-//
-//                            for (int i=0; i<100; i++);
-//                            SPI1_Write(&test_cmd, 1);
-//                            while (SPI1_IsBusy());
-//                            for (int i=0; i<100; i++);
-//                            SS_ADC_Set();
-//                            
-//                        
-//                        
-//
-//                        
-//                        
-//                    }
                     ADC_Initialize();
-                    if (reg_data == 3) LED_RED_Set();
-
-
+                    
                         //Initialize Analog inputs
                     for (uint8_t i = 0; i < 4; i++) {
                         ANALOG analog_int = {0,0,0,0};
@@ -283,7 +215,10 @@ int main(void) {
                     
                     
                     
-                    ConfigureInput(&inputs[0], true, 16777215, 0);
+//                    ConfigureInput(&inputs[0], true, 16777215, 0);
+//                    ConfigureInput(&inputs[1], true, 16777215, 0);
+//                    ConfigureInput(&inputs[2], true, 16777215, 0);
+//                    ConfigureInput(&inputs[3], true, 16777215, 0);
 //                    
 //                    ConfigureInput(&inputs[4], false, 0, 0);
 //                    ConfigureInput(&inputs[5], false, 0, 0);
@@ -314,7 +249,6 @@ int main(void) {
                     //Read the data
                     
                     if (inputs[input_channel / 2].is_set){
-                        LED_RED_Set();
                         ADC_Read_Data((uint8_t*)&(inputs[input_channel / 2].analog_input->raw_data));
 
                         //Store the data in past storage if 30 seconds have past
@@ -363,40 +297,47 @@ int main(void) {
                     //Set cursor to 10th line
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&"\033[10;0H", sizeof("\033[10;0H"));
+
                     
                     //TESTING///////////////////
-                        test_cmd = READ + STATUS;
-                        SS_ADC_Clear();
-                        SPI1_Write(&test_cmd, 1);
-                        while(SPI1_IsBusy());
-
-                        SPI1_Read(&reg_data, 1);
-                        while(SPI1_IsBusy());
-                        SS_ADC_Set();    
-                        
-                        nbytes = sprintf(buffer, "Status: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-                        while (UART1_WriteIsBusy()); 
-                        UART1_Write(&buffer, nbytes);
-                        while (UART1_WriteIsBusy());
-                        
-                        
-                        test_cmd = READ+MODE;
-                        reg_data = 0;
-                        
-                        SS_ADC_Clear();
-                        SPI1_Write(&test_cmd, 1);
-                        while(SPI1_IsBusy());
- 
-                        SPI1_Read(&reg_data, 1);
-                        while(SPI1_IsBusy());
-                        SS_ADC_Set(); 
-                        
-                        
-                        nbytes = sprintf(buffer, "Mode Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-                        while (UART1_WriteIsBusy()); 
-                        UART1_Write(&buffer, nbytes);
-                        while (UART1_WriteIsBusy());
-                        
+//                        test_cmd = READ + STATUS;
+//                        SS_ADC_Clear();
+//                        for (int i=0; i<100000; i++);
+//                        SPI1_Write(&test_cmd, 1);
+//                        while(SPI1_IsBusy());
+//                        
+//                        SPI1_Read(&reg_data, 1);
+//                        while(SPI1_IsBusy());
+//                        for (int i=0; i<100; i++);
+//                        for (int i=0; i<100000; i++);
+//                        SS_ADC_Set();    
+//                        
+//                        nbytes = sprintf(buffer, "Status: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
+//                        while (UART1_WriteIsBusy()); 
+//                        UART1_Write(&buffer, nbytes);
+//                        while (UART1_WriteIsBusy());
+//                        
+//                        
+//                        
+//                        test_cmd = READ+MODE;
+//                        reg_data = 0;
+//                        
+//                        SS_ADC_Clear();
+//                        SPI1_Write(&test_cmd, 1);
+//                        while(SPI1_IsBusy());
+// 
+//                        SPI1_Read(&reg_data, 1);
+//                        while(SPI1_IsBusy());
+//                        for (int i=0; i<100; i++);
+//                        SS_ADC_Set(); 
+//                        
+//                        
+//                        nbytes = sprintf(buffer, "Mode Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
+//                        while (UART1_WriteIsBusy()); 
+//                        UART1_Write(&buffer, nbytes);
+//                        while (UART1_WriteIsBusy());
+//                        
+//                        
 //                        test_cmd = READ+ID;
 //                        reg_data = 0;
 //                        SS_ADC_Clear();
@@ -406,13 +347,15 @@ int main(void) {
 //                        
 //                        SPI1_Read(&reg_data, 1);
 //                        while(SPI1_IsBusy());
+//                        for (int i=0; i<100; i++);
 //                        SS_ADC_Set(); 
 //                        nbytes = sprintf(buffer, "ID Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
 //                        while (UART1_WriteIsBusy()); 
 //                        UART1_Write(&buffer, nbytes);
 //                        while (UART1_WriteIsBusy());
 //                        
-//                        test_cmd = READ+ID;
+//                        
+//                        test_cmd = READ+MODE;
 //                        reg_data = 0;
 //                        SS_ADC_Clear();
 //                        SPI1_Write(&test_cmd, 1);
@@ -421,6 +364,7 @@ int main(void) {
 //                        
 //                        SPI1_Read(&reg_data, 1);
 //                        while(SPI1_IsBusy());
+//                        for (int i=0; i<100; i++);
 //                        SS_ADC_Set(); 
 //                        nbytes = sprintf(buffer, "ID Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
 //                        while (UART1_WriteIsBusy()); 
@@ -488,8 +432,13 @@ int main(void) {
                         }
                     }
                     
+                    
                     while (UART1_WriteIsBusy());
-                    UART1_Write(&receiveBuffer, sizeof(receiveBuffer));
+                    if (rec_char == '\r'){
+                        UART1_Write(&"\033[0K", sizeof("\033[0K"));
+                    }else{
+                        UART1_Write(&receive_buffer, receive_buff_size);
+                    }
                     while (UART1_WriteIsBusy());
                     state = USER_INPUT_PERFORM_LOGIC;
                     
@@ -498,15 +447,13 @@ int main(void) {
 
                     //TODO
                 case USER_INPUT_PERFORM_LOGIC:
-                    if(writeStatus == true)
-                    {
-                        /* Submit buffer to read user data */
-                        writeStatus = false;
-                        UART1_Read(&receiveBuffer, sizeof(receiveBuffer));
-                    }
-                    if (receiveBuffer[1]=='1'){
-                        LED_RED_Toggle();
-                    }
+                   
+                    UART1_Read(&rec_char, 1);
+                    
+                    
+                    
+                    
+                    
                     state = CHECK_ALARMS;
                     break;
 

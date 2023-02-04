@@ -48,14 +48,16 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "peripheral/uart/plib_uart1.h"
 #include "peripheral/tmr/plib_tmr2.h"
 #include "peripheral/clk/plib_clk.h"
 #include "peripheral/gpio/plib_gpio.h"
 #include "peripheral/evic/plib_evic.h"
 #include "peripheral/spi/spi_master/plib_spi1_master.h"
-#include "adc.h"
-#include "input_output.h"
+//#include "adc.h"
+//#include "input_output.h"
+//#include "terminal_input_output.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility

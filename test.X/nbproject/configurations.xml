@@ -40,6 +40,7 @@
       </logicalFolder>
       <itemPath>../src/adc.h</itemPath>
       <itemPath>../src/input_output.h</itemPath>
+      <itemPath>../src/terminal_input_output.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -107,6 +108,7 @@
       <itemPath>Makefile</itemPath>
       <itemPath>../src/config/default/harmony-manifest-success.yml</itemPath>
     </logicalFolder>
+    <itemPath>../src/terminal_input_output.c</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../src</Elem>
