@@ -2,6 +2,8 @@
 #include "adc.h"
 #include "input_output.h"
 
+//!Local varaible to store what commend to send to ADC
+uint8_t adc_cmd;
 
 //!Blocking until ADC busy signal is low
 void ADC_Wait() {

@@ -13,6 +13,13 @@ extern "C" {
 #endif
     
 
+    #define ANALOG true
+    #define DIGITAL false
+
+    #define HIGH_LOW_ALARM true
+    #define LOW_HIGH_ALARM false
+    
+    
     typedef struct {
         //! true-Relay Output, false-DAC Output
         bool rel_dac;
@@ -45,23 +52,6 @@ extern "C" {
     } OUTPUT;
 
 
-    //!Used to store data relevant to analog inputs
-    //!Reference via pointer in INPUT struct
-    typedef struct {
-        //!The value corresponding to 20mA
-        double max;
-        //!The value corresponding to 4mA
-        double min;
-
-        //!The raw data received from ADC
-        uint32_t raw_data;
-
-        //!The data converted using max and min
-        double scaled_data;
-
-
-    } ANALOG;
-
     /*!Stores data relevant to inputs. 
      * Includes pointers to ANALOG Struct is input is analog type
      * Includes list of 4 pointers to OUTPUTs used for alarms
@@ -71,7 +61,7 @@ extern "C" {
         bool ang_dig;
 
         //!true-On, false-Off
-        bool digital;
+        bool digital_on;
 
                 //!The value corresponding to 20mA
         double max;
@@ -91,8 +81,8 @@ extern "C" {
         bool is_set;
     } INPUT;
     
-    
-    
+    extern INPUT inputs[8]; //!<4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
+    extern OUTPUT outputs[10]; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
     
     void ConfigureInput(INPUT* input, bool ang_dig, double max, double min);
     
@@ -102,7 +92,7 @@ extern "C" {
     
     void DeleteAlarm(OUTPUT* output);
     
-    void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low);
+    void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, int alarm_num, bool high_low);
     
     bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, double max, double min );
     

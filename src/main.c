@@ -24,6 +24,7 @@
 #include <stdlib.h>                     // Defines EXIT_FAILURE
 #include "definitions.h"                // SYS function prototypes
 #include <string.h>
+#include <stdio.h>
 #include "adc.h"
 #include "input_output.h"
 #include "terminal_input_output.h"
@@ -81,11 +82,16 @@ STATES nextState = STATE_INITIALIZE;
 // DATA STORAGE
 // ***********************
 
-INPUT inputs[8]; //!<4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
-ANALOG analogs[4];
 double pastData[4][30]; //!<Store history of input data
-OUTPUT outputs[10]; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
 
+#define input_initialize {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
+#define input_initialize_digital {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
+#define output_initialize_analog {.data = 1.1, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
+#define output_initialize {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
+
+//!4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
+INPUT inputs[8] = {input_initialize, input_initialize, input_initialize, input_initialize, input_initialize_digital, input_initialize_digital, input_initialize_digital, input_initialize_digital}; 
+OUTPUT outputs[10] = {output_initialize_analog, output_initialize_analog, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize}; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
 //************************
 
 
@@ -130,7 +136,7 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
 
 void APP_WriteCallback(uintptr_t context)
 {
-    writeStatus = true;
+    //writeStatus = true;
     
 }
 
@@ -139,14 +145,14 @@ void APP_ReadCallback(uintptr_t context)
     
     if (rec_char == '\r' || receive_buff_size > 127){
         receive_buff_size = 0;
-        
+        enter = true;
     }else{
         receive_buffer[receive_buff_size] = rec_char;
+        receive_buff_size++;
     }
-    receive_buff_size++;
+    
 }
-
-
+char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\n To edit input first character must be \'I\'\r\n Ex A type:%s input:%d output:%d alarm:%d high/low:%s trigger:%lf reset:%lf\r\n Ex I type:%s input:%d max:%d min:%d \r\n";
 //!Main
 int main(void) {
     SYS_Initialize(NULL);
@@ -182,6 +188,11 @@ int main(void) {
             switch (state) {
                 case STATE_INITIALIZE:;
                 
+                for (int i=0; i<10; i++){
+                    if (outputs[i].data > 1){
+                        LED_RED_Set();
+                    }
+                }
                 
                     Terminal_Initialize();
                     
@@ -193,40 +204,20 @@ int main(void) {
                     
                     ADC_Initialize();
                     
-                        //Initialize Analog inputs
-                    for (uint8_t i = 0; i < 4; i++) {
-                        ANALOG analog_int = {0,0,0,0};
-                        INPUT input_int = {true, false, NULL, {NULL}, false};
-                        analogs[i] = analog_int;
-                        inputs[i] = input_int;
-                        inputs[i].analog_input = &analogs[i];
-                    }
-                    if (inputs[0].analog_input == NULL)
-                    //
-                    for (uint8_t i = 4; i < 8; i++) {
-                        INPUT input_int = {false, false, NULL, {NULL}, false};
-                        inputs[i] = input_int;
-                    }
-                    for (uint8_t i=0; i<10; i++){
-                        OUTPUT output_int = {false, 0, false, 0,0,-1,false};                    
-                        outputs[i] = output_int;
-                    }
                     
                     
-                    
-                    
-//                    ConfigureInput(&inputs[0], true, 16777215, 0);
+                                        ConfigureInput(&inputs[0], true, 16777215, 0);
 //                    ConfigureInput(&inputs[1], true, 16777215, 0);
 //                    ConfigureInput(&inputs[2], true, 16777215, 0);
 //                    ConfigureInput(&inputs[3], true, 16777215, 0);
 //                    
-//                    ConfigureInput(&inputs[4], false, 0, 0);
-//                    ConfigureInput(&inputs[5], false, 0, 0);
-//                    ConfigureInput(&inputs[6], false, 0, 0);
-//                    ConfigureInput(&inputs[7], false, 0, 0);
-//                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
-//                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
-//                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
+                    ConfigureInput(&inputs[4], DIGITAL, 0, 0);
+                    ConfigureInput(&inputs[5], DIGITAL, 0, 0);
+                    ConfigureInput(&inputs[6], DIGITAL, 0, 0);
+                    ConfigureInput(&inputs[7], DIGITAL, 0, 0);
+                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
+                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
+                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
 //                    
 //                    
 //                    CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
@@ -249,16 +240,15 @@ int main(void) {
                     //Read the data
                     
                     if (inputs[input_channel / 2].is_set){
-                        ADC_Read_Data((uint8_t*)&(inputs[input_channel / 2].analog_input->raw_data));
+                        ADC_Read_Data((uint8_t*)&(inputs[input_channel / 2].raw_data));
 
                         //Store the data in past storage if 30 seconds have past
                         if (thirty_sec_passed) {
-                            pastDataUpdate(&inputs[input_channel / 2].analog_input->scaled_data);
+                            pastDataUpdate(&inputs[input_channel / 2].scaled_data);
                             thirty_sec_passed = false;
                         }
-
-
-                        ANALOG* input = inputs[input_channel / 2].analog_input;
+                       
+                        INPUT* input = &inputs[input_channel / 2];
                         //Convert to user scale and save
                         input->scaled_data = SCALE((double) input->raw_data, 16777215, 0, input->max, input->min);
                     
@@ -272,16 +262,16 @@ int main(void) {
                     uint8_t digital_channel = 4+(input_channel % 4);
                     switch(digital_channel){
                         case 4:
-                            inputs[digital_channel].digital = DIGITAL0_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL0_Get()==1;
                             break;
                         case 5:
-                            inputs[digital_channel].digital = DIGITAL1_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL1_Get()==1;
                             break;
                         case 6:
-                            inputs[digital_channel].digital = DIGITAL2_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL2_Get()==1;
                             break;
                         case 7:
-                            inputs[digital_channel].digital = DIGITAL3_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL3_Get()==1;
                             break;
                         default:
                             break;
@@ -297,115 +287,14 @@ int main(void) {
                     //Set cursor to 10th line
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&"\033[10;0H", sizeof("\033[10;0H"));
-
                     
-                    //TESTING///////////////////
-//                        test_cmd = READ + STATUS;
-//                        SS_ADC_Clear();
-//                        for (int i=0; i<100000; i++);
-//                        SPI1_Write(&test_cmd, 1);
-//                        while(SPI1_IsBusy());
-//                        
-//                        SPI1_Read(&reg_data, 1);
-//                        while(SPI1_IsBusy());
-//                        for (int i=0; i<100; i++);
-//                        for (int i=0; i<100000; i++);
-//                        SS_ADC_Set();    
-//                        
-//                        nbytes = sprintf(buffer, "Status: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-//                        while (UART1_WriteIsBusy()); 
-//                        UART1_Write(&buffer, nbytes);
-//                        while (UART1_WriteIsBusy());
-//                        
-//                        
-//                        
-//                        test_cmd = READ+MODE;
-//                        reg_data = 0;
-//                        
-//                        SS_ADC_Clear();
-//                        SPI1_Write(&test_cmd, 1);
-//                        while(SPI1_IsBusy());
-// 
-//                        SPI1_Read(&reg_data, 1);
-//                        while(SPI1_IsBusy());
-//                        for (int i=0; i<100; i++);
-//                        SS_ADC_Set(); 
-//                        
-//                        
-//                        nbytes = sprintf(buffer, "Mode Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-//                        while (UART1_WriteIsBusy()); 
-//                        UART1_Write(&buffer, nbytes);
-//                        while (UART1_WriteIsBusy());
-//                        
-//                        
-//                        test_cmd = READ+ID;
-//                        reg_data = 0;
-//                        SS_ADC_Clear();
-//                        SPI1_Write(&test_cmd, 1);
-//                        while(SPI1_IsBusy());
-//                        
-//                        
-//                        SPI1_Read(&reg_data, 1);
-//                        while(SPI1_IsBusy());
-//                        for (int i=0; i<100; i++);
-//                        SS_ADC_Set(); 
-//                        nbytes = sprintf(buffer, "ID Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-//                        while (UART1_WriteIsBusy()); 
-//                        UART1_Write(&buffer, nbytes);
-//                        while (UART1_WriteIsBusy());
-//                        
-//                        
-//                        test_cmd = READ+MODE;
-//                        reg_data = 0;
-//                        SS_ADC_Clear();
-//                        SPI1_Write(&test_cmd, 1);
-//                        while(SPI1_IsBusy());
-//                        
-//                        
-//                        SPI1_Read(&reg_data, 1);
-//                        while(SPI1_IsBusy());
-//                        for (int i=0; i<100; i++);
-//                        SS_ADC_Set(); 
-//                        nbytes = sprintf(buffer, "ID Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-//                        while (UART1_WriteIsBusy()); 
-//                        UART1_Write(&buffer, nbytes);
-//                        while (UART1_WriteIsBusy());
-//                        
-//                        
-//                        test_cmd = READ+ID;
-//                        reg_data = 0;
-//                        SS_ADC_Clear();
-//                        SPI1_Write(&test_cmd, 1);
-//                        while(SPI1_IsBusy());
-//                        
-//                        
-//                        SPI1_Read(&reg_data, 1);
-//                        
-//                        while(SPI1_IsBusy());
-//                        
-//                        SS_ADC_Set(); 
-//                        nbytes = sprintf(buffer, "ID Reg: %d%d%d%d%d%d%d%d\r\n", (reg_data>>7) & 0x01,(reg_data>>6) & 0x01,(reg_data>>5) & 0x01,(reg_data>>4) & 0x01,(reg_data>>3) & 0x01,(reg_data>>2) & 0x01,(reg_data>>1) & 0x01, reg_data & 0x01 );
-//                        while (UART1_WriteIsBusy()); 
-//                        UART1_Write(&buffer, nbytes);
-//                        while (UART1_WriteIsBusy());
-                     
-                    //////////////////
+                    PrintAnalogInputs();
                     
+                    PrintDigitalInputs();
                     
+                    PrintAnalogOutputs();
                     
-                    //Print the values of each input
-                    for (int i=0; i<4; i++){
-                        nbytes = sprintf(buffer, "Analog Input #%d %u\r\n",i, analogs[i].raw_data);
-                        while (UART1_WriteIsBusy()); 
-                        UART1_Write(&buffer, nbytes);
-                        while (UART1_WriteIsBusy());
-                    }
-                    for (int i=4; i<8; i++){
-                        nbytes = sprintf(buffer, "Digital Input #%d %s\r\n",i-4, inputs[i].digital ? "on" : "off");
-                        while (UART1_WriteIsBusy()); 
-                        UART1_Write(&buffer, nbytes);
-                        while (UART1_WriteIsBusy());
-                    }
+                    PrintRelays();
                     
                     //Print the alarms currently set for each input
                     for (int i=0; i<8; i++){
@@ -432,11 +321,15 @@ int main(void) {
                         }
                     }
                     
-                    
+                    while (UART1_WriteIsBusy()); 
+                    UART1_Write(&input_instructions, sizeof(input_instructions));
                     while (UART1_WriteIsBusy());
-                    if (rec_char == '\r'){
+                    while (UART1_WriteIsBusy());
+                    if (enter){
+                        //Clear the line
                         UART1_Write(&"\033[0K", sizeof("\033[0K"));
                     }else{
+                        //Print back what has been received
                         UART1_Write(&receive_buffer, receive_buff_size);
                     }
                     while (UART1_WriteIsBusy());
@@ -448,8 +341,22 @@ int main(void) {
                     //TODO
                 case USER_INPUT_PERFORM_LOGIC:
                    
+                    //Read a single character
                     UART1_Read(&rec_char, 1);
                     
+                    //If the enter key was pressed, check input buffer
+                    if (enter){
+                        enter = false;
+                        if (receive_buffer[0] == 'I'){
+                            ParseInputForInput(&receive_buffer[2]);
+                        }else if (receive_buffer[0] == 'A'){
+                            ParseInputForAlarm(&receive_buffer[2]);
+                        }else{
+                            while (UART1_WriteIsBusy()); 
+                            UART1_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
+                            while (UART1_WriteIsBusy());
+                        }
+                    }
                     
                     
                     
@@ -471,25 +378,25 @@ int main(void) {
                                 if (output->high_low) {
 
                                     //If data is above trigger point set relay output
-                                    if (input->analog_input->scaled_data > output->trigger) {
+                                    if (input->scaled_data > output->trigger) {
                                         output->relay = true;
                                         //if data is below reset point clear relay output    
-                                    } else if (input->analog_input->scaled_data < output->reset) {
+                                    } else if (input->scaled_data < output->reset) {
                                         output->relay = false;
                                     }
                                 } else {
                                     //If data is below trigger point set relay output
-                                    if (input->analog_input->scaled_data < output->trigger) {
+                                    if (input->scaled_data < output->trigger) {
                                         output->relay = true;
                                         //if data is above reset point clear relay output 
-                                    } else if (input->analog_input->scaled_data > output->reset) {
+                                    } else if (input->scaled_data > output->reset) {
                                         output->relay = false;
                                     }
                                 }
                                 //Input is digital, simply check on and off
                             } else {
                                 
-                                if (input->digital) {
+                                if (input->digital_on) {
                                     output->relay = true;
                                 } else {
                                     output->relay = false;
@@ -550,10 +457,10 @@ int main(void) {
                         
                         double output_trig = outputs[DAC_channel].trigger;
                         double output_reset = outputs[DAC_channel].reset;
-                        if (dac1_input->analog_input->scaled_data > output_trig)
+                        if (dac1_input->scaled_data > output_trig)
                             outputs[DAC_channel].data = 65534;
-                        else if (dac1_input->analog_input->scaled_data - output_reset > 0)
-                            outputs[DAC_channel].data = SCALE(dac1_input->analog_input->scaled_data, output_trig, output_reset, 65535, 0);
+                        else if (dac1_input->scaled_data - output_reset > 0)
+                            outputs[DAC_channel].data = SCALE(dac1_input->scaled_data, output_trig, output_reset, 65535, 0);
                         else
                             outputs[DAC_channel].data = 0;
 

@@ -13,21 +13,35 @@ extern "C" {
 #endif
 
 
-    bool errorStatus;
-    bool writeStatus;
-    bool readStatus;
+    extern bool enter;
     //Terminal out with UART
-    char buffer[512];
-    char receive_buffer[128];
-    char rec_char;
-    int receive_buff_size;
-    int nbytes;
-    uint8_t reg_data;
-    uint8_t cmd;
+    extern char buffer[512];
+    extern char receive_buffer[128];
+    extern char rec_char;
+    extern int receive_buff_size;
+    extern int nbytes;
+    extern uint8_t reg_data;
+    extern uint8_t cmd;
+    
+    
     
     void Terminal_Initialize();
     
     void PrintRegister(uint8_t);
+    
+    void PrintAnalogInputs();
+    
+    void PrintDigitalInputs();
+    
+    void PrintAnalogOutputs();
+    
+    void PrintRelays();
+    
+    void ParseInputForAlarm(char* input_string);
+    
+    void ParseInputForInput(char* input_string);
+    
+  
 
 #ifdef	__cplusplus
 }

@@ -29,8 +29,7 @@ extern "C" {
     #define READ 0b01000000
     #define WRITE 0b00000000
     
-    //!Local varaible to store what commend to send to ADC
-    uint8_t adc_cmd;
+
     //!Initialize ADC at power on
     /*!
      * Send command to ADC Communication Register to select MODE register\n

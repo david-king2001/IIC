@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "input_output.h"
+
+
+
+
 //! Creates Alarm from Analog source
 /*!
  This checks to make sure the desired output is not already configured as well
@@ -15,7 +19,7 @@
  \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
  \return true on success, false on falure. Returns false if output already configured or input channel already has 4 alarms
  */
-bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low) {
+bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl,  bool high_low) {
     if (output->input_chnl != -1 || !input->is_set) {
         return false;
     } else {
@@ -80,11 +84,12 @@ void DeleteAlarm(OUTPUT* output) {
  \param input_chl an integer that is the channel number for the input
  \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
  */
-void EditAlarm(OUTPUT* output, double trigger, double reset, short int input_chnl, bool high_low) {
-    output->input_chnl = input_chnl;
-    output->trigger = trigger;
-    output->reset = reset;
-    output->high_low = high_low;
+void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, int alarm_num, bool high_low) {
+        output->input_chnl = input_chnl;
+        output->trigger = trigger;
+        output->reset = reset;
+        output->high_low = high_low;
+        input->alrms[alarm_num] = output;
 }
 
 //! Configure the analog outputs
@@ -102,10 +107,10 @@ bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, d
     if (input_chnl>3 && input_chnl<0) return false;
     
     //Input is not analog return false
-    if (!input->ang_dig) return false;
+    if (!inputs[input_chnl].ang_dig) return false;
     
     //request bound are outside selected input bounds, return false
-    if (input->analog_input->max < max || input->analog_input->min > min) return false;
+    if (inputs[input_chnl].max < max || inputs[input_chnl].min > min) return false;
     
     //set values
     output->input_chnl = input_chnl;
