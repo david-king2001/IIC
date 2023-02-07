@@ -85,9 +85,9 @@ STATES nextState = STATE_INITIALIZE;
 double pastData[4][30]; //!<Store history of input data
 
 #define input_initialize {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
-#define input_initialize_digital {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
-#define output_initialize_analog {.data = 1.1, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
-#define output_initialize {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
+#define input_initialize_digital {.ang_dig = false, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
+#define output_initialize_analog {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
+#define output_initialize {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = true, .relay = false, .reset = 0.0, .trigger = 0.0}
 
 //!4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
 INPUT inputs[8] = {input_initialize, input_initialize, input_initialize, input_initialize, input_initialize_digital, input_initialize_digital, input_initialize_digital, input_initialize_digital}; 
@@ -152,7 +152,7 @@ void APP_ReadCallback(uintptr_t context)
     }
     
 }
-char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\n To edit input first character must be \'I\'\r\n Ex A type:%s input:%d output:%d alarm:%d high/low:%s trigger:%lf reset:%lf\r\n Ex I type:%s input:%d max:%d min:%d \r\n";
+char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\nTo edit input first character must be \'I\'\r\n Ex A type:R input:0 output:0 alarm:0 high/low:low trigger:1234.5 reset:5432.1\r\nEx I type:A input:0 max:5432.1 min:1234.5\r\n";
 //!Main
 int main(void) {
     SYS_Initialize(NULL);
@@ -187,37 +187,31 @@ int main(void) {
         if (task_FLAG) {
             switch (state) {
                 case STATE_INITIALIZE:;
-                
-                for (int i=0; i<10; i++){
-                    if (outputs[i].data > 1){
-                        LED_RED_Set();
-                    }
-                }
-                
+
+              
                     Terminal_Initialize();
-                    
-                    
-                    UART1_Write(&"\033[2J", sizeof("\033[2J"));
-                    while (UART1_WriteIsBusy()); 
-                    UART1_Write(&"\033[0;0H", sizeof("\033[0;0H"));
-                    while (UART1_WriteIsBusy());
+//                    
+//                    
+//                    UART1_Write(&"\033[2J", sizeof("\033[2J"));
+//                    while (UART1_WriteIsBusy()); 
+//                    UART1_Write(&"\033[0;0H", sizeof("\033[0;0H"));
+//                    while (UART1_WriteIsBusy());
                     
                     ADC_Initialize();
                     
-                    
-                    
-                                        ConfigureInput(&inputs[0], true, 16777215, 0);
+//                    
+                    ConfigureInput(&inputs[0], true, 16777215, 0);
 //                    ConfigureInput(&inputs[1], true, 16777215, 0);
 //                    ConfigureInput(&inputs[2], true, 16777215, 0);
 //                    ConfigureInput(&inputs[3], true, 16777215, 0);
 //                    
-                    ConfigureInput(&inputs[4], DIGITAL, 0, 0);
-                    ConfigureInput(&inputs[5], DIGITAL, 0, 0);
-                    ConfigureInput(&inputs[6], DIGITAL, 0, 0);
-                    ConfigureInput(&inputs[7], DIGITAL, 0, 0);
-                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
-                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
-                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
+//                    ConfigureInput(&inputs[4], DIGITAL, 0, 0);
+//                    ConfigureInput(&inputs[5], DIGITAL, 0, 0);
+//                    ConfigureInput(&inputs[6], DIGITAL, 0, 0);
+//                    ConfigureInput(&inputs[7], DIGITAL, 0, 0);
+//                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
+//                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
+//                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
 //                    
 //                    
 //                    CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
@@ -241,7 +235,6 @@ int main(void) {
                     
                     if (inputs[input_channel / 2].is_set){
                         ADC_Read_Data((uint8_t*)&(inputs[input_channel / 2].raw_data));
-
                         //Store the data in past storage if 30 seconds have past
                         if (thirty_sec_passed) {
                             pastDataUpdate(&inputs[input_channel / 2].scaled_data);
@@ -283,11 +276,14 @@ int main(void) {
                     //TODO
                 case DISPLAY:;
                     
+                    
                     //First 10 lines for debugging
                     //Set cursor to 10th line
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&"\033[10;0H", sizeof("\033[10;0H"));
                     
+                    PrintRegister(MODE);
+                    PrintRegister(STATUS);
                     PrintAnalogInputs();
                     
                     PrintDigitalInputs();
@@ -324,7 +320,8 @@ int main(void) {
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&input_instructions, sizeof(input_instructions));
                     while (UART1_WriteIsBusy());
-                    while (UART1_WriteIsBusy());
+                    
+                    
                     if (enter){
                         //Clear the line
                         UART1_Write(&"\033[0K", sizeof("\033[0K"));
@@ -357,8 +354,6 @@ int main(void) {
                             while (UART1_WriteIsBusy());
                         }
                     }
-                    
-                    
                     
                     
                     state = CHECK_ALARMS;
@@ -409,37 +404,14 @@ int main(void) {
                     break;
                     
                 case TRIGGER_ALARMS:
-                    for (uint8_t i=2; i<10; i++){
-                        bool set_alarm = outputs[i].relay;
-                            switch(i-2){
-                                case 0:
-                                    set_alarm ? RELAY0_Set() : RELAY0_Clear();
-                                    break;
-                                case 1:
-                                    set_alarm ? RELAY1_Set() : RELAY1_Clear();
-                                    break;
-                                case 2:
-                                    set_alarm ? RELAY2_Set() : RELAY2_Clear();
-                                    break;
-                                case 3:
-                                    set_alarm ? RELAY3_Set() : RELAY3_Clear();
-                                    break;
-                                case 4:
-                                    set_alarm ? RELAY4_Set() : RELAY4_Clear();
-                                    break;
-                                case 5:
-                                    set_alarm ? RELAY5_Set() : RELAY5_Clear();
-                                    break;
-                                case 6:
-                                    set_alarm ? RELAY6_Set() : RELAY6_Clear();
-                                    break;
-                                case 7:
-                                    set_alarm ? RELAY7_Set() : RELAY7_Clear();
-                                    break;
-                                                                                                                                                                    
-                            }
-                    }
-                    
+                    outputs[2].relay ? RELAY0_Set() : RELAY0_Clear();
+                    outputs[3].relay ? RELAY1_Set() : RELAY1_Clear();
+                    outputs[4].relay ? RELAY2_Set() : RELAY2_Clear();
+                    outputs[5].relay ? RELAY3_Set() : RELAY3_Clear();
+                    outputs[6].relay ? RELAY4_Set() : RELAY4_Clear();
+                    outputs[7].relay ? RELAY5_Set() : RELAY5_Clear();
+                    outputs[8].relay ? RELAY6_Set() : RELAY6_Clear();
+                    outputs[9].relay ? RELAY7_Set() : RELAY7_Clear();
                     state = DAC_SEND_DATA;
                     break;
                 case DAC_SEND_DATA:;

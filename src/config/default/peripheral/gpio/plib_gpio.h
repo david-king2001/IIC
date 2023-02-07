@@ -179,6 +179,10 @@
 #define SS_ADC_Get()               ((PORTD >> 4) & 0x1)
 #define SS_ADC_PIN                  GPIO_PIN_RD4
 
+/*** Macros for SDO pin ***/
+#define SDO_Get()               ((PORTD >> 5) & 0x1)
+#define SDO_PIN                  GPIO_PIN_RD5
+
 /*** Macros for BTN0 pin ***/
 #define BTN0_Set()               (LATDSET = (1<<6))
 #define BTN0_Clear()             (LATDCLR = (1<<6))

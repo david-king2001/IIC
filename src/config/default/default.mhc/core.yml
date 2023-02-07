@@ -577,7 +577,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: ''}
+        attributes: {value: SDO}
   - type: String
     attributes: {id: BSP_PIN_53_FUNCTION_TYPE}
     children:
