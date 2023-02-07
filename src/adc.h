@@ -53,7 +53,7 @@ extern "C" {
      */
     void ADC_Read_Data(uint8_t* RxData);
     
-    void SPI_delay();
+    uint8_t ADC_Read_Registor(uint8_t reg);
 
 #ifdef	__cplusplus
 }
