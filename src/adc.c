@@ -7,9 +7,9 @@ uint8_t adc_cmd;
 uint8_t trash = 0;
 bool converting = false;
 //!Blocking until ADC busy signal is low
-void ADC_Wait() {
-    while (ADC_RDY_Get());
-}
+//void ADC_Wait() {
+//    while (ADC_RDY_Get());
+//}
 
 //See adc.h
 void ADC_Initialize() {
@@ -30,9 +30,6 @@ void ADC_Initialize() {
  
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
-    adc_cmd=0;
-    SPI1_Write(&adc_cmd, 1);
-    while (SPI1_IsBusy());
 
     SS_ADC_Set();
     
@@ -51,16 +48,8 @@ void ADC_Select_Chnl(uint8_t chnl) {
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
 
-
     adc_cmd = (chnl<<4) + 0b1000 + Input_Range;
 
-    SPI1_Write(&adc_cmd, 1);
-    while (SPI1_IsBusy());
-    
-    adc_cmd=0;
-    SPI1_Write(&adc_cmd, 1);
-    while (SPI1_IsBusy());
-    adc_cmd=0;
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
     SS_ADC_Set();
@@ -70,11 +59,12 @@ void ADC_Select_Chnl(uint8_t chnl) {
 //See adc.h
 void ADC_Read_Data(uint8_t* RxData) {   
     
-    if (ADC_RDY_Get()){return;}
+    if (ADC_RDY_Get())return;
+    
     converting = false;
     adc_cmd = READ+DATA;
     
-    ADC_Wait();
+    
     SS_ADC_Clear();
     SPI1_Write(&adc_cmd, 1);
     while (SPI1_IsBusy());
@@ -85,13 +75,13 @@ void ADC_Read_Data(uint8_t* RxData) {
     while (SPI1_IsBusy());
     SPI1_Read(RxData, 1);
     while (SPI1_IsBusy());
-
     SS_ADC_Set();
 }
 
 uint8_t ADC_Read_Registor(uint8_t reg){
     uint8_t out = 0;
     adc_cmd = READ + reg;
+    
     SS_ADC_Clear();
     SPI1_Write(&adc_cmd, 1);
     while(SPI1_IsBusy());
@@ -100,6 +90,7 @@ uint8_t ADC_Read_Registor(uint8_t reg){
     while(SPI1_IsBusy());
     SPI1_Read(&trash, 1);
     while(SPI1_IsBusy());
+    
     SS_ADC_Set(); 
     
     return out;

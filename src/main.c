@@ -146,13 +146,15 @@ void APP_ReadCallback(uintptr_t context)
     if (rec_char == '\r' || receive_buff_size > 127){
         receive_buff_size = 0;
         enter = true;
+    }else if (rec_char == '\b' && receive_buff_size!=0){
+        receive_buff_size--;
     }else{
         receive_buffer[receive_buff_size] = rec_char;
         receive_buff_size++;
     }
     
 }
-char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\nTo edit input first character must be \'I\'\r\n Ex A type:R input:0 output:0 alarm:0 high/low:low trigger:1234.5 reset:5432.1\r\nEx I type:A input:0 max:5432.1 min:1234.5\r\n";
+char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\nFirst character must be \'I\'\r\nEx A in_type:A.D input:0-4 out_type:A.R output:0-7 alarm:0-4 high/low:low trigger:%lf reset:%lf\r\nEx I type:A input:0 max:5432.1 min:1234.5\r\n";
 //!Main
 int main(void) {
     SYS_Initialize(NULL);
@@ -243,7 +245,7 @@ int main(void) {
                        
                         INPUT* input = &inputs[input_channel / 2];
                         //Convert to user scale and save
-                        input->scaled_data = SCALE((double) input->raw_data, 16777215, 0, input->max, input->min);
+                        input->scaled_data = SCALE((double) input->raw_data, 0, 16777215, input->max, input->min);
                     
                     }
 
@@ -344,6 +346,7 @@ int main(void) {
                     //If the enter key was pressed, check input buffer
                     if (enter){
                         enter = false;
+                        receive_buffer[receive_buff_size+1] = '\0';
                         if (receive_buffer[0] == 'I'){
                             ParseInputForInput(&receive_buffer[2]);
                         }else if (receive_buffer[0] == 'A'){
