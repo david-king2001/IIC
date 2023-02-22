@@ -17,17 +17,17 @@ extern "C" {
 
     //!Command for Continuous mode
     #define MODE_Continuous 0b00000011
-    #define MODE_Single 0b00000010
 
     //Register Selections
     #define DATA 0b0100 //!< Select Data Register cmd
     #define MODE 0b0001 //!< Select Mode Register cmd
     #define CONTROL 0b0010 //!< Select Control Register cmd
-    #define STATUS 0b0000
-    #define ID 0b1111
+    #define STATUS 0b0000 //!< Select STATUS Register cmd
+    #define ID 0b1111   //!< Select ID Register cmd
+    #define FILTER 0b0011 //!< Select FILTER Register cmd
     
-    #define READ 0b01000000
-    #define WRITE 0b00000000
+    #define READ 0b01000000 //!< READ cmd
+    #define WRITE 0b00000000 //!< WRITE cmd
     
 
     //!Initialize ADC at power on
@@ -53,6 +53,12 @@ extern "C" {
      */
     void ADC_Read_Data(uint8_t* RxData);
     
+    //!Reads data from selected register ADC
+    /*!
+     * Send command to ADC Communication Register to select register\n
+     * Read from ADC Register into input buffer
+     * \param reg the register to read from
+     */
     uint8_t ADC_Read_Registor(uint8_t reg);
 
 #ifdef	__cplusplus

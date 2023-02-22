@@ -24,7 +24,6 @@ extern "C" {
     extern uint8_t cmd;
     
     
-    
     void Terminal_Initialize();
     
     void PrintRegister(uint8_t);
@@ -36,6 +35,8 @@ extern "C" {
     void PrintAnalogOutputs();
     
     void PrintRelays();
+    
+    void PrintAlarmSettings();
     
     void ParseInputForAlarm(char* input_string);
     

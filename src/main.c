@@ -154,7 +154,7 @@ void APP_ReadCallback(uintptr_t context)
     }
     
 }
-char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\nFirst character must be \'I\'\r\nEx A in_type:A.D input:0-4 out_type:A.R output:0-7 alarm:0-4 high/low:low trigger:%lf reset:%lf\r\nEx I type:A input:0 max:5432.1 min:1234.5\r\n";
+
 //!Main
 int main(void) {
     SYS_Initialize(NULL);
@@ -178,12 +178,12 @@ int main(void) {
 
     //Set SS pins to High for not in use
     SS_ADC_Set();
-    SS_DAC1_Set();
+    SS_DAC1_Clear();
     SS_DAC2_Set();
 
-    while (BTN0_Get() == 1);
- 
 
+    
+    while (BTN0_Get() == 1);
     while (1) {
         
         if (task_FLAG) {
@@ -202,25 +202,12 @@ int main(void) {
                     ADC_Initialize();
                     
 //                    
-                    ConfigureInput(&inputs[0], true, 16777215, 0);
-//                    ConfigureInput(&inputs[1], true, 16777215, 0);
-//                    ConfigureInput(&inputs[2], true, 16777215, 0);
-//                    ConfigureInput(&inputs[3], true, 16777215, 0);
-//                    
-//                    ConfigureInput(&inputs[4], DIGITAL, 0, 0);
-//                    ConfigureInput(&inputs[5], DIGITAL, 0, 0);
-//                    ConfigureInput(&inputs[6], DIGITAL, 0, 0);
-//                    ConfigureInput(&inputs[7], DIGITAL, 0, 0);
-//                    CreateDigitalAlarm(&outputs[2], &inputs[4], 4);
-//                    CreateDigitalAlarm(&outputs[3], &inputs[5], 5);
-//                    CreateDigitalAlarm(&outputs[4], &inputs[6], 6);
-//                    
-//                    
-//                    CreateAnalogAlarm(&outputs[6], &inputs[0], 500, 450, 0, true);
-//                    CreateAnalogAlarm(&outputs[7], &inputs[0], 300, 350, 0, false);
-//                    ConfigureAnalogOutput(&outputs[0], &inputs[0], 0, 800,200);
-                    
+                    ConfigureInput(&inputs[1], true, 16777215, 0);
+                    ConfigureAnalogOutput(&outputs[0], &inputs[1], 1, inputs[1].max, inputs[1].min);
+                    ConfigureInput(&inputs[4], false, 0, 0);
 
+                    
+                    
                     state = ADC_SEND_CMD;
                     break;
 
@@ -282,47 +269,15 @@ int main(void) {
                     //First 10 lines for debugging
                     //Set cursor to 10th line
                     while (UART1_WriteIsBusy()); 
-                    UART1_Write(&"\033[10;0H", sizeof("\033[10;0H"));
+                    UART1_Write(&"\033[3;0H", sizeof("\033[3;0H"));
                     
                     PrintRegister(MODE);
                     PrintRegister(STATUS);
                     PrintAnalogInputs();
-                    
                     PrintDigitalInputs();
-                    
                     PrintAnalogOutputs();
-                    
                     PrintRelays();
-                    
-                    //Print the alarms currently set for each input
-                    for (int i=0; i<8; i++){
-                        nbytes = sprintf(buffer, "\nInput #%d alarms:\r\n", i);
-                        while (UART1_WriteIsBusy());
-                        UART1_Write(&buffer, nbytes);
-                        while (UART1_WriteIsBusy());
-                        for (int j=0; j<4; j++){
-                            if (inputs[i].alrms[j] != NULL && inputs[i].alrms[j]->input_chnl != -1) {
-                                nbytes = sprintf(buffer, "Alarm #%d on/off: %s, type:%s, high/low:%s, trigger:%f, reset:%f\r\n",
-                                                                j, inputs[i].alrms[j]->relay ? "On" : "Off",
-                                                                inputs[i].alrms[j]->rel_dac ? "Relay" : "Analog",
-                                                                inputs[i].alrms[j]->high_low ? "High-Low" : "Low-High",
-                                                                inputs[i].alrms[j]->trigger, inputs[i].alrms[j]->reset);
-                                while (UART1_WriteIsBusy());
-                                UART1_Write(&buffer, nbytes);
-                                while (UART1_WriteIsBusy());
-                            }else{
-                                nbytes = sprintf(buffer,"Alarm #%d not used\r\n", j);
-                                while (UART1_WriteIsBusy());
-                                UART1_Write(&buffer, nbytes);
-                                while (UART1_WriteIsBusy());
-                            }
-                        }
-                    }
-                    
-                    while (UART1_WriteIsBusy()); 
-                    UART1_Write(&input_instructions, sizeof(input_instructions));
-                    while (UART1_WriteIsBusy());
-                    
+                    PrintAlarmSettings();
                     
                     if (enter){
                         //Clear the line
@@ -351,6 +306,10 @@ int main(void) {
                             ParseInputForInput(&receive_buffer[2]);
                         }else if (receive_buffer[0] == 'A'){
                             ParseInputForAlarm(&receive_buffer[2]);
+                        }else if (receive_buffer[0] == 'O'){
+                            
+                        }else if (receive_buffer[0] =='D'){
+                            
                         }else{
                             while (UART1_WriteIsBusy()); 
                             UART1_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
@@ -423,30 +382,45 @@ int main(void) {
                     short int input_chnl = outputs[DAC_channel].input_chnl;
    
                     if (input_chnl != -1 ){
-                        if (DAC_channel == 0)
+                        if (DAC_channel == 0){
+                            SS_DAC1_Set();
+                            for (int i=0; i<1000; i++);
                             SS_DAC1_Clear();
-                        else if (DAC_channel == 1)
-                            SS_DAC2_Clear();                        
-                        
+                        }else if (DAC_channel == 1){
+                            SS_DAC2_Set();     
+                            for (int i=0; i<1000; i++);
+                            SS_DAC2_Clear();
+                        }
+                        for (int i=0; i<1000; i++);
                         INPUT* dac1_input = &inputs[input_chnl];
                         
                         double output_trig = outputs[DAC_channel].trigger;
                         double output_reset = outputs[DAC_channel].reset;
-                        if (dac1_input->scaled_data > output_trig)
+                        if (dac1_input->scaled_data > output_trig){
                             outputs[DAC_channel].data = 65534;
-                        else if (dac1_input->scaled_data - output_reset > 0)
+                            LED_RED_Set();
+                        }else if (dac1_input->scaled_data - output_reset > 0)
                             outputs[DAC_channel].data = SCALE(dac1_input->scaled_data, output_trig, output_reset, 65535, 0);
                         else
                             outputs[DAC_channel].data = 0;
-
-                        SPI1_Write((uint8_t*)&outputs[DAC_channel].data, 2);
+                        
+                        uint16_t flipped_out = (outputs[DAC_channel].data << 8) + (outputs[DAC_channel].data >>8);
+                        flipped_out=0xff6f;
+                        
+                        SPI1_Write(((uint8_t*)&flipped_out), 2);
                         while (SPI1_IsBusy());
 
-                        if (DAC_channel == 0)
+                        for (int i=0; i<1000; i++);
+                        if (DAC_channel == 0){
                             SS_DAC1_Set();
-                        else if (DAC_channel == 1)
+                            for (int i=0; i<1000; i++);
+                            SS_DAC1_Clear();
+                        }else if (DAC_channel == 1){
                             SS_DAC2_Set();    
-
+                            for (int i=0; i<1000; i++);
+                            SS_DAC2_Clear();
+                        }
+                        for (int i=0; i<1000000; i++);
                     }
 
 

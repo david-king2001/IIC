@@ -17,14 +17,14 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: '1000000'}
+        attributes: {value: '100000'}
   - type: Integer
     attributes: {id: SPI_BRG_VALUE}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: spi1, value: '5'}
+        attributes: {id: spi1, value: '59'}
   - type: Comment
     attributes: {id: SPI_CLOCK_MODE_COMMENT}
     children:
@@ -92,4 +92,4 @@ children:
       - type: User
         attributes: {value: '1'}
 - type: ElementPosition
-  attributes: {x: '153', y: '98', id: spi1}
+  attributes: {x: '152', y: '98', id: spi1}

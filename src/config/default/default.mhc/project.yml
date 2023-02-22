@@ -48,13 +48,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 427922AD3BB7BC7413FF42C1A409D586
-- generatedChecksum: 0BF9077D4D9B5EADB155C3472F1902F4
+- generatedChecksum: 9F773C1ABFD8E527EBEA0F24D9619263
   logicalPath: config/default/peripheral/spi/spi_master
   name: plib_spi1_master.c
   physicalPath: peripheral/spi/spi_master
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 0BF9077D4D9B5EADB155C3472F1902F4
+  userChecksum: 9F773C1ABFD8E527EBEA0F24D9619263
 - generatedChecksum: E91F5AB79ED6635204A452BC6F7ED17C
   logicalPath: config/default/peripheral/tmr
   name: plib_tmr2.c
