@@ -82,7 +82,7 @@ STATES nextState = STATE_INITIALIZE;
 // DATA STORAGE
 // ***********************
 
-double pastData[4][30]; //!<Store history of input data
+double pastData[4][30] = {{0}}; //!<Store history of input data
 
 #define input_initialize {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
 #define input_initialize_digital {.ang_dig = false, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
@@ -96,11 +96,12 @@ OUTPUT outputs[10] = {output_initialize_analog, output_initialize_analog, output
 
 
 //!Flag that used to determine if to start a new task
-volatile bool task_FLAG = false;
+volatile bool task_FLAG = true;
 //!Flag that used to determine is 30 seconds have passed
 //!Used for storing input data every 30 seconds
 bool thirty_sec_passed = false;
-
+bool print_alarms = false;
+bool print_history = true;
 
 uint8_t input_channel = 0; //!< 0-7, 0-3 is Analog inputs, 4-7 is Digital Inputs
 uint8_t DAC_channel = 0; //!< 0-1, Either DAC1 or DAC2
@@ -126,7 +127,18 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     //Set flag to true to switch to new task
     task_FLAG = true;
     //Check if 30seconds have past
-    if (ms_counter == 30000) {
+    if (ms_counter == 3000) {
+        LED_RED_Toggle();
+        for (int i=0; i<4; i++){
+            if (inputs[i].is_set){
+                
+                for (int j = 29; j > 0; j--) {
+                    pastData[i][j] = pastData[i][j-1];
+                    
+                }
+                pastData[i][0]= inputs[i].scaled_data;
+            }
+        }
         ms_counter = 0;
     }else{
         ms_counter++;
@@ -160,7 +172,7 @@ int main(void) {
     SYS_Initialize(NULL);
 
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
-    TMR2_Start();
+    
     
     UART1_WriteCallbackRegister(APP_WriteCallback, 0);
     UART1_ReadCallbackRegister(APP_ReadCallback, 0);
@@ -192,26 +204,27 @@ int main(void) {
 
               
                     Terminal_Initialize();
-//                    
-//                    
-//                    UART1_Write(&"\033[2J", sizeof("\033[2J"));
-//                    while (UART1_WriteIsBusy()); 
-//                    UART1_Write(&"\033[0;0H", sizeof("\033[0;0H"));
-//                    while (UART1_WriteIsBusy());
                     
                     ADC_Initialize();
+                    TMR2_Start();
                     
-//                    
+                    //
+                    ///TESTING CONFIGURATION/////////////////////
+                    //
+                    ConfigureInput(&inputs[0], true, 16777215, 0);
                     ConfigureInput(&inputs[1], true, 16777215, 0);
-                    ConfigureAnalogOutput(&outputs[0], &inputs[1], 1, inputs[1].max, inputs[1].min);
+                    ConfigureInput(&inputs[2], true, 16777215, 0);
+                    ConfigureInput(&inputs[3], true, 16777215, 0);
+                    //ConfigureAnalogOutput(&outputs[0], &inputs[1], 1, inputs[1].max, inputs[1].min);
                     ConfigureInput(&inputs[4], false, 0, 0);
-
-                    
-                    
+                    //
+                    /////////////////////////////////////////////
+                    //
                     state = ADC_SEND_CMD;
                     break;
 
                 case ADC_SEND_CMD:
+                    
                     if (inputs[input_channel / 2].is_set){
                         ADC_Select_Chnl(input_channel / 2);
                     }
@@ -271,14 +284,22 @@ int main(void) {
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&"\033[3;0H", sizeof("\033[3;0H"));
                     
+                    nbytes=sprintf(buffer, "ms_counter%d\r\n",ms_counter);
+                    UART1_Write(&buffer, nbytes);
+                    while (UART1_WriteIsBusy());
+                    
                     PrintRegister(MODE);
                     PrintRegister(STATUS);
                     PrintAnalogInputs();
                     PrintDigitalInputs();
                     PrintAnalogOutputs();
                     PrintRelays();
-                    PrintAlarmSettings();
+                    if (print_alarms)
+                        PrintAlarmSettings();
+                    if (print_history)
+                        PrintHistory();
                     
+                    PrintInstructions();
                     if (enter){
                         //Clear the line
                         UART1_Write(&"\033[0K", sizeof("\033[0K"));
@@ -292,7 +313,7 @@ int main(void) {
                     
                     break;
 
-                    //TODO
+                    
                 case USER_INPUT_PERFORM_LOGIC:
                    
                     //Read a single character
@@ -309,7 +330,17 @@ int main(void) {
                         }else if (receive_buffer[0] == 'O'){
                             
                         }else if (receive_buffer[0] =='D'){
-                            
+                            if (receive_buffer[2] == 'A'){
+                                print_alarms = true;
+                                print_history = false;
+                            }else if (receive_buffer[2] == 'H'){
+                                print_history = true;
+                                print_alarms = false;
+                            }else{
+                                while (UART1_WriteIsBusy()); 
+                                UART1_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
+                                while (UART1_WriteIsBusy());
+                            }
                         }else{
                             while (UART1_WriteIsBusy()); 
                             UART1_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));

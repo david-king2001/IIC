@@ -26,6 +26,8 @@ extern "C" {
     
     void Terminal_Initialize();
     
+    void PrintInstructions();
+    
     void PrintRegister(uint8_t);
     
     void PrintAnalogInputs();
@@ -42,7 +44,7 @@ extern "C" {
     
     void ParseInputForInput(char* input_string);
     
-  
+    void PrintHistory();
 
 #ifdef	__cplusplus
 }

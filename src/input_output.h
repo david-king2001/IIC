@@ -83,6 +83,7 @@ extern "C" {
     
     extern INPUT inputs[8]; //!<4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
     extern OUTPUT outputs[10]; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
+    extern double pastData[4][30]; //!<Store history of input data
     
     void ConfigureInput(INPUT* input, bool ang_dig, double max, double min);
     
