@@ -82,17 +82,19 @@ void GPIO_Initialize ( void )
     CNPDFSET = 0x3; /* Pull-Down Enable */
 
     /* PORTG Initialization */
-    ANSELGCLR = 0x180; /* Digital Mode Enable */
+    ANSELGCLR = 0x3c0; /* Digital Mode Enable */
 
 
 
     /* PPS Input Remapping */
     SDI1R = 0;
     U1RXR = 1;
+    U4RXR = 1;
 
     /* PPS Output Remapping */
     RPD5R = 8;
     RPG7R = 3;
+    RPG6R = 2;
 
 
 }

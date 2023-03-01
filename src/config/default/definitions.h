@@ -48,6 +48,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include "peripheral/uart/plib_uart4.h"
 #include "peripheral/uart/plib_uart1.h"
 #include "peripheral/tmr/plib_tmr2.h"
 #include "peripheral/clk/plib_clk.h"
@@ -114,7 +115,7 @@ extern "C" {
         This function will only be called once, after system reset.
      */
 
-    void SYS_Initialize(void *data);
+void SYS_Initialize( void *data );
 
     /* Nullify SYS_Tasks() if only PLIBs are used. */
 #define     SYS_Tasks()

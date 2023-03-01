@@ -3,7 +3,12 @@
 
 
 
-void ConfigureInput(INPUT* input, bool ang_dig, double max, double min){
+void ConfigureInput(INPUT* input, bool ang_dig, double max, double min, int input_num){
+    
+    //New input delete old data
+    for (int i=0; i<30; i++){
+        pastData[input_num][i] = min;
+    }
     
     input->ang_dig = ang_dig;
     

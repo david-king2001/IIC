@@ -7,13 +7,18 @@
 
 bool enter = false;
 char rec_char = ' ';
-char buffer[512] = {};
+char buffer[OUT_BUFFER] = {};
 char receive_buffer[128] = {};
 int receive_buff_size = 0;
 int nbytes = 0;
 uint8_t reg_data = 0;
 uint8_t cmd = 0;
-char input_instructions[] = "To edit an alarm first character must be \'A\'.\r\nFirst character must be \'I\'\r\nEx A in_type:A.D input:0-4 out_type:A.R output:0-7 alarm:0-4 high/low:low trigger:%lf reset:%lf\r\nEx I type:A input:0 max:5432.1 min:1234.5\r\n";
+char input_instructions[6][256] = {"To edit an alarm first character must be \'A\'.\r\n\033[0K",
+                                "First character must be \'I\' input conf, \'A\' alarm conf,\'O\' alarm conf \'D\' display\r\n\033[0K",
+                                "Ex A in_type:A.D input:0-4 out_type:A or R output:0-7 alarm:0-4 high/low:low trigger:5432.1 reset:1234.5\r\n\033[0K",
+                                "Ex I type:A input:0 max:5432.1 min:1234.5\r\n\033[0K",
+                                "Ex O input:0-4 output:0-1 max:5432.1 min:1234.5\r\n\033[0K",
+                                "D A for alarms, D H for input log\r\n\033[0K"};
 
     
 void Terminal_Initialize(){
@@ -25,9 +30,12 @@ void Terminal_Initialize(){
 }
 
 void PrintInstructions(){
-    while (UART1_WriteIsBusy()); 
-    UART1_Write(&input_instructions, sizeof(input_instructions));
-    while (UART1_WriteIsBusy());
+    for (int i=0; i<6; i++){
+        nbytes = sprintf(buffer, input_instructions[i]);
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());        
+    }
 }
 
 
@@ -86,7 +94,7 @@ void PrintAnalogInputs(){
 
 void PrintDigitalInputs(){
     for (int i=4; i<8; i++){
-        nbytes = sprintf(buffer, "%s[Digital Input #%d %s\r\n\033[0K",inputs[i].is_set ? "Set" :"Not Set" , i-4, inputs[i].digital_on ? "on " : "off");
+        nbytes = sprintf(buffer, "%s Digital Input #%d %s\r\n\033[0K",inputs[i].is_set ? "Set" :"Not Set" , i-4, inputs[i].digital_on ? "on " : "off");
         while (UART1_WriteIsBusy()); 
         UART1_Write(&buffer, nbytes);
         while (UART1_WriteIsBusy());
@@ -95,11 +103,19 @@ void PrintDigitalInputs(){
 
 void PrintAnalogOutputs(){
     for (int i=0; i<2; i++){
-        nbytes = sprintf(buffer, "Analog Outputs #%d %u         \r\n\033[0K",i, outputs[i].data);
+        nbytes = sprintf(buffer, "Analog Outputs #%d %u\r\n\033[0K",i, outputs[i].data);
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
+        nbytes = sprintf(buffer, "Source I#%d max:%lf min:%lf\r\n\033[0K",outputs[i].input_chnl, outputs[i].trigger, outputs[i].reset);
         while (UART1_WriteIsBusy()); 
         UART1_Write(&buffer, nbytes);
         while (UART1_WriteIsBusy());
     }
+    nbytes = sprintf(buffer,"\r\n\033[0K");
+    while (UART1_WriteIsBusy());
+    UART1_Write(&buffer, nbytes);
+    while (UART1_WriteIsBusy());
 }
 
 void PrintRelays(){
@@ -109,6 +125,10 @@ void PrintRelays(){
         UART1_Write(&buffer, nbytes);
         while (UART1_WriteIsBusy());
     }
+    nbytes = sprintf(buffer,"\r\n\033[0K");
+    while (UART1_WriteIsBusy());
+    UART1_Write(&buffer, nbytes);
+    while (UART1_WriteIsBusy());
 }
 
 void PrintAlarmSettings(){
@@ -120,9 +140,8 @@ void PrintAlarmSettings(){
                         while (UART1_WriteIsBusy());
                         for (int j=0; j<4; j++){
                             if (inputs[i].alrms[j] != NULL && inputs[i].alrms[j]->input_chnl != -1) {
-                                nbytes = sprintf(buffer, "Alarm #%d on/off: %s, type:%s, high/low:%s, trigger:%f, reset:%f\r\n\033[0K",
+                                nbytes = sprintf(buffer, "Alarm #%d on/off: %s, high/low:%s, trigger:%f, reset:%f\r\n\033[0K",
                                                                 j, inputs[i].alrms[j]->relay ? "On" : "Off",
-                                                                inputs[i].alrms[j]->rel_dac ? "Relay" : "Analog",
                                                                 inputs[i].alrms[j]->high_low ? "High-Low" : "Low-High",
                                                                 inputs[i].alrms[j]->trigger, inputs[i].alrms[j]->reset);
                                 while (UART1_WriteIsBusy());
@@ -135,7 +154,12 @@ void PrintAlarmSettings(){
                                 while (UART1_WriteIsBusy());
                             }
                         }
+                        nbytes = sprintf(buffer,"\r\n\033[0K");
+                        while (UART1_WriteIsBusy());
+                        UART1_Write(&buffer, nbytes);
+                        while (UART1_WriteIsBusy());
                     }
+                    
                     
 
 }
@@ -203,6 +227,7 @@ void ParseInputForAlarm(char* input_string){
         return;
     }
 
+    
 
     // Check the high/low string
     if (strcmp(hl_str, "high") != 0 && strcmp(hl_str, "low") != 0){
@@ -212,6 +237,26 @@ void ParseInputForAlarm(char* input_string){
         while (UART1_WriteIsBusy());
         return;
     }
+            // Check the type string
+    if (strcmp(hl_str, "high")== 0){
+        if (trigger<reset){
+            nbytes = sprintf(buffer, "Error: Invalid alarm range\r\n");
+            while (UART1_WriteIsBusy()); 
+            UART1_Write(&buffer, nbytes);
+            while (UART1_WriteIsBusy());
+            return;            
+        }
+    }else{
+        if (trigger>reset){
+            nbytes = sprintf(buffer, "Error: Invalid alarm range\r\n");
+            while (UART1_WriteIsBusy()); 
+            UART1_Write(&buffer, nbytes);
+            while (UART1_WriteIsBusy());
+            return;            
+        }
+    }
+    
+    
     EditAlarm(&outputs[out_type == 'A' ? output_num : output_num+2], &inputs[in_type == 'A' ? input_num : input_num+4], trigger, reset, in_type == 'A' ? input_num : input_num+4, alarm_num, strcmp(hl_str, "high") == 0);
 
 }
@@ -226,15 +271,64 @@ void ParseInputForInput(char* input_string){
         
     // Check the input number
     if (input_num < 0 || input_num >= 4) {
-        printf("Error: Invalid input number\n");
+        nbytes = sprintf(buffer, "Error: Invalid input number\r\n\033[0K");
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
         return;
     }
     
         // Check the type string
     if (strcmp(type_str, "A") != 0 && strcmp(type_str, "D") != 0){
-        printf("Error: Invalid type string\n");
+        nbytes = sprintf(buffer, "Error: Invalid input type string\r\n\033[0K");
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
         return;
     }
     
-    ConfigureInput(&inputs[strcmp(type_str, "A") == 0 ? input_num : input_num+4], type_str[0]=='A', high, low);
+    if(high<low){
+        nbytes = sprintf(buffer, "Error: Invalid input high low\r\n\033[0K");
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
+        return;
+    }
+    
+    ConfigureInput(&inputs[strcmp(type_str, "A") == 0 ? input_num : input_num+4], type_str[0]=='A', high, low, strcmp(type_str, "A") == 0 ? input_num : input_num+4);
+}
+
+void ParseInputForOutput(char* input_string){
+    int input_num;
+    int output_num;
+    double max, min;
+
+    sscanf(input_string, "input:%d output:%d max:%lf min:%lf", 
+        &input_num, &output_num, &max, &min);
+    
+        // Check the input number
+    if (input_num < 0 || input_num >= 4) {
+        nbytes = sprintf(buffer, "Error: Invalid input number\r\n\033[0K");
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
+        return;
+    }
+    
+    if (input_num < 0 || input_num >= 4) {
+        nbytes = sprintf(buffer, "Error: Invalid input number\r\n\033[0K");
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
+        return;
+    }
+    
+    if (!ConfigureAnalogOutput(&outputs[output_num], &inputs[input_num], input_num, max, min )){
+        nbytes = sprintf(buffer, "Error: \r\n\033[0K");
+        while (UART1_WriteIsBusy()); 
+        UART1_Write(&buffer, nbytes);
+        while (UART1_WriteIsBusy());
+        return;
+    }
+    
 }

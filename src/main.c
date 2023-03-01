@@ -102,7 +102,7 @@ volatile bool task_FLAG = true;
 bool thirty_sec_passed = false;
 bool print_alarms = false;
 bool print_history = true;
-
+bool send_rasp = false;
 uint8_t input_channel = 0; //!< 0-7, 0-3 is Analog inputs, 4-7 is Digital Inputs
 uint8_t DAC_channel = 0; //!< 0-1, Either DAC1 or DAC2
 uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
@@ -140,6 +140,9 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
             }
         }
         ms_counter = 0;
+        send_rasp = true;
+
+        
     }else{
         ms_counter++;
     }
@@ -211,12 +214,15 @@ int main(void) {
                     //
                     ///TESTING CONFIGURATION/////////////////////
                     //
-                    ConfigureInput(&inputs[0], true, 16777215, 0);
-                    ConfigureInput(&inputs[1], true, 16777215, 0);
-                    ConfigureInput(&inputs[2], true, 16777215, 0);
-                    ConfigureInput(&inputs[3], true, 16777215, 0);
-                    //ConfigureAnalogOutput(&outputs[0], &inputs[1], 1, inputs[1].max, inputs[1].min);
-                    ConfigureInput(&inputs[4], false, 0, 0);
+                    ConfigureInput(&inputs[0], true, 16777215, 0, 0);
+                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
+                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
+                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
+                    ConfigureAnalogOutput(&outputs[0], &inputs[2], 2, inputs[2].max, inputs[2].min);
+                    ConfigureInput(&inputs[4], false, 0, 0, 4);
+                    
+                    EditAlarm(&outputs[3], &inputs[2], 500, 400, 2, 2, true);
+                    EditAlarm(&outputs[4], &inputs[4], 0, 0, 4, 2, true);
                     //
                     /////////////////////////////////////////////
                     //
@@ -284,9 +290,6 @@ int main(void) {
                     while (UART1_WriteIsBusy()); 
                     UART1_Write(&"\033[3;0H", sizeof("\033[3;0H"));
                     
-                    nbytes=sprintf(buffer, "ms_counter%d\r\n",ms_counter);
-                    UART1_Write(&buffer, nbytes);
-                    while (UART1_WriteIsBusy());
                     
                     PrintRegister(MODE);
                     PrintRegister(STATUS);
@@ -308,9 +311,29 @@ int main(void) {
                         UART1_Write(&receive_buffer, receive_buff_size);
                     }
                     while (UART1_WriteIsBusy());
+                    
+                    if (send_rasp){
+                        send_rasp = false;
+                        //Send data to display
+                        //nbytes = sprintf(buffer, "<set:0 min:0.0 max:1000.0 val:500.0, set:1 min:0.0 max:9800.0 val:500.0, set:1 min:0 max:1000.0 val:500.0, set:1 min:0.0 max:1000.0 val:500.0, 834.05, 82.01, 453.12, 219.87, 945.76, 323.32, 392.79, 321.52, 183.46, 905.13, 679.77, 511.06, 111.67, 236.24, 749.96, 417.71, 376.42, 672.91, 255.34, 951.44, 230.05, 553.34, 364.98, 434.53, 291.43, 614.28, 38.66, 547.4, 550.46, 117.15, 220.86, 847.02, 371.68, 122.36, 295.95, 111.39, 598.28, 166.98, 691.69, 714.43, 300.89, 47.81, 872.2, 776.81, 265.43, 109.56, 148.52, 559.54, 381.09, 248.38, 207.91, 341.09, 708.26, 279.81, 63.58, 107.66, 646.47, 107.63, 418.17, 487.49, 537.89, 30.26, 729.16, 920.86, 969.25, 752.81, 688.88, 894.86, 756.77, 169.96, 925.11, 273.78, 823.62, 635.79, 44.43, 146.54, 599.85, 618.63, 307.37, 823.92, 528.77, 686.3, 586.05, 610.56, 259.19, 308.2, 847.81, 417.98, 775.21, 506.55, 861.98, 778.12, 60.99, 78.48, 16.58, 181.08, 819.24, 543.3, 565.96, 439.97, 63.49, 69.36, 227.05, 231.4, 719.05, 997.38, 811.43, 845.36, 763.7, 989.13, 60.81, 702.68, 80.5, 387.58, 307.48, 982.96, 219.5, 861.2, 541.33, 316.89, 611.68, 776.91, 451.83, 758.75, 623.13, 501.32, 546.04, 680.27, 72.88, 46.4, 127.13, 80.95, 988.07, 371.1, 482.98, 278.54>");
+                        nbytes = sprintf(buffer, "<");
+                        for (int i=0; i<4; i++)
+                            nbytes += sprintf(buffer+nbytes, "set:%d min:%lf max:%lf val:%lf, ", inputs[i].is_set, inputs[i].min, inputs[i].max, inputs[i].scaled_data);
+                        
+                        for (int i=0; i<4; i++){
+                            for (int k=0; k<30; k++){
+                                if (i==3 && k==29) nbytes += sprintf(buffer+nbytes, "%lf>", pastData[i][k]);
+                                else nbytes += sprintf(buffer+nbytes, "%lf, ", pastData[i][k]);
+                            }
+                        }
+                        
+                        while (UART4_WriteIsBusy()); 
+                        UART4_Write(&buffer, nbytes);
+                        while (UART4_WriteIsBusy());
+                    }
+                    
+                    
                     state = USER_INPUT_PERFORM_LOGIC;
-                    
-                    
                     break;
 
                     
@@ -328,7 +351,7 @@ int main(void) {
                         }else if (receive_buffer[0] == 'A'){
                             ParseInputForAlarm(&receive_buffer[2]);
                         }else if (receive_buffer[0] == 'O'){
-                            
+                            ParseInputForOutput(&receive_buffer[2]);
                         }else if (receive_buffer[0] =='D'){
                             if (receive_buffer[2] == 'A'){
                                 print_alarms = true;

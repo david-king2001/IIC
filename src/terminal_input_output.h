@@ -12,10 +12,12 @@
 extern "C" {
 #endif
 
-
+    #define OUT_BUFFER 2048
+    
+    
     extern bool enter;
     //Terminal out with UART
-    extern char buffer[512];
+    extern char buffer[OUT_BUFFER];
     extern char receive_buffer[128];
     extern char rec_char;
     extern int receive_buff_size;
@@ -25,8 +27,7 @@ extern "C" {
     
     
     void Terminal_Initialize();
-    
-    void PrintInstructions();
+        void PrintInstructions();
     
     void PrintRegister(uint8_t);
     
@@ -43,6 +44,8 @@ extern "C" {
     void ParseInputForAlarm(char* input_string);
     
     void ParseInputForInput(char* input_string);
+    
+    void ParseInputForOutput(char* input_string);
     
     void PrintHistory();
 

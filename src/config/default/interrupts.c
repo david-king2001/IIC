@@ -63,6 +63,7 @@
 void TIMER_2_InterruptHandler( void );
 void SPI_1_InterruptHandler( void );
 void UART_1_InterruptHandler( void );
+void UART_4_InterruptHandler( void );
 
 
 
@@ -80,6 +81,11 @@ void __ISR(_SPI_1_VECTOR, ipl1SOFT) SPI_1_Handler (void)
 void __ISR(_UART_1_VECTOR, ipl1SOFT) UART_1_Handler (void)
 {
     UART_1_InterruptHandler();
+}
+
+void __ISR(_UART_4_VECTOR, ipl1SOFT) UART_4_Handler (void)
+{
+    UART_4_InterruptHandler();
 }
 
 

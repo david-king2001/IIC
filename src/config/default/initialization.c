@@ -168,6 +168,8 @@ void SYS_Initialize ( void* data )
 
 	GPIO_Initialize();
 
+	UART4_Initialize();
+
 	UART1_Initialize();
 
     TMR2_Initialize();
