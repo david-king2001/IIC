@@ -58,43 +58,40 @@
 void GPIO_Initialize ( void )
 {
     /* PORTB Initialization */
-    LATB = 0x210; /* Initial Latch Value */
-    TRISBCLR = 0x210; /* Direction Control */
-    ANSELBCLR = 0x4210; /* Digital Mode Enable */
-    CNPDBSET = 0x4000; /* Pull-Down Enable */
+    LATB = 0xf800; /* Initial Latch Value */
+    TRISBCLR = 0xf800; /* Direction Control */
+    ANSELBCLR = 0xf82d; /* Digital Mode Enable */
 
     /* PORTC Initialization */
 
     /* PORTD Initialization */
-    LATD = 0x101; /* Initial Latch Value */
-    TRISDCLR = 0x111; /* Direction Control */
+    LATD = 0x0; /* Initial Latch Value */
+    TRISDCLR = 0xf03; /* Direction Control */
     ANSELDCLR = 0xe; /* Digital Mode Enable */
-    CNPDDSET = 0x2; /* Pull-Down Enable */
 
     /* PORTE Initialization */
-    LATE = 0xf8; /* Initial Latch Value */
-    TRISECLR = 0xf8; /* Direction Control */
-    ANSELECLR = 0xf0; /* Digital Mode Enable */
+    LATE = 0x0; /* Initial Latch Value */
+    TRISECLR = 0x20; /* Direction Control */
+    ANSELECLR = 0xe0; /* Digital Mode Enable */
 
     /* PORTF Initialization */
-    LATF = 0x30; /* Initial Latch Value */
-    TRISFCLR = 0x30; /* Direction Control */
-    CNPDFSET = 0x3; /* Pull-Down Enable */
+    LATF = 0x38; /* Initial Latch Value */
+    TRISFCLR = 0x38; /* Direction Control */
 
     /* PORTG Initialization */
-    ANSELGCLR = 0x3c0; /* Digital Mode Enable */
+    ANSELGCLR = 0xc0; /* Digital Mode Enable */
 
 
 
     /* PPS Input Remapping */
     SDI1R = 0;
-    U1RXR = 1;
-    U4RXR = 1;
+    U1RXR = 8;
+    U4RXR = 7;
 
     /* PPS Output Remapping */
     RPD5R = 8;
-    RPG7R = 3;
-    RPG6R = 2;
+    RPB3R = 3;
+    RPB0R = 2;
 
 
 }

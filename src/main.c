@@ -128,7 +128,7 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     task_FLAG = true;
     //Check if 30seconds have past
     if (ms_counter == 3000) {
-        LED_RED_Toggle();
+        RED_Toggle();
         for (int i=0; i<4; i++){
             if (inputs[i].is_set){
                 
@@ -177,11 +177,10 @@ int main(void) {
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
     
     
-    UART1_WriteCallbackRegister(APP_WriteCallback, 0);
-    UART1_ReadCallbackRegister(APP_ReadCallback, 0);
+    UART4_WriteCallbackRegister(APP_WriteCallback, 0);
+    UART4_ReadCallbackRegister(APP_ReadCallback, 0);
     
     //Set GPIO pins to low for not in use
-    LED_RED_Clear();
     RELAY0_Clear();
     RELAY1_Clear();
     RELAY2_Clear();
@@ -193,12 +192,13 @@ int main(void) {
 
     //Set SS pins to High for not in use
     SS_ADC_Set();
-    SS_DAC1_Clear();
-    SS_DAC2_Set();
-
-
+    SS_DAC0_Clear();
+    SS_DAC1_Set();
     
-    while (BTN0_Get() == 1);
+    RED_Set();
+    BLUE_Set();
+    GREEN_Set();
+    
     while (1) {
         
         if (task_FLAG) {
@@ -215,14 +215,14 @@ int main(void) {
                     ///TESTING CONFIGURATION/////////////////////
                     //
                     ConfigureInput(&inputs[0], true, 16777215, 0, 0);
-                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
-                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
-                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
-                    ConfigureAnalogOutput(&outputs[0], &inputs[2], 2, inputs[2].max, inputs[2].min);
-                    ConfigureInput(&inputs[4], false, 0, 0, 4);
-                    
-                    EditAlarm(&outputs[3], &inputs[2], 500, 400, 2, 2, true);
-                    EditAlarm(&outputs[4], &inputs[4], 0, 0, 4, 2, true);
+//                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
+//                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
+//                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
+//                    ConfigureAnalogOutput(&outputs[0], &inputs[2], 2, inputs[2].max, inputs[2].min);
+//                    ConfigureInput(&inputs[4], false, 0, 0, 4);
+//                    
+//                    EditAlarm(&outputs[3], &inputs[2], 500, 400, 2, 2, true);
+//                    EditAlarm(&outputs[4], &inputs[4], 0, 0, 4, 2, true);
                     //
                     /////////////////////////////////////////////
                     //
@@ -287,8 +287,8 @@ int main(void) {
                     
                     //First 10 lines for debugging
                     //Set cursor to 10th line
-                    while (UART1_WriteIsBusy()); 
-                    UART1_Write(&"\033[3;0H", sizeof("\033[3;0H"));
+                    while (UART4_WriteIsBusy()); 
+                    UART4_Write(&"\033[3;0H", sizeof("\033[3;0H"));
                     
                     
                     PrintRegister(MODE);
@@ -305,12 +305,12 @@ int main(void) {
                     PrintInstructions();
                     if (enter){
                         //Clear the line
-                        UART1_Write(&"\033[0K", sizeof("\033[0K"));
+                        UART4_Write(&"\033[0K", sizeof("\033[0K"));
                     }else{
                         //Print back what has been received
-                        UART1_Write(&receive_buffer, receive_buff_size);
+                        UART4_Write(&receive_buffer, receive_buff_size);
                     }
-                    while (UART1_WriteIsBusy());
+                    while (UART4_WriteIsBusy());
                     
                     if (send_rasp){
                         send_rasp = false;
@@ -327,9 +327,9 @@ int main(void) {
                             }
                         }
                         
-                        while (UART4_WriteIsBusy()); 
-                        UART4_Write(&buffer, nbytes);
-                        while (UART4_WriteIsBusy());
+                        while (UART1_WriteIsBusy()); 
+                        UART1_Write(&buffer, nbytes);
+                        while (UART1_WriteIsBusy());
                     }
                     
                     
@@ -340,7 +340,7 @@ int main(void) {
                 case USER_INPUT_PERFORM_LOGIC:
                    
                     //Read a single character
-                    UART1_Read(&rec_char, 1);
+                    UART4_Read(&rec_char, 1);
                     
                     //If the enter key was pressed, check input buffer
                     if (enter){
@@ -360,14 +360,14 @@ int main(void) {
                                 print_history = true;
                                 print_alarms = false;
                             }else{
-                                while (UART1_WriteIsBusy()); 
-                                UART1_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
-                                while (UART1_WriteIsBusy());
+                                while (UART4_WriteIsBusy()); 
+                                UART4_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
+                                while (UART4_WriteIsBusy());
                             }
                         }else{
-                            while (UART1_WriteIsBusy()); 
-                            UART1_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
-                            while (UART1_WriteIsBusy());
+                            while (UART4_WriteIsBusy()); 
+                            UART4_Write(&"Invalid input to terminal\r\n", sizeof("Invalid input to terminal\r\n"));
+                            while (UART4_WriteIsBusy());
                         }
                     }
                     
@@ -437,13 +437,13 @@ int main(void) {
    
                     if (input_chnl != -1 ){
                         if (DAC_channel == 0){
-                            SS_DAC1_Set();
+                            SS_DAC0_Set();
+                            for (int i=0; i<1000; i++);
+                            SS_DAC0_Clear();
+                        }else if (DAC_channel == 1){
+                            SS_DAC1_Set();     
                             for (int i=0; i<1000; i++);
                             SS_DAC1_Clear();
-                        }else if (DAC_channel == 1){
-                            SS_DAC2_Set();     
-                            for (int i=0; i<1000; i++);
-                            SS_DAC2_Clear();
                         }
                         for (int i=0; i<1000; i++);
                         INPUT* dac1_input = &inputs[input_chnl];
@@ -452,7 +452,6 @@ int main(void) {
                         double output_reset = outputs[DAC_channel].reset;
                         if (dac1_input->scaled_data > output_trig){
                             outputs[DAC_channel].data = 65534;
-                            LED_RED_Set();
                         }else if (dac1_input->scaled_data - output_reset > 0)
                             outputs[DAC_channel].data = SCALE(dac1_input->scaled_data, output_trig, output_reset, 65535, 0);
                         else
@@ -466,13 +465,13 @@ int main(void) {
 
                         for (int i=0; i<1000; i++);
                         if (DAC_channel == 0){
-                            SS_DAC1_Set();
+                            SS_DAC0_Set();
+                            for (int i=0; i<1000; i++);
+                            SS_DAC0_Clear();
+                        }else if (DAC_channel == 1){
+                            SS_DAC1_Set();    
                             for (int i=0; i<1000; i++);
                             SS_DAC1_Clear();
-                        }else if (DAC_channel == 1){
-                            SS_DAC2_Set();    
-                            for (int i=0; i<1000; i++);
-                            SS_DAC2_Clear();
                         }
                         for (int i=0; i<1000000; i++);
                     }

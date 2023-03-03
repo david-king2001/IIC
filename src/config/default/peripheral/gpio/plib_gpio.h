@@ -62,171 +62,189 @@
 // *****************************************************************************
 
 
-/*** Macros for RELAY3 pin ***/
-#define RELAY3_Set()               (LATESET = (1<<5))
-#define RELAY3_Clear()             (LATECLR = (1<<5))
-#define RELAY3_Toggle()            (LATEINV= (1<<5))
-#define RELAY3_OutputEnable()      (TRISECLR = (1<<5))
-#define RELAY3_InputEnable()       (TRISESET = (1<<5))
-#define RELAY3_Get()               ((PORTE >> 5) & 0x1)
-#define RELAY3_PIN                  GPIO_PIN_RE5
-
-/*** Macros for RELAY6 pin ***/
-#define RELAY6_Set()               (LATESET = (1<<6))
-#define RELAY6_Clear()             (LATECLR = (1<<6))
-#define RELAY6_Toggle()            (LATEINV= (1<<6))
-#define RELAY6_OutputEnable()      (TRISECLR = (1<<6))
-#define RELAY6_InputEnable()       (TRISESET = (1<<6))
-#define RELAY6_Get()               ((PORTE >> 6) & 0x1)
-#define RELAY6_PIN                  GPIO_PIN_RE6
-
-/*** Macros for RELAY7 pin ***/
-#define RELAY7_Set()               (LATESET = (1<<7))
-#define RELAY7_Clear()             (LATECLR = (1<<7))
-#define RELAY7_Toggle()            (LATEINV= (1<<7))
-#define RELAY7_OutputEnable()      (TRISECLR = (1<<7))
-#define RELAY7_InputEnable()       (TRISESET = (1<<7))
-#define RELAY7_Get()               ((PORTE >> 7) & 0x1)
-#define RELAY7_PIN                  GPIO_PIN_RE7
-
-/*** Macros for SS_DAC1 pin ***/
-#define SS_DAC1_Set()               (LATBSET = (1<<4))
-#define SS_DAC1_Clear()             (LATBCLR = (1<<4))
-#define SS_DAC1_Toggle()            (LATBINV= (1<<4))
-#define SS_DAC1_OutputEnable()      (TRISBCLR = (1<<4))
-#define SS_DAC1_InputEnable()       (TRISBSET = (1<<4))
-#define SS_DAC1_Get()               ((PORTB >> 4) & 0x1)
-#define SS_DAC1_PIN                  GPIO_PIN_RB4
-
-/*** Macros for RELAY2 pin ***/
-#define RELAY2_Set()               (LATBSET = (1<<9))
-#define RELAY2_Clear()             (LATBCLR = (1<<9))
-#define RELAY2_Toggle()            (LATBINV= (1<<9))
-#define RELAY2_OutputEnable()      (TRISBCLR = (1<<9))
-#define RELAY2_InputEnable()       (TRISBSET = (1<<9))
-#define RELAY2_Get()               ((PORTB >> 9) & 0x1)
-#define RELAY2_PIN                  GPIO_PIN_RB9
+/*** Macros for RESET_ADC pin ***/
+#define RESET_ADC_Set()               (LATESET = (1<<5))
+#define RESET_ADC_Clear()             (LATECLR = (1<<5))
+#define RESET_ADC_Toggle()            (LATEINV= (1<<5))
+#define RESET_ADC_OutputEnable()      (TRISECLR = (1<<5))
+#define RESET_ADC_InputEnable()       (TRISESET = (1<<5))
+#define RESET_ADC_Get()               ((PORTE >> 5) & 0x1)
+#define RESET_ADC_PIN                  GPIO_PIN_RE5
 
 /*** Macros for DIGITAL0 pin ***/
-#define DIGITAL0_Set()               (LATBSET = (1<<14))
-#define DIGITAL0_Clear()             (LATBCLR = (1<<14))
-#define DIGITAL0_Toggle()            (LATBINV= (1<<14))
-#define DIGITAL0_OutputEnable()      (TRISBCLR = (1<<14))
-#define DIGITAL0_InputEnable()       (TRISBSET = (1<<14))
-#define DIGITAL0_Get()               ((PORTB >> 14) & 0x1)
-#define DIGITAL0_PIN                  GPIO_PIN_RB14
-
-/*** Macros for RELAY5 pin ***/
-#define RELAY5_Set()               (LATFSET = (1<<4))
-#define RELAY5_Clear()             (LATFCLR = (1<<4))
-#define RELAY5_Toggle()            (LATFINV= (1<<4))
-#define RELAY5_OutputEnable()      (TRISFCLR = (1<<4))
-#define RELAY5_InputEnable()       (TRISFSET = (1<<4))
-#define RELAY5_Get()               ((PORTF >> 4) & 0x1)
-#define RELAY5_PIN                  GPIO_PIN_RF4
-
-/*** Macros for RELAY4 pin ***/
-#define RELAY4_Set()               (LATFSET = (1<<5))
-#define RELAY4_Clear()             (LATFCLR = (1<<5))
-#define RELAY4_Toggle()            (LATFINV= (1<<5))
-#define RELAY4_OutputEnable()      (TRISFCLR = (1<<5))
-#define RELAY4_InputEnable()       (TRISFSET = (1<<5))
-#define RELAY4_Get()               ((PORTF >> 5) & 0x1)
-#define RELAY4_PIN                  GPIO_PIN_RF5
-
-/*** Macros for RELAY0 pin ***/
-#define RELAY0_Set()               (LATDSET = (1<<8))
-#define RELAY0_Clear()             (LATDCLR = (1<<8))
-#define RELAY0_Toggle()            (LATDINV= (1<<8))
-#define RELAY0_OutputEnable()      (TRISDCLR = (1<<8))
-#define RELAY0_InputEnable()       (TRISDSET = (1<<8))
-#define RELAY0_Get()               ((PORTD >> 8) & 0x1)
-#define RELAY0_PIN                  GPIO_PIN_RD8
-
-/*** Macros for ADC_RDY pin ***/
-#define ADC_RDY_Set()               (LATDSET = (1<<9))
-#define ADC_RDY_Clear()             (LATDCLR = (1<<9))
-#define ADC_RDY_Toggle()            (LATDINV= (1<<9))
-#define ADC_RDY_OutputEnable()      (TRISDCLR = (1<<9))
-#define ADC_RDY_InputEnable()       (TRISDSET = (1<<9))
-#define ADC_RDY_Get()               ((PORTD >> 9) & 0x1)
-#define ADC_RDY_PIN                  GPIO_PIN_RD9
-
-/*** Macros for RELAY1 pin ***/
-#define RELAY1_Set()               (LATDSET = (1<<0))
-#define RELAY1_Clear()             (LATDCLR = (1<<0))
-#define RELAY1_Toggle()            (LATDINV= (1<<0))
-#define RELAY1_OutputEnable()      (TRISDCLR = (1<<0))
-#define RELAY1_InputEnable()       (TRISDSET = (1<<0))
-#define RELAY1_Get()               ((PORTD >> 0) & 0x1)
-#define RELAY1_PIN                  GPIO_PIN_RD0
+#define DIGITAL0_Set()               (LATESET = (1<<6))
+#define DIGITAL0_Clear()             (LATECLR = (1<<6))
+#define DIGITAL0_Toggle()            (LATEINV= (1<<6))
+#define DIGITAL0_OutputEnable()      (TRISECLR = (1<<6))
+#define DIGITAL0_InputEnable()       (TRISESET = (1<<6))
+#define DIGITAL0_Get()               ((PORTE >> 6) & 0x1)
+#define DIGITAL0_PIN                  GPIO_PIN_RE6
 
 /*** Macros for DIGITAL1 pin ***/
-#define DIGITAL1_Set()               (LATDSET = (1<<1))
-#define DIGITAL1_Clear()             (LATDCLR = (1<<1))
-#define DIGITAL1_Toggle()            (LATDINV= (1<<1))
-#define DIGITAL1_OutputEnable()      (TRISDCLR = (1<<1))
-#define DIGITAL1_InputEnable()       (TRISDSET = (1<<1))
-#define DIGITAL1_Get()               ((PORTD >> 1) & 0x1)
-#define DIGITAL1_PIN                  GPIO_PIN_RD1
+#define DIGITAL1_Set()               (LATESET = (1<<7))
+#define DIGITAL1_Clear()             (LATECLR = (1<<7))
+#define DIGITAL1_Toggle()            (LATEINV= (1<<7))
+#define DIGITAL1_OutputEnable()      (TRISECLR = (1<<7))
+#define DIGITAL1_InputEnable()       (TRISESET = (1<<7))
+#define DIGITAL1_Get()               ((PORTE >> 7) & 0x1)
+#define DIGITAL1_PIN                  GPIO_PIN_RE7
+
+/*** Macros for DIGITAL2 pin ***/
+#define DIGITAL2_Set()               (LATGSET = (1<<6))
+#define DIGITAL2_Clear()             (LATGCLR = (1<<6))
+#define DIGITAL2_Toggle()            (LATGINV= (1<<6))
+#define DIGITAL2_OutputEnable()      (TRISGCLR = (1<<6))
+#define DIGITAL2_InputEnable()       (TRISGSET = (1<<6))
+#define DIGITAL2_Get()               ((PORTG >> 6) & 0x1)
+#define DIGITAL2_PIN                  GPIO_PIN_RG6
+
+/*** Macros for DIGITAL3 pin ***/
+#define DIGITAL3_Set()               (LATGSET = (1<<7))
+#define DIGITAL3_Clear()             (LATGCLR = (1<<7))
+#define DIGITAL3_Toggle()            (LATGINV= (1<<7))
+#define DIGITAL3_OutputEnable()      (TRISGCLR = (1<<7))
+#define DIGITAL3_InputEnable()       (TRISGSET = (1<<7))
+#define DIGITAL3_Get()               ((PORTG >> 7) & 0x1)
+#define DIGITAL3_PIN                  GPIO_PIN_RG7
+
+/*** Macros for RELAY7 pin ***/
+#define RELAY7_Set()               (LATBSET = (1<<11))
+#define RELAY7_Clear()             (LATBCLR = (1<<11))
+#define RELAY7_Toggle()            (LATBINV= (1<<11))
+#define RELAY7_OutputEnable()      (TRISBCLR = (1<<11))
+#define RELAY7_InputEnable()       (TRISBSET = (1<<11))
+#define RELAY7_Get()               ((PORTB >> 11) & 0x1)
+#define RELAY7_PIN                  GPIO_PIN_RB11
+
+/*** Macros for RELAY0 pin ***/
+#define RELAY0_Set()               (LATBSET = (1<<12))
+#define RELAY0_Clear()             (LATBCLR = (1<<12))
+#define RELAY0_Toggle()            (LATBINV= (1<<12))
+#define RELAY0_OutputEnable()      (TRISBCLR = (1<<12))
+#define RELAY0_InputEnable()       (TRISBSET = (1<<12))
+#define RELAY0_Get()               ((PORTB >> 12) & 0x1)
+#define RELAY0_PIN                  GPIO_PIN_RB12
+
+/*** Macros for RELAY1 pin ***/
+#define RELAY1_Set()               (LATBSET = (1<<13))
+#define RELAY1_Clear()             (LATBCLR = (1<<13))
+#define RELAY1_Toggle()            (LATBINV= (1<<13))
+#define RELAY1_OutputEnable()      (TRISBCLR = (1<<13))
+#define RELAY1_InputEnable()       (TRISBSET = (1<<13))
+#define RELAY1_Get()               ((PORTB >> 13) & 0x1)
+#define RELAY1_PIN                  GPIO_PIN_RB13
+
+/*** Macros for RELAY2 pin ***/
+#define RELAY2_Set()               (LATBSET = (1<<14))
+#define RELAY2_Clear()             (LATBCLR = (1<<14))
+#define RELAY2_Toggle()            (LATBINV= (1<<14))
+#define RELAY2_OutputEnable()      (TRISBCLR = (1<<14))
+#define RELAY2_InputEnable()       (TRISBSET = (1<<14))
+#define RELAY2_Get()               ((PORTB >> 14) & 0x1)
+#define RELAY2_PIN                  GPIO_PIN_RB14
+
+/*** Macros for RELAY3 pin ***/
+#define RELAY3_Set()               (LATBSET = (1<<15))
+#define RELAY3_Clear()             (LATBCLR = (1<<15))
+#define RELAY3_Toggle()            (LATBINV= (1<<15))
+#define RELAY3_OutputEnable()      (TRISBCLR = (1<<15))
+#define RELAY3_InputEnable()       (TRISBSET = (1<<15))
+#define RELAY3_Get()               ((PORTB >> 15) & 0x1)
+#define RELAY3_PIN                  GPIO_PIN_RB15
+
+/*** Macros for RELAY4 pin ***/
+#define RELAY4_Set()               (LATFSET = (1<<4))
+#define RELAY4_Clear()             (LATFCLR = (1<<4))
+#define RELAY4_Toggle()            (LATFINV= (1<<4))
+#define RELAY4_OutputEnable()      (TRISFCLR = (1<<4))
+#define RELAY4_InputEnable()       (TRISFSET = (1<<4))
+#define RELAY4_Get()               ((PORTF >> 4) & 0x1)
+#define RELAY4_PIN                  GPIO_PIN_RF4
+
+/*** Macros for RELAY5 pin ***/
+#define RELAY5_Set()               (LATFSET = (1<<5))
+#define RELAY5_Clear()             (LATFCLR = (1<<5))
+#define RELAY5_Toggle()            (LATFINV= (1<<5))
+#define RELAY5_OutputEnable()      (TRISFCLR = (1<<5))
+#define RELAY5_InputEnable()       (TRISFSET = (1<<5))
+#define RELAY5_Get()               ((PORTF >> 5) & 0x1)
+#define RELAY5_PIN                  GPIO_PIN_RF5
+
+/*** Macros for RELAY6 pin ***/
+#define RELAY6_Set()               (LATFSET = (1<<3))
+#define RELAY6_Clear()             (LATFCLR = (1<<3))
+#define RELAY6_Toggle()            (LATFINV= (1<<3))
+#define RELAY6_OutputEnable()      (TRISFCLR = (1<<3))
+#define RELAY6_InputEnable()       (TRISFSET = (1<<3))
+#define RELAY6_Get()               ((PORTF >> 3) & 0x1)
+#define RELAY6_PIN                  GPIO_PIN_RF3
+
+/*** Macros for RED pin ***/
+#define RED_Set()               (LATDSET = (1<<8))
+#define RED_Clear()             (LATDCLR = (1<<8))
+#define RED_Toggle()            (LATDINV= (1<<8))
+#define RED_OutputEnable()      (TRISDCLR = (1<<8))
+#define RED_InputEnable()       (TRISDSET = (1<<8))
+#define RED_Get()               ((PORTD >> 8) & 0x1)
+#define RED_PIN                  GPIO_PIN_RD8
+
+/*** Macros for GREEN pin ***/
+#define GREEN_Set()               (LATDSET = (1<<9))
+#define GREEN_Clear()             (LATDCLR = (1<<9))
+#define GREEN_Toggle()            (LATDINV= (1<<9))
+#define GREEN_OutputEnable()      (TRISDCLR = (1<<9))
+#define GREEN_InputEnable()       (TRISDSET = (1<<9))
+#define GREEN_Get()               ((PORTD >> 9) & 0x1)
+#define GREEN_PIN                  GPIO_PIN_RD9
+
+/*** Macros for BLUE pin ***/
+#define BLUE_Set()               (LATDSET = (1<<10))
+#define BLUE_Clear()             (LATDCLR = (1<<10))
+#define BLUE_Toggle()            (LATDINV= (1<<10))
+#define BLUE_OutputEnable()      (TRISDCLR = (1<<10))
+#define BLUE_InputEnable()       (TRISDSET = (1<<10))
+#define BLUE_Get()               ((PORTD >> 10) & 0x1)
+#define BLUE_PIN                  GPIO_PIN_RD10
+
+/*** Macros for SS_DAC0 pin ***/
+#define SS_DAC0_Set()               (LATDSET = (1<<11))
+#define SS_DAC0_Clear()             (LATDCLR = (1<<11))
+#define SS_DAC0_Toggle()            (LATDINV= (1<<11))
+#define SS_DAC0_OutputEnable()      (TRISDCLR = (1<<11))
+#define SS_DAC0_InputEnable()       (TRISDSET = (1<<11))
+#define SS_DAC0_Get()               ((PORTD >> 11) & 0x1)
+#define SS_DAC0_PIN                  GPIO_PIN_RD11
+
+/*** Macros for SS_DAC1 pin ***/
+#define SS_DAC1_Set()               (LATDSET = (1<<0))
+#define SS_DAC1_Clear()             (LATDCLR = (1<<0))
+#define SS_DAC1_Toggle()            (LATDINV= (1<<0))
+#define SS_DAC1_OutputEnable()      (TRISDCLR = (1<<0))
+#define SS_DAC1_InputEnable()       (TRISDSET = (1<<0))
+#define SS_DAC1_Get()               ((PORTD >> 0) & 0x1)
+#define SS_DAC1_PIN                  GPIO_PIN_RD0
 
 /*** Macros for SS_ADC pin ***/
-#define SS_ADC_Set()               (LATDSET = (1<<4))
-#define SS_ADC_Clear()             (LATDCLR = (1<<4))
-#define SS_ADC_Toggle()            (LATDINV= (1<<4))
-#define SS_ADC_OutputEnable()      (TRISDCLR = (1<<4))
-#define SS_ADC_InputEnable()       (TRISDSET = (1<<4))
-#define SS_ADC_Get()               ((PORTD >> 4) & 0x1)
-#define SS_ADC_PIN                  GPIO_PIN_RD4
+#define SS_ADC_Set()               (LATDSET = (1<<1))
+#define SS_ADC_Clear()             (LATDCLR = (1<<1))
+#define SS_ADC_Toggle()            (LATDINV= (1<<1))
+#define SS_ADC_OutputEnable()      (TRISDCLR = (1<<1))
+#define SS_ADC_InputEnable()       (TRISDSET = (1<<1))
+#define SS_ADC_Get()               ((PORTD >> 1) & 0x1)
+#define SS_ADC_PIN                  GPIO_PIN_RD1
 
 /*** Macros for SDO pin ***/
 #define SDO_Get()               ((PORTD >> 5) & 0x1)
 #define SDO_PIN                  GPIO_PIN_RD5
 
-/*** Macros for BTN0 pin ***/
-#define BTN0_Set()               (LATDSET = (1<<6))
-#define BTN0_Clear()             (LATDCLR = (1<<6))
-#define BTN0_Toggle()            (LATDINV= (1<<6))
-#define BTN0_OutputEnable()      (TRISDCLR = (1<<6))
-#define BTN0_InputEnable()       (TRISDSET = (1<<6))
-#define BTN0_Get()               ((PORTD >> 6) & 0x1)
-#define BTN0_PIN                  GPIO_PIN_RD6
-
-/*** Macros for DIGITAL3 pin ***/
-#define DIGITAL3_Set()               (LATFSET = (1<<0))
-#define DIGITAL3_Clear()             (LATFCLR = (1<<0))
-#define DIGITAL3_Toggle()            (LATFINV= (1<<0))
-#define DIGITAL3_OutputEnable()      (TRISFCLR = (1<<0))
-#define DIGITAL3_InputEnable()       (TRISFSET = (1<<0))
-#define DIGITAL3_Get()               ((PORTF >> 0) & 0x1)
-#define DIGITAL3_PIN                  GPIO_PIN_RF0
-
-/*** Macros for DIGITAL2 pin ***/
-#define DIGITAL2_Set()               (LATFSET = (1<<1))
-#define DIGITAL2_Clear()             (LATFCLR = (1<<1))
-#define DIGITAL2_Toggle()            (LATFINV= (1<<1))
-#define DIGITAL2_OutputEnable()      (TRISFCLR = (1<<1))
-#define DIGITAL2_InputEnable()       (TRISFSET = (1<<1))
-#define DIGITAL2_Get()               ((PORTF >> 1) & 0x1)
-#define DIGITAL2_PIN                  GPIO_PIN_RF1
-
-/*** Macros for SS_DAC2 pin ***/
-#define SS_DAC2_Set()               (LATESET = (1<<3))
-#define SS_DAC2_Clear()             (LATECLR = (1<<3))
-#define SS_DAC2_Toggle()            (LATEINV= (1<<3))
-#define SS_DAC2_OutputEnable()      (TRISECLR = (1<<3))
-#define SS_DAC2_InputEnable()       (TRISESET = (1<<3))
-#define SS_DAC2_Get()               ((PORTE >> 3) & 0x1)
-#define SS_DAC2_PIN                  GPIO_PIN_RE3
-
-/*** Macros for LED_RED pin ***/
-#define LED_RED_Set()               (LATESET = (1<<4))
-#define LED_RED_Clear()             (LATECLR = (1<<4))
-#define LED_RED_Toggle()            (LATEINV= (1<<4))
-#define LED_RED_OutputEnable()      (TRISECLR = (1<<4))
-#define LED_RED_InputEnable()       (TRISESET = (1<<4))
-#define LED_RED_Get()               ((PORTE >> 4) & 0x1)
-#define LED_RED_PIN                  GPIO_PIN_RE4
+/*** Macros for ADC_RDY pin ***/
+#define ADC_RDY_Set()               (LATESET = (1<<3))
+#define ADC_RDY_Clear()             (LATECLR = (1<<3))
+#define ADC_RDY_Toggle()            (LATEINV= (1<<3))
+#define ADC_RDY_OutputEnable()      (TRISECLR = (1<<3))
+#define ADC_RDY_InputEnable()       (TRISESET = (1<<3))
+#define ADC_RDY_Get()               ((PORTE >> 3) & 0x1)
+#define ADC_RDY_PIN                  GPIO_PIN_RE3
 
 
 // *****************************************************************************
