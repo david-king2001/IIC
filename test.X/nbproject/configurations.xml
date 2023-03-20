@@ -42,6 +42,7 @@
       <itemPath>../src/adc.h</itemPath>
       <itemPath>../src/input_output.h</itemPath>
       <itemPath>../src/terminal_input_output.h</itemPath>
+      <itemPath>../src/dac.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -93,6 +94,7 @@
       <itemPath>../src/adc.c</itemPath>
       <itemPath>../src/output.c</itemPath>
       <itemPath>../src/input.c</itemPath>
+      <itemPath>../src/dac.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

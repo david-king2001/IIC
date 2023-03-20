@@ -97,9 +97,8 @@ OUTPUT outputs[10] = {output_initialize_analog, output_initialize_analog, output
 
 //!Flag that used to determine if to start a new task
 volatile bool task_FLAG = true;
-//!Flag that used to determine is 30 seconds have passed
-//!Used for storing input data every 30 seconds
-bool thirty_sec_passed = false;
+
+
 bool print_alarms = false;
 bool print_history = true;
 bool send_rasp = false;
@@ -110,12 +109,10 @@ uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
 #define SCALE(input, old_max, old_min, new_max, new_min) ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)
 
-//!Update the past data storage
-void pastDataUpdate(double* data) {
-    for (int i = 0; i < 29; i++) {
-        pastData[input_channel][i] = pastData[input_channel][i + 1];
+void delay_us(uint32_t us) {
+    while (us--) {
+        __asm__("nop"); 
     }
-    pastData[input_channel][29] = *data;
 }
 
 
@@ -149,11 +146,6 @@ void TIMER2_InterruptSvcRoutine(uint32_t status, uintptr_t context) {
     
 }
 
-void APP_WriteCallback(uintptr_t context)
-{
-    //writeStatus = true;
-    
-}
 
 void APP_ReadCallback(uintptr_t context)
 {
@@ -177,7 +169,6 @@ int main(void) {
     TMR2_CallbackRegister(TIMER2_InterruptSvcRoutine, (uintptr_t) NULL);
     
     
-    UART4_WriteCallbackRegister(APP_WriteCallback, 0);
     UART4_ReadCallbackRegister(APP_ReadCallback, 0);
     
     //Set GPIO pins to low for not in use
@@ -192,6 +183,8 @@ int main(void) {
 
     //Set SS pins to High for not in use
     SS_ADC_Set();
+    RESET_ADC_Set();
+    
     SS_DAC0_Clear();
     SS_DAC1_Set();
     
@@ -218,7 +211,7 @@ int main(void) {
 //                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
 //                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
 //                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
-//                    ConfigureAnalogOutput(&outputs[0], &inputs[2], 2, inputs[2].max, inputs[2].min);
+                    ConfigureAnalogOutput(&outputs[0], &inputs[0], 0, inputs[0].max, inputs[0].min);
 //                    ConfigureInput(&inputs[4], false, 0, 0, 4);
 //                    
 //                    EditAlarm(&outputs[3], &inputs[2], 500, 400, 2, 2, true);
@@ -244,11 +237,7 @@ int main(void) {
                     if (inputs[input_channel / 2].is_set){
                         ADC_Read_Data((uint8_t*)&(inputs[input_channel / 2].raw_data));
                         //Store the data in past storage if 30 seconds have past
-                        if (thirty_sec_passed) {
-                            pastDataUpdate(&inputs[input_channel / 2].scaled_data);
-                            thirty_sec_passed = false;
-                        }
-                       
+                        
                         INPUT* input = &inputs[input_channel / 2];
                         //Convert to user scale and save
                         input->scaled_data = SCALE((double) input->raw_data, 0, 16777215, input->max, input->min);
@@ -436,16 +425,27 @@ int main(void) {
                     short int input_chnl = outputs[DAC_channel].input_chnl;
    
                     if (input_chnl != -1 ){
+                        
+                        //Turn off spi module
+                        SPI1CON = 0;
+                        
+                        GPIO_PinOutputEnable(GPIO_PIN_RD2);
+                        GPIO_PinOutputEnable(GPIO_PIN_RD5);
+                        
+                        GPIO_PinClear(GPIO_PIN_RD2);
+                        //Pulse the Latch to start new data transfer
                         if (DAC_channel == 0){
                             SS_DAC0_Set();
-                            for (int i=0; i<1000; i++);
+                            for (int i=0; i<5000; i++);
                             SS_DAC0_Clear();
                         }else if (DAC_channel == 1){
                             SS_DAC1_Set();     
-                            for (int i=0; i<1000; i++);
+                            for (int i=0; i<5000; i++);
                             SS_DAC1_Clear();
                         }
                         for (int i=0; i<1000; i++);
+                        
+                        
                         INPUT* dac1_input = &inputs[input_chnl];
                         
                         double output_trig = outputs[DAC_channel].trigger;
@@ -457,23 +457,31 @@ int main(void) {
                         else
                             outputs[DAC_channel].data = 0;
                         
-                        uint16_t flipped_out = (outputs[DAC_channel].data << 8) + (outputs[DAC_channel].data >>8);
-                        flipped_out=0xff6f;
                         
-                        SPI1_Write(((uint8_t*)&flipped_out), 2);
-                        while (SPI1_IsBusy());
-
-                        for (int i=0; i<1000; i++);
+                        for (int i = 15; i >= 0; i--) {
+                            for (int i=0; i<5000; i++);
+                            GPIO_PinSet(GPIO_PIN_RD2);        // Raise clock
+                            (outputs[DAC_channel].data >> i) & 1 ? GPIO_PinSet(GPIO_PIN_RD5) : GPIO_PinClear(GPIO_PIN_RD5);  // Set data
+                            for (int i=0; i<5000; i++);
+                            GPIO_PinClear(GPIO_PIN_RD2);        // Clear clock
+                        }
+                        
+                        
+                        //Pulse the Latch to end data transfer
+                        for (int i=0; i<5000; i++);
                         if (DAC_channel == 0){
                             SS_DAC0_Set();
-                            for (int i=0; i<1000; i++);
+                            for (int i=0; i<5000; i++);
                             SS_DAC0_Clear();
                         }else if (DAC_channel == 1){
                             SS_DAC1_Set();    
-                            for (int i=0; i<1000; i++);
+                            for (int i=0; i<5000; i++);
                             SS_DAC1_Clear();
                         }
-                        for (int i=0; i<1000000; i++);
+                        for (int i=0; i<5000; i++);
+                        
+                        //Turn SPI module back on
+                        SPI1_Initialize();
                     }
 
 
