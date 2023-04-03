@@ -15,7 +15,7 @@ uint8_t reg_data = 0;
 uint8_t cmd = 0;
 char input_instructions[6][256] = {"To edit an alarm first character must be \'A\'.\r\n\033[0K",
                                 "First character must be \'I\' input conf, \'A\' alarm conf,\'O\' alarm conf \'D\' display\r\n\033[0K",
-                                "Ex A in_type:A.D input:0-4 out_type:A or R output:0-7 alarm:0-4 high/low:low trigger:5432.1 reset:1234.5\r\n\033[0K",
+                                "Ex A in_type:A.D input:0-4 output:0-7 alarm:0-4 high/low:low trigger:5432.1 reset:1234.5\r\n\033[0K",
                                 "Ex I type:A input:0 max:5432.1 min:1234.5\r\n\033[0K",
                                 "Ex O input:0-4 output:0-1 max:5432.1 min:1234.5\r\n\033[0K",
                                 "D A for alarms, D H for input log\r\n\033[0K"};
@@ -107,7 +107,7 @@ void PrintAnalogOutputs(){
         while (UART4_WriteIsBusy()); 
         UART4_Write(&buffer, nbytes);
         while (UART4_WriteIsBusy());
-        nbytes = sprintf(buffer, "Source I#%d max:%lf min:%lf\r\n\033[0K",outputs[i].input_chnl, outputs[i].trigger, outputs[i].reset);
+        nbytes = sprintf(buffer, "Input Source#%d max:%lf min:%lf\r\n\033[0K",outputs[i].input_chnl, outputs[i].trigger, outputs[i].reset);
         while (UART4_WriteIsBusy()); 
         UART4_Write(&buffer, nbytes);
         while (UART4_WriteIsBusy());
@@ -120,7 +120,7 @@ void PrintAnalogOutputs(){
 
 void PrintRelays(){
     for (int i=2; i<10; i++){
-        nbytes = sprintf(buffer, "Relay States #%d %u\r\n\033[0K",i-2, outputs[i].relay);
+        nbytes = sprintf(buffer, "Relay States #%d %s\r\n\033[0K",i-2, outputs[i].relay ? "On" : "Off");
         while (UART4_WriteIsBusy()); 
         UART4_Write(&buffer, nbytes);
         while (UART4_WriteIsBusy());
@@ -134,16 +134,25 @@ void PrintRelays(){
 void PrintAlarmSettings(){
                         //Print the alarms currently set for each input
                     for (int i=0; i<8; i++){
-                        nbytes = sprintf(buffer, "Input #%d alarms:\r\n\033[0K", i);
+                        if (i<4)
+                            nbytes = sprintf(buffer, "Analog Input #%d alarms:\r\n\033[0K", i);
+                        else 
+                            nbytes = sprintf(buffer, "Digital Input #%d alarms:\r\n\033[0K", i-4);
+                        
                         while (UART4_WriteIsBusy());
                         UART4_Write(&buffer, nbytes);
                         while (UART4_WriteIsBusy());
                         for (int j=0; j<4; j++){
                             if (inputs[i].alrms[j] != NULL && inputs[i].alrms[j]->input_chnl != -1) {
-                                nbytes = sprintf(buffer, "Alarm #%d on/off: %s, high/low:%s, trigger:%f, reset:%f\r\n\033[0K",
+                                if (!inputs[i].ang_dig){
+                                    nbytes = sprintf(buffer, "Alarm #%d on/off: %s\r\n\033[0K", j, inputs[i].alrms[j]->relay ? "On" : "Off");
+                                }else{
+                                    nbytes = sprintf(buffer, "Alarm #%d on/off: %s, high/low:%s, trigger:%f, reset:%f\r\n\033[0K",
                                                                 j, inputs[i].alrms[j]->relay ? "On" : "Off",
                                                                 inputs[i].alrms[j]->high_low ? "High-Low" : "Low-High",
                                                                 inputs[i].alrms[j]->trigger, inputs[i].alrms[j]->reset);
+                                }
+                                
                                 while (UART4_WriteIsBusy());
                                 UART4_Write(&buffer, nbytes);
                                 while (UART4_WriteIsBusy());
@@ -183,12 +192,11 @@ void ParseInputForAlarm(char* input_string){
     int input_num;
     int output_num;
     char in_type;
-    char out_type;
     char hl_str[5];
     double trigger, reset;
 
-    sscanf(input_string, "in_type:%c input:%d out_type:%c output:%d alarm:%d high/low:%s trigger:%lf reset:%lf", 
-        &in_type, &input_num, &out_type, &output_num, &alarm_num, hl_str, &trigger, &reset);
+    sscanf(input_string, "in_type:%c input:%d  output:%d alarm:%d high/low:%s trigger:%lf reset:%lf", 
+        &in_type, &input_num, &output_num, &alarm_num, hl_str, &trigger, &reset);
         
 
     // Check the input number
@@ -218,17 +226,11 @@ void ParseInputForAlarm(char* input_string){
         return;
     }
     
-        // Check the type string
-    if (out_type == 'A' && in_type != 'R'){
-        nbytes = sprintf(buffer, "Error: Invalid input type\r\n");
-        while (UART4_WriteIsBusy()); 
-        UART4_Write(&buffer, nbytes);
-        while (UART4_WriteIsBusy());
-        return;
+    //If digital input ignore rest of input
+    if (in_type == 'D'){
+        EditAlarm(&outputs[output_num+2], &inputs[input_num+4], 0, 0, input_num+4, alarm_num, false);
     }
-
     
-
     // Check the high/low string
     if (strcmp(hl_str, "high") != 0 && strcmp(hl_str, "low") != 0){
         nbytes = sprintf(buffer, "Error: Invalid high/low type\r\n");
@@ -253,11 +255,11 @@ void ParseInputForAlarm(char* input_string){
             UART4_Write(&buffer, nbytes);
             while (UART4_WriteIsBusy());
             return;            
-        }
+        } 
     }
     
     
-    EditAlarm(&outputs[out_type == 'A' ? output_num : output_num+2], &inputs[in_type == 'A' ? input_num : input_num+4], trigger, reset, in_type == 'A' ? input_num : input_num+4, alarm_num, strcmp(hl_str, "high") == 0);
+    EditAlarm(&outputs[output_num+2], &inputs[in_type == 'A' ? input_num : input_num+4], trigger, reset, in_type == 'A' ? input_num : input_num+4, alarm_num, strcmp(hl_str, "high") == 0);
 
 }
 
@@ -329,6 +331,31 @@ void ParseInputForOutput(char* input_string){
         UART4_Write(&buffer, nbytes);
         while (UART4_WriteIsBusy());
         return;
+    }
+    
+}
+
+void ParseInputForDelete(char* input_string){
+    int input_num;
+    int alarm = -1;
+    char type_str[6] = {};
+
+    sscanf(input_string, "%s:%d alarm:%d", 
+        type_str, &input_num, &alarm);
+    
+    if (strcmp(type_str, "input") == 0) {
+        if (alarm == -1 && (input_num < 8 && input_num > -1)){
+            inputs[input_num].is_set = false;
+            for (int i=0; i<4; i++)
+                inputs[input_num].alrms[i]->input_chnl = -1;
+        }else{
+            if (alarm < 5 && alarm >-1)
+                inputs[input_num].alrms[alarm]->input_chnl = -1;
+        } 
+    } else if (strcmp(type_str, "output") != 0){
+        outputs[input_num].input_chnl = -1;
+    }else{
+        
     }
     
 }

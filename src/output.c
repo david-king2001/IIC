@@ -75,6 +75,8 @@ bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, short int input_chnl){
 void DeleteAlarm(OUTPUT* output) {
     output->input_chnl = -1;
 }
+
+
 //! Edit existing Alarm
 /*!
  This edits the parameter on the given output

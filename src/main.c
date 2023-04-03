@@ -84,8 +84,12 @@ STATES nextState = STATE_INITIALIZE;
 
 double pastData[4][30] = {{0}}; //!<Store history of input data
 
+#define ADC_MIN 3200000
+#define ADC_MAX 16777215
+
+
 #define input_initialize {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
-#define input_initialize_digital {.ang_dig = false, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
+#define input_initialize_digital {.ang_dig = false, .digital_on = true, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
 #define output_initialize_analog {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
 #define output_initialize {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = true, .relay = false, .reset = 0.0, .trigger = 0.0}
 
@@ -106,6 +110,7 @@ uint8_t input_channel = 0; //!< 0-7, 0-3 is Analog inputs, 4-7 is Digital Inputs
 uint8_t DAC_channel = 0; //!< 0-1, Either DAC1 or DAC2
 uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
+uint16_t test_ = 0;
 
 #define SCALE(input, old_max, old_min, new_max, new_min) ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)
 
@@ -211,11 +216,15 @@ int main(void) {
 //                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
 //                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
 //                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
-                    ConfigureAnalogOutput(&outputs[0], &inputs[0], 0, inputs[0].max, inputs[0].min);
+                    ConfigureAnalogOutput(&outputs[1], &inputs[0], 0, inputs[0].max, inputs[0].min);
 //                    ConfigureInput(&inputs[4], false, 0, 0, 4);
 //                    
 //                    EditAlarm(&outputs[3], &inputs[2], 500, 400, 2, 2, true);
 //                    EditAlarm(&outputs[4], &inputs[4], 0, 0, 4, 2, true);
+                    
+                    
+                    ConfigureInput(&inputs[4], false, 0, 0, 4);
+                    EditAlarm(&outputs[8], &inputs[4], 0, 0, 4, 0, false);
                     //
                     /////////////////////////////////////////////
                     //
@@ -240,7 +249,7 @@ int main(void) {
                         
                         INPUT* input = &inputs[input_channel / 2];
                         //Convert to user scale and save
-                        input->scaled_data = SCALE((double) input->raw_data, 0, 16777215, input->max, input->min);
+                        input->scaled_data = SCALE((double) input->raw_data, ADC_MIN, ADC_MAX, input->max, input->min);
                     
                     }
 
@@ -252,16 +261,16 @@ int main(void) {
                     uint8_t digital_channel = 4+(input_channel % 4);
                     switch(digital_channel){
                         case 4:
-                            inputs[digital_channel].digital_on = DIGITAL0_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL0_Get()==0;
                             break;
                         case 5:
-                            inputs[digital_channel].digital_on = DIGITAL1_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL1_Get()==0;
                             break;
                         case 6:
-                            inputs[digital_channel].digital_on = DIGITAL2_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL2_Get()==0;
                             break;
                         case 7:
-                            inputs[digital_channel].digital_on = DIGITAL3_Get()==1;
+                            inputs[digital_channel].digital_on = DIGITAL3_Get()==0;
                             break;
                         default:
                             break;
@@ -304,7 +313,6 @@ int main(void) {
                     if (send_rasp){
                         send_rasp = false;
                         //Send data to display
-                        //nbytes = sprintf(buffer, "<set:0 min:0.0 max:1000.0 val:500.0, set:1 min:0.0 max:9800.0 val:500.0, set:1 min:0 max:1000.0 val:500.0, set:1 min:0.0 max:1000.0 val:500.0, 834.05, 82.01, 453.12, 219.87, 945.76, 323.32, 392.79, 321.52, 183.46, 905.13, 679.77, 511.06, 111.67, 236.24, 749.96, 417.71, 376.42, 672.91, 255.34, 951.44, 230.05, 553.34, 364.98, 434.53, 291.43, 614.28, 38.66, 547.4, 550.46, 117.15, 220.86, 847.02, 371.68, 122.36, 295.95, 111.39, 598.28, 166.98, 691.69, 714.43, 300.89, 47.81, 872.2, 776.81, 265.43, 109.56, 148.52, 559.54, 381.09, 248.38, 207.91, 341.09, 708.26, 279.81, 63.58, 107.66, 646.47, 107.63, 418.17, 487.49, 537.89, 30.26, 729.16, 920.86, 969.25, 752.81, 688.88, 894.86, 756.77, 169.96, 925.11, 273.78, 823.62, 635.79, 44.43, 146.54, 599.85, 618.63, 307.37, 823.92, 528.77, 686.3, 586.05, 610.56, 259.19, 308.2, 847.81, 417.98, 775.21, 506.55, 861.98, 778.12, 60.99, 78.48, 16.58, 181.08, 819.24, 543.3, 565.96, 439.97, 63.49, 69.36, 227.05, 231.4, 719.05, 997.38, 811.43, 845.36, 763.7, 989.13, 60.81, 702.68, 80.5, 387.58, 307.48, 982.96, 219.5, 861.2, 541.33, 316.89, 611.68, 776.91, 451.83, 758.75, 623.13, 501.32, 546.04, 680.27, 72.88, 46.4, 127.13, 80.95, 988.07, 371.1, 482.98, 278.54>");
                         nbytes = sprintf(buffer, "<");
                         for (int i=0; i<4; i++)
                             nbytes += sprintf(buffer+nbytes, "set:%d min:%lf max:%lf val:%lf, ", inputs[i].is_set, inputs[i].min, inputs[i].max, inputs[i].scaled_data);
@@ -335,17 +343,31 @@ int main(void) {
                     if (enter){
                         enter = false;
                         receive_buffer[receive_buff_size+1] = '\0';
+                        
+                        //Parse request for input 
                         if (receive_buffer[0] == 'I'){
                             ParseInputForInput(&receive_buffer[2]);
+                            
+                        //Parse request for alarm
                         }else if (receive_buffer[0] == 'A'){
                             ParseInputForAlarm(&receive_buffer[2]);
+                            
+                        //Parse request for output 
                         }else if (receive_buffer[0] == 'O'){
                             ParseInputForOutput(&receive_buffer[2]);
+                            
+                        //Parse request for delete 
+                        }else if (receive_buffer[0] == '-'){
+                            ParseInputForDelete(&receive_buffer[2]);
+                            
+                        //Change display output 
                         }else if (receive_buffer[0] =='D'){
                             if (receive_buffer[2] == 'A'){
+                                UART4_Write(&"\033[2J", sizeof("\033[2J"));
                                 print_alarms = true;
                                 print_history = false;
                             }else if (receive_buffer[2] == 'H'){
+                                UART4_Write(&"\033[2J", sizeof("\033[2J"));
                                 print_history = true;
                                 print_alarms = false;
                             }else{
@@ -457,7 +479,8 @@ int main(void) {
                         else
                             outputs[DAC_channel].data = 0;
                         
-                        
+                        test_+=1000;
+                        outputs[DAC_channel].data = test_;
                         for (int i = 15; i >= 0; i--) {
                             for (int i=0; i<5000; i++);
                             GPIO_PinSet(GPIO_PIN_RD2);        // Raise clock
@@ -498,7 +521,7 @@ int main(void) {
                         input_channel++;
 
                     //Reset DAC channel 
-                    DAC_channel = !DAC_channel;
+                    DAC_channel = 0;
 
                     //Goto first task
                     state = ADC_SEND_CMD;

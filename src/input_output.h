@@ -93,6 +93,8 @@ extern "C" {
     
     void DeleteAlarm(OUTPUT* output);
     
+    
+    
     void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, int alarm_num, bool high_low);
     
     bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, double max, double min );

@@ -47,6 +47,8 @@ extern "C" {
     
     void ParseInputForOutput(char* input_string);
     
+    void ParseInputForDelete(char* input_string);
+    
     void PrintHistory();
 
 #ifdef	__cplusplus

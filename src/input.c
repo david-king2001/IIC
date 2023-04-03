@@ -20,3 +20,10 @@ void ConfigureInput(INPUT* input, bool ang_dig, double max, double min, int inpu
     
     input->is_set=true;
 }
+
+void DeleteInput(INPUT* input){
+    input->is_set = false;
+    
+    for (int i=0; i<4; i++)
+        input->alrms[i]->input_chnl = -1;
+}
