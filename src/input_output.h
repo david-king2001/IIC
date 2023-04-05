@@ -40,7 +40,7 @@ extern "C" {
         double reset;
 
         //!Input that triggers alarm
-        short int input_chnl;
+        int input_chnl;
 
         //!true: High-Low Alarm; set when value rises trigger and drops below reset
         //!false: Low-High Alarm; set when value drops to trigger and raise above reset
@@ -84,20 +84,21 @@ extern "C" {
     extern INPUT inputs[8]; //!<4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
     extern OUTPUT outputs[10]; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
     extern double pastData[4][30]; //!<Store history of input data
+    extern bool converting;
     
     void ConfigureInput(INPUT* input, bool ang_dig, double max, double min, int input_num);
     
-    bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, bool high_low);
+    bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, int input_chnl, bool high_low);
     
-    bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, short int input_chnl);
+    bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, int input_chnl);
     
     void DeleteAlarm(OUTPUT* output);
     
     
     
-    void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, int alarm_num, bool high_low);
+    void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, int input_chnl, int alarm_num, bool high_low);
     
-    bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, double max, double min );
+    bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, int input_chnl, double max, double min );
     
     
 #ifdef	__cplusplus

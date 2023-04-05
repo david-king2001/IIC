@@ -85,17 +85,17 @@ STATES nextState = STATE_INITIALIZE;
 double pastData[4][30] = {{0}}; //!<Store history of input data
 
 #define ADC_MIN 3200000
-#define ADC_MAX 16777215
+#define ADC_MAX 16477215
 
 
 #define input_initialize {.ang_dig = true, .digital_on = false, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
 #define input_initialize_digital {.ang_dig = false, .digital_on = true, .is_set = false, .max = 0.0, .min = 0.0, .raw_data=0, .scaled_data=0.0}
-#define output_initialize_analog {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = false, .relay = false, .reset = 0.0, .trigger = 0.0}
-#define output_initialize {.data = 0, .high_low= false, .input_chnl=-1, .rel_dac = true, .relay = false, .reset = 0.0, .trigger = 0.0}
+#define output_initialize_analog {.rel_dac = false, .data = 0, .relay = false, .trigger = 0.0, .reset = 0.0, .input_chnl=-1, .high_low= false}
+#define output_initialize {.rel_dac = true, .data = 0, .relay = false, .trigger = 0.0, .reset = 0.0, .input_chnl=-1, .high_low= false}
 
 //!4 Analog inputs from ADC (inputs[0-3]), 4 Digital inputs (inputs[4-7])
 INPUT inputs[8] = {input_initialize, input_initialize, input_initialize, input_initialize, input_initialize_digital, input_initialize_digital, input_initialize_digital, input_initialize_digital}; 
-OUTPUT outputs[10] = {output_initialize_analog, output_initialize_analog, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize}; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
+OUTPUT outputs[10] = {output_initialize_analog, output_initialize_analog, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize, output_initialize}; //!<2 Analog outputs to DAC (outputs[0-1]), 8 Relays (outputs[2-9])
 //************************
 
 
@@ -112,7 +112,15 @@ uint16_t ms_counter = 0; //!< Counter of ms that passed resets at 30000ms
 
 uint16_t test_ = 0;
 
-#define SCALE(input, old_max, old_min, new_max, new_min) ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min)
+double SCALE(double input, double old_max, double old_min, double new_max, double new_min) {
+    
+    // Avoid negative output
+    
+    return    ((((input - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min);
+}
+
+
+
 
 void delay_us(uint32_t us) {
     while (us--) {
@@ -191,7 +199,7 @@ int main(void) {
     RESET_ADC_Set();
     
     SS_DAC0_Clear();
-    SS_DAC1_Set();
+    SS_DAC1_Clear();
     
     RED_Set();
     BLUE_Set();
@@ -213,18 +221,19 @@ int main(void) {
                     ///TESTING CONFIGURATION/////////////////////
                     //
                     ConfigureInput(&inputs[0], true, 16777215, 0, 0);
-//                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
-//                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
-//                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
-                    ConfigureAnalogOutput(&outputs[1], &inputs[0], 0, inputs[0].max, inputs[0].min);
-//                    ConfigureInput(&inputs[4], false, 0, 0, 4);
+                    ConfigureInput(&inputs[1], true, 1000, 0, 1);
+                    ConfigureInput(&inputs[2], true, 1000, -1000, 2);
+                    ConfigureInput(&inputs[3], true, 16777215, 0, 3);
+//                    ConfigureAnalogOutput(&outputs[1], &inputs[0], 0, inputs[0].max, inputs[0].min);
 //                    
 //                    EditAlarm(&outputs[3], &inputs[2], 500, 400, 2, 2, true);
-//                    EditAlarm(&outputs[4], &inputs[4], 0, 0, 4, 2, true);
+                    EditAlarm(&outputs[2], &inputs[4], 0, 0, 4, 0, true);
+                    EditAlarm(&outputs[3], &inputs[4], 0, 0, 4, 1, true);
+                    EditAlarm(&outputs[4], &inputs[4], 0, 0, 4, 2, true);
+                    EditAlarm(&outputs[5], &inputs[4], 0, 0, 4, 3, true);
                     
                     
-                    ConfigureInput(&inputs[4], false, 0, 0, 4);
-                    EditAlarm(&outputs[8], &inputs[4], 0, 0, 4, 0, false);
+                    //EditAlarm(&outputs[8], &inputs[4], 0, 0, 4, 0, false);
                     //
                     /////////////////////////////////////////////
                     //
@@ -282,9 +291,7 @@ int main(void) {
                     //TODO
                 case DISPLAY:;
                     
-                    
-                    //First 10 lines for debugging
-                    //Set cursor to 10th line
+                   
                     while (UART4_WriteIsBusy()); 
                     UART4_Write(&"\033[3;0H", sizeof("\033[3;0H"));
                     
@@ -444,10 +451,10 @@ int main(void) {
                 case DAC_SEND_DATA:;
                     
                     //Get the channel that is set to provide input to the data
-                    short int input_chnl = outputs[DAC_channel].input_chnl;
+                    int input_c = outputs[DAC_channel].input_chnl;
    
-                    if (input_chnl != -1 ){
-                        
+                    if (input_c != -1 ){
+                        GREEN_Clear();
                         //Turn off spi module
                         SPI1CON = 0;
                         
@@ -468,7 +475,7 @@ int main(void) {
                         for (int i=0; i<1000; i++);
                         
                         
-                        INPUT* dac1_input = &inputs[input_chnl];
+                        INPUT* dac1_input = &inputs[input_c];
                         
                         double output_trig = outputs[DAC_channel].trigger;
                         double output_reset = outputs[DAC_channel].reset;
@@ -479,8 +486,7 @@ int main(void) {
                         else
                             outputs[DAC_channel].data = 0;
                         
-                        test_+=1000;
-                        outputs[DAC_channel].data = test_;
+                        
                         for (int i = 15; i >= 0; i--) {
                             for (int i=0; i<5000; i++);
                             GPIO_PinSet(GPIO_PIN_RD2);        // Raise clock
@@ -515,14 +521,21 @@ int main(void) {
                 case INCREMENT_CHANNEL:
 
                     //Reset ADC Channel at max
-                    if (input_channel == 7)
-                        input_channel = 0;
-                    else
-                        input_channel++;
+                    if (!converting){
+                        if (input_channel == 7)
+                            input_channel = 0;
+                        else
+                            input_channel++;
+                    }
+                    
 
                     //Reset DAC channel 
-                    DAC_channel = 0;
-
+                    if (DAC_channel==1){
+                        DAC_channel = 0;
+                    }else{
+                        DAC_channel = 1;
+                    }
+                    
                     //Goto first task
                     state = ADC_SEND_CMD;
                     break;

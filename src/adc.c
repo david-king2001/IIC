@@ -6,10 +6,6 @@
 uint8_t adc_cmd;
 uint8_t trash = 0;
 bool converting = false;
-//!Blocking until ADC busy signal is low
-//void ADC_Wait() {
-//    while (ADC_RDY_Get());
-//}
 
 //See adc.h
 void ADC_Initialize() {

@@ -5,9 +5,18 @@
 
 void ConfigureInput(INPUT* input, bool ang_dig, double max, double min, int input_num){
     
-    //New input delete old data
+    
+    //Configuration only needed for Analog inputs
+    if (input_num > 3) return;
+            
+    //New input delete old data  
     for (int i=0; i<30; i++){
         pastData[input_num][i] = min;
+    }
+    
+    //New input delete all links
+    for (int i=0; i<4; i++){
+        if (input->alrms[i] ) input->alrms[i]->input_chnl = -1;
     }
     
     input->ang_dig = ang_dig;

@@ -19,7 +19,7 @@
  \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
  \return true on success, false on falure. Returns false if output already configured or input channel already has 4 alarms
  */
-bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl,  bool high_low) {
+bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, int input_chnl,  bool high_low) {
     if (output->input_chnl != -1 || !input->is_set) {
         return false;
     } else {
@@ -49,7 +49,7 @@ bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double rese
  \param input_chl an integer that is the channel number for the input
  \return true on success, false on falure. Returns false if output already configured or input channel already has 4 alarms
  */
-bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, short int input_chnl){
+bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, int input_chnl){
     if (output->input_chnl != -1 || !input->is_set) {
         return false;
     }else{
@@ -67,15 +67,6 @@ bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, short int input_chnl){
 }
 
 
-//! Delete Alarm
-/*!
- This deletes an alarm by setting the input_chnl to -1;
- \param output the output that the alarm would be set to
- */
-void DeleteAlarm(OUTPUT* output) {
-    output->input_chnl = -1;
-}
-
 
 //! Edit existing Alarm
 /*!
@@ -86,7 +77,7 @@ void DeleteAlarm(OUTPUT* output) {
  \param input_chl an integer that is the channel number for the input
  \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
  */
-void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short int input_chnl, int alarm_num, bool high_low) {
+void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, int input_chnl, int alarm_num, bool high_low) {
         output->input_chnl = input_chnl;
         output->trigger = trigger;
         output->reset = reset;
@@ -104,7 +95,7 @@ void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, short
  * \param min double, min value of input to trigger 4mA
  * \returns true on success, false on failure. Return false if: input_chnl not in range (0-3), input is not analog type, or select range of min-max is out of input range bounds 
  */
-bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, short int input_chnl, double max, double min ){
+bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, int input_chnl, double max, double min ){
     //Check valid input channel was sent
     if (input_chnl>3 && input_chnl<0) return false;
     
