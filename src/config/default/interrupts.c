@@ -61,6 +61,7 @@
 
 
 void TIMER_2_InterruptHandler( void );
+void NVM_InterruptHandler( void );
 void SPI_1_InterruptHandler( void );
 void UART_1_InterruptHandler( void );
 void UART_4_InterruptHandler( void );
@@ -71,6 +72,11 @@ void UART_4_InterruptHandler( void );
 void __ISR(_TIMER_2_VECTOR, ipl1SOFT) TIMER_2_Handler (void)
 {
     TIMER_2_InterruptHandler();
+}
+
+void __ISR(_FCE_VECTOR, ipl1SOFT) FCE_Handler (void)
+{
+    NVM_InterruptHandler();
 }
 
 void __ISR(_SPI_1_VECTOR, ipl1SOFT) SPI_1_Handler (void)

@@ -55,9 +55,7 @@
 #include "peripheral/gpio/plib_gpio.h"
 #include "peripheral/evic/plib_evic.h"
 #include "peripheral/spi/spi_master/plib_spi1_master.h"
-//#include "adc.h"
-//#include "input_output.h"
-//#include "terminal_input_output.h"
+#include "peripheral/nvm/plib_nvm.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility

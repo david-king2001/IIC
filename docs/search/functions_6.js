@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['inputbtn_0',['InputBtn',['../main_8c.html#a656a938e48e0114f1359e0f059c597aa',1,'main.c']]]
+  ['main_0',['main',['../main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main.c']]]
 ];

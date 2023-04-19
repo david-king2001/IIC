@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['trigger_5falarms_0',['TRIGGER_ALARMS',['../main_8c.html#a94b1da2e055fff4d143aa6aa891f79a9a189a1734fcdac0abd16dc86628d909c9',1,'main.c']]]
+  ['page_5ferase_5foperation_0',['PAGE_ERASE_OPERATION',['../plib__nvm_8c.html#a1ea6080fec70b4a8e5c35d7c39791917aa963a669e18ce7524465707b14cb2372',1,'plib_nvm.c']]],
+  ['program_5ferase_5foperation_1',['PROGRAM_ERASE_OPERATION',['../plib__nvm_8c.html#a1ea6080fec70b4a8e5c35d7c39791917a31b7398f04c00ad1d486fa202ab8e5ca',1,'plib_nvm.c']]]
 ];

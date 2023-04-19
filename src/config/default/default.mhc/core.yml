@@ -96,35 +96,35 @@ children:
       - type: User
         attributes: {value: DIGITAL}
   - type: String
-    attributes: {id: BSP_PIN_24_DIR}
+    attributes: {id: BSP_PIN_23_DIR}
     children:
     - type: Values
       children:
       - type: User
         attributes: {value: Out}
   - type: String
-    attributes: {id: BSP_PIN_24_FUNCTION_NAME}
+    attributes: {id: BSP_PIN_23_FUNCTION_NAME}
     children:
     - type: Values
       children:
       - type: User
         attributes: {value: RELAY7}
   - type: String
-    attributes: {id: BSP_PIN_24_FUNCTION_TYPE}
+    attributes: {id: BSP_PIN_23_FUNCTION_TYPE}
     children:
     - type: Values
       children:
       - type: User
         attributes: {value: GPIO}
   - type: String
-    attributes: {id: BSP_PIN_24_LAT}
+    attributes: {id: BSP_PIN_23_LAT}
     children:
     - type: Values
       children:
       - type: User
         attributes: {value: High}
   - type: String
-    attributes: {id: BSP_PIN_24_MODE}
+    attributes: {id: BSP_PIN_23_MODE}
     children:
     - type: Values
       children:
@@ -1020,6 +1020,27 @@ children:
       - type: Dynamic
         attributes: {id: core, value: 'false'}
   - type: Boolean
+    attributes: {id: EVIC_26_ENABLE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: EVIC_26_HANDLER_LOCK}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'true'}
+  - type: String
+    attributes: {id: EVIC_26_INTERRUPT_HANDLER}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: NVM_InterruptHandler}
+  - type: Boolean
     attributes: {id: EVIC_30_ENABLE}
     children:
     - type: Values
@@ -1278,6 +1299,34 @@ children:
       children:
       - type: Dynamic
         attributes: {id: core, value: 'true'}
+  - type: Boolean
+    attributes: {id: FCE_INTERRUPT_ENABLE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: nvm, value: 'true'}
+  - type: Boolean
+    attributes: {id: FCE_INTERRUPT_ENABLE_UPDATE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: 'false'}
+  - type: String
+    attributes: {id: FCE_INTERRUPT_HANDLER}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: nvm, value: NVM_InterruptHandler}
+  - type: Boolean
+    attributes: {id: FCE_INTERRUPT_HANDLER_LOCK}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: nvm, value: 'true'}
   - type: Integer
     attributes: {id: I2C1_CLOCK_FREQUENCY}
     children:
@@ -1487,7 +1536,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '63533'}
+        attributes: {id: core, value: '62509'}
   - type: Hex
     attributes: {id: SYS_PORT_B_CNEN}
     children:
@@ -1522,7 +1571,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '63488'}
+        attributes: {id: core, value: '62464'}
   - type: Hex
     attributes: {id: SYS_PORT_B_ODC}
     children:
@@ -1536,7 +1585,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '63488'}
+        attributes: {id: core, value: '62464'}
   - type: Hex
     attributes: {id: SYS_PORT_D_ANSEL}
     children:

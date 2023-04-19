@@ -16,12 +16,15 @@ extern "C" {
     
     
     extern bool enter;
+    extern bool error;
     //Terminal out with UART
     extern char buffer[OUT_BUFFER];
     extern char receive_buffer[128];
+    extern char error_buffer[128];
     extern char rec_char;
     extern int receive_buff_size;
     extern int nbytes;
+    extern int error_buff_size;
     extern uint8_t reg_data;
     extern uint8_t cmd;
     
@@ -50,6 +53,8 @@ extern "C" {
     void ParseInputForDelete(char* input_string);
     
     void PrintHistory();
+    
+    void PrintError();
 
 #ifdef	__cplusplus
 }

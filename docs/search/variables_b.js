@@ -1,7 +1,24 @@
 var searchData=
 [
-  ['scaled_5fdata_0',['scaled_data',['../struct_a_n_a_l_o_g.html#a700728a6b687aba2c80a481699d72248',1,'ANALOG']]],
-  ['spi1obj_1',['spi1Obj',['../plib__spi1__master_8c.html#ab16015a8f1e53bd4019c4e019dd2358d',1,'plib_spi1_master.c']]],
-  ['spi2obj_2',['spi2Obj',['../plib__spi2__master_8c.html#a3ae55ad21f793d3a703fe09c3b94b67d',1,'plib_spi2_master.c']]],
-  ['state_3',['state',['../main_8c.html#a5382c384dda354916527a732be537fb1',1,'main.c']]]
+  ['raw_5fdata_0',['raw_data',['../struct_i_n_p_u_t.html#af80d3fe0257ea3fdc87b281f08f0a258',1,'INPUT']]],
+  ['rdbuffersize_1',['rdBufferSize',['../struct_u_a_r_t___r_i_n_g___b_u_f_f_e_r___o_b_j_e_c_t.html#a53b2ac02aef4e007b9474e28a99740e9',1,'UART_RING_BUFFER_OBJECT']]],
+  ['rdcallback_2',['rdCallback',['../struct_u_a_r_t___r_i_n_g___b_u_f_f_e_r___o_b_j_e_c_t.html#ad9b9e173d174457b99588edd84437dfa',1,'UART_RING_BUFFER_OBJECT']]],
+  ['rdcontext_3',['rdContext',['../struct_u_a_r_t___r_i_n_g___b_u_f_f_e_r___o_b_j_e_c_t.html#a3c21f49c9c445794d24a5efffcd560f3',1,'UART_RING_BUFFER_OBJECT']]],
+  ['rdinindex_4',['rdInIndex',['../struct_u_a_r_t___r_i_n_g___b_u_f_f_e_r___o_b_j_e_c_t.html#ab001837d365c33da2c0980524e2ac67b',1,'UART_RING_BUFFER_OBJECT']]],
+  ['rdoutindex_5',['rdOutIndex',['../struct_u_a_r_t___r_i_n_g___b_u_f_f_e_r___o_b_j_e_c_t.html#ad7f1ddda274712cbd1b6c9b091f85b3d',1,'UART_RING_BUFFER_OBJECT']]],
+  ['rdthreshold_6',['rdThreshold',['../struct_u_a_r_t___r_i_n_g___b_u_f_f_e_r___o_b_j_e_c_t.html#ac063223c270eca6ab791eac918b897a5',1,'UART_RING_BUFFER_OBJECT']]],
+  ['rec_5fchar_7',['rec_char',['../terminal__input__output_8c.html#a578161ea18833028cd162c0ebbe6d0cb',1,'rec_char():&#160;terminal_input_output.c'],['../terminal__input__output_8h.html#a578161ea18833028cd162c0ebbe6d0cb',1,'rec_char():&#160;terminal_input_output.c']]],
+  ['receive_5fbuff_5fsize_8',['receive_buff_size',['../terminal__input__output_8c.html#a4827932dfc3a844b6660c01b6d0d6d99',1,'receive_buff_size():&#160;terminal_input_output.c'],['../terminal__input__output_8h.html#a4827932dfc3a844b6660c01b6d0d6d99',1,'receive_buff_size():&#160;terminal_input_output.c']]],
+  ['receive_5fbuffer_9',['receive_buffer',['../terminal__input__output_8c.html#ad81d15276eeba32b700a5825564f40ea',1,'receive_buffer():&#160;terminal_input_output.c'],['../terminal__input__output_8h.html#ad81d15276eeba32b700a5825564f40ea',1,'receive_buffer():&#160;terminal_input_output.c']]],
+  ['reg_5fdata_10',['reg_data',['../terminal__input__output_8c.html#a35b74d69bd6f987cf3027c7d6ecb1aab',1,'reg_data():&#160;terminal_input_output.c'],['../terminal__input__output_8h.html#a35b74d69bd6f987cf3027c7d6ecb1aab',1,'reg_data():&#160;terminal_input_output.c']]],
+  ['rel_5fdac_11',['rel_dac',['../struct_o_u_t_p_u_t.html#a1d75c73b6519af3386f9dfe64bf2fffe',1,'OUTPUT']]],
+  ['relay_12',['relay',['../struct_o_u_t_p_u_t.html#aa1e1c260442e47f064307501b3614a80',1,'OUTPUT']]],
+  ['reset_13',['reset',['../struct_o_u_t_p_u_t.html#adc5e33855b2237c531d55e52a23005cf',1,'OUTPUT']]],
+  ['rxbuffer_14',['rxBuffer',['../struct_s_p_i___o_b_j_e_c_t.html#a29a45ad2696e9bd1e8e21216ea9fb0a3',1,'SPI_OBJECT::rxBuffer()'],['../struct_u_a_r_t___o_b_j_e_c_t.html#a765da49a944f3916b674154f54e4edfa',1,'UART_OBJECT::rxBuffer()']]],
+  ['rxbusystatus_15',['rxBusyStatus',['../struct_u_a_r_t___o_b_j_e_c_t.html#a05115e75d27b05e046c9658985d9b403',1,'UART_OBJECT']]],
+  ['rxcallback_16',['rxCallback',['../struct_u_a_r_t___o_b_j_e_c_t.html#ab64ec03c935560a138eaa2773e67ad40',1,'UART_OBJECT']]],
+  ['rxcontext_17',['rxContext',['../struct_u_a_r_t___o_b_j_e_c_t.html#ad04d03996bb6ecae9da5b76ec24b9583',1,'UART_OBJECT']]],
+  ['rxcount_18',['rxCount',['../struct_s_p_i___o_b_j_e_c_t.html#a44f194ed7d260687898b174390a7c8f5',1,'SPI_OBJECT']]],
+  ['rxprocessedsize_19',['rxProcessedSize',['../struct_u_a_r_t___o_b_j_e_c_t.html#a17249e1b437142c496b419f0227dd4cd',1,'UART_OBJECT']]],
+  ['rxsize_20',['rxSize',['../struct_s_p_i___o_b_j_e_c_t.html#a391007772689bec1d2ca7911cf7e7f11',1,'SPI_OBJECT::rxSize()'],['../struct_u_a_r_t___o_b_j_e_c_t.html#a391007772689bec1d2ca7911cf7e7f11',1,'UART_OBJECT::rxSize()']]]
 ];

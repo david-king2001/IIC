@@ -4,9 +4,6 @@
 #include <stdio.h>
 #include "input_output.h"
 
-
-
-
 //! Creates Alarm from Analog source
 /*!
  This checks to make sure the desired output is not already configured as well
@@ -33,7 +30,6 @@ bool CreateAnalogAlarm(OUTPUT* output, INPUT* input, double trigger, double rese
                 input->alrms[i] = output;
                 return true; //Exit loop returning success
             }
-
         }
     }
     
@@ -75,14 +71,27 @@ bool CreateDigitalAlarm(OUTPUT* output, INPUT* input, int input_chnl){
  \param trigger a double that is the point the alarm triggers at
  \param reset a double this the point the alarm untriggers at
  \param input_chl an integer that is the channel number for the input
- \param high_low a bool of wether the alarm is High/Low or Low/High trigger type
+ \param high_low a bool of whether the alarm is High/Low or Low/High trigger type
  */
-void EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, int input_chnl, int alarm_num, bool high_low) {
-        output->input_chnl = input_chnl;
-        output->trigger = trigger;
-        output->reset = reset;
-        output->high_low = high_low;
-        input->alrms[alarm_num] = output;
+bool EditAlarm(OUTPUT* output, INPUT* input, double trigger, double reset, int input_chnl, int alarm_num, bool high_low) {
+    
+    //Alarm is configured to a different input already
+    if(output->input_chnl != -1 && output->input_chnl != input_chnl){
+        return false;
+    }
+    if (input->alrms[alarm_num]) {
+        input->alrms[alarm_num]->input_chnl = -1;
+        outputs[input->alrms[alarm_num]-outputs].relay = false;
+    }
+    
+    
+    output->input_chnl = input_chnl;
+    output->trigger = trigger;
+    output->reset = reset;
+    output->high_low = high_low;
+    input->alrms[alarm_num] = output;
+    
+    return true;
 }
 
 //! Configure the analog outputs
@@ -101,6 +110,9 @@ bool ConfigureAnalogOutput(OUTPUT* output, INPUT* input, int input_chnl, double 
     
     //Input is not analog return false
     if (!inputs[input_chnl].ang_dig) return false;
+    
+    //Input is not set
+    if (!inputs[input_chnl].is_set) return false;
     
     //request bound are outside selected input bounds, return false
     if (inputs[input_chnl].max < max || inputs[input_chnl].min > min) return false;

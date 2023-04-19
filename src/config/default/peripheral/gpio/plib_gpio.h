@@ -108,13 +108,13 @@
 #define DIGITAL3_PIN                  GPIO_PIN_RG7
 
 /*** Macros for RELAY7 pin ***/
-#define RELAY7_Set()               (LATBSET = (1<<11))
-#define RELAY7_Clear()             (LATBCLR = (1<<11))
-#define RELAY7_Toggle()            (LATBINV= (1<<11))
-#define RELAY7_OutputEnable()      (TRISBCLR = (1<<11))
-#define RELAY7_InputEnable()       (TRISBSET = (1<<11))
-#define RELAY7_Get()               ((PORTB >> 11) & 0x1)
-#define RELAY7_PIN                  GPIO_PIN_RB11
+#define RELAY7_Set()               (LATBSET = (1<<10))
+#define RELAY7_Clear()             (LATBCLR = (1<<10))
+#define RELAY7_Toggle()            (LATBINV= (1<<10))
+#define RELAY7_OutputEnable()      (TRISBCLR = (1<<10))
+#define RELAY7_InputEnable()       (TRISBSET = (1<<10))
+#define RELAY7_Get()               ((PORTB >> 10) & 0x1)
+#define RELAY7_PIN                  GPIO_PIN_RB10
 
 /*** Macros for RELAY0 pin ***/
 #define RELAY0_Set()               (LATBSET = (1<<12))

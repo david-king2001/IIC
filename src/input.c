@@ -16,8 +16,16 @@ void ConfigureInput(INPUT* input, bool ang_dig, double max, double min, int inpu
     
     //New input delete all links
     for (int i=0; i<4; i++){
-        if (input->alrms[i] ) input->alrms[i]->input_chnl = -1;
+        if (input->alrms[i] ) {
+            input->alrms[i]->input_chnl = -1;
+            outputs[inputs[input_num].alrms[i]-outputs].relay=false;
+        }
     }
+    
+    //Clear linked outputs
+    if (outputs[0].input_chnl == input_num) outputs[0].input_chnl = -1;
+    //Clear linked outputs
+    if (outputs[1].input_chnl == input_num) outputs[1].input_chnl = -1;
     
     input->ang_dig = ang_dig;
     

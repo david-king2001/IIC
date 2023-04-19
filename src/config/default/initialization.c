@@ -176,6 +176,8 @@ void SYS_Initialize ( void* data )
 
 	SPI1_Initialize();
 
+    NVM_Initialize();
+
 
 
 
